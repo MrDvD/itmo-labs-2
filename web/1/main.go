@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	"mime"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
+	"strings"
 )
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func serveIndex(w http.ResponseWriter, _ *http.Request) {
 	data, err := os.ReadFile("./public/index.html")
 	if err != nil {
 		fmt.Println(err)
@@ -15,33 +19,45 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func styleHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("./public/style.css")
+func servePublic(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("./public" + r.URL.Path)
+	fileExtension := filepath.Ext(r.URL.Path)
+	fileMimeType := mime.TypeByExtension(fileExtension)
+	w.Header().Set("Content-type", fileMimeType)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	w.Header().Add("Content-type", "text/css")
 	w.Write(data)
 }
 
-func scriptHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("./public/script.js")
-	if err != nil {
-		fmt.Println(err)
-		return
+func shiftPath(p string) (head, tail string) {
+	p = path.Clean("/" + p)
+	i := strings.Index(p[1:], "/") + 1
+	if i <= 0 {
+		return p[1:], "/"
 	}
-	w.Header().Add("Content-type", "text/javascript")
-	w.Write(data)
+	return p[1:i], p[i:]
+}
+
+func serve(w http.ResponseWriter, r *http.Request) {
+	var head string
+	head, _ = shiftPath(r.URL.Path)
+	switch head {
+	case "":
+		serveIndex(w, r)
+	default:
+		servePublic(w, r)
+	}
 }
 
 func main() {
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/style.css", styleHandler)
-	http.HandleFunc("/script.js", scriptHandler)
-
+	s := &http.Server{
+		Addr:    "localhost:8080",
+		Handler: http.HandlerFunc(serve),
+	}
 	fmt.Println("Starting server at port 8080")
-	err := http.ListenAndServe(":8080", nil)
+	err := s.ListenAndServe()
 	if err != nil {
 		fmt.Println("Error starting the server:", err)
 	}

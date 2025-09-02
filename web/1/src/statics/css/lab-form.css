@@ -1,0 +1,14 @@
+.lab-form {
+  margin: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+.lab-form > .lab-form-field {
+  display: flex;
+  gap: 10px;
+}
