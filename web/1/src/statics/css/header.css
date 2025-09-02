@@ -7,8 +7,4 @@
   padding: 0 10px;
   justify-content: space-between;
   background-color: var(--header-color);
-
-  font-family: sans-serif;
-  font-size: 16px;
-  color: var(--font-color);
 }

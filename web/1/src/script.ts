@@ -1,4 +1,4 @@
-import type { DotParams } from "./types.js";
+import type { DotParams } from "./dto.js";
 import { ParamsFormValidator } from "./validators.js";
 
 export function sendHelios(packet: DotParams): void {
