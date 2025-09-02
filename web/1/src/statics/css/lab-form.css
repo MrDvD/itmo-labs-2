@@ -12,3 +12,13 @@
   display: flex;
   gap: 10px;
 }
+
+.underline-param-label {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
+.wide-input {
+  flex: 1;
+}
