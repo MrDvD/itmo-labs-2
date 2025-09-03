@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"mime"
 	"net/http"
@@ -10,25 +11,69 @@ import (
 	"strings"
 )
 
-func serveIndex(w http.ResponseWriter, _ *http.Request) {
-	data, err := os.ReadFile("./public/index.html")
-	if err != nil {
-		fmt.Println(err)
-		return
+type DotParams struct {
+	X string `json:"X"`
+	Y int    `json:"Y"`
+	R string `json:"R"`
+}
+
+type DotStatus struct {
+	Entry DotParams `json:"entry"`
+}
+
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		data, err := os.ReadFile("./public/index.html")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		w.Write(data)
+	default:
+		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
 	}
-	w.Write(data)
+}
+
+func serveDotParams(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		var dots []DotParams
+		err := json.NewDecoder(r.Body).Decode(&dots)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		var dotsStatus []DotStatus
+		for _, dot := range dots {
+			dotsStatus = append(dotsStatus, DotStatus{Entry: dot})
+		}
+		b, err := json.Marshal(dotsStatus)
+		if err != nil {
+			http.Error(w, "500 failure json serialization", http.StatusInternalServerError)
+			return
+		}
+		w.Write(b)
+	default:
+		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
+	}
 }
 
 func servePublic(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("./public" + r.URL.Path)
-	fileExtension := filepath.Ext(r.URL.Path)
-	fileMimeType := mime.TypeByExtension(fileExtension)
-	w.Header().Set("Content-type", fileMimeType)
-	if err != nil {
-		fmt.Println(err)
-		return
+	switch r.Method {
+	case "GET":
+		data, err := os.ReadFile("./public" + r.URL.Path)
+		fileExtension := filepath.Ext(r.URL.Path)
+		fileMimeType := mime.TypeByExtension(fileExtension)
+		w.Header().Set("Content-type", fileMimeType)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		w.Write(data)
+	default:
+		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
 	}
-	w.Write(data)
 }
 
 func shiftPath(p string) (head, tail string) {
@@ -46,6 +91,8 @@ func serve(w http.ResponseWriter, r *http.Request) {
 	switch head {
 	case "":
 		serveIndex(w, r)
+	case "dot-params":
+		serveDotParams(w, r)
 	default:
 		servePublic(w, r)
 	}

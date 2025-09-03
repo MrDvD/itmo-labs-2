@@ -1,8 +1,26 @@
-import type { DotParams } from "./dto.js";
+import { isDotStatus, type DotParams, type DotStatus } from "./dto.js";
+import { LabDotDomainService, type DotDomainService } from "./services/domain-service/domain-service.js";
 import { ParamsFormValidator, type FormValidationStatus } from "./validators.js";
 
-export function sendHelios(packet: DotParams): void {
-  console.log(JSON.stringify(packet));
+export async function sendToServer(dotPackets: DotParams[], domainService: DotDomainService): Promise<DotStatus[] | null> {
+  const response = await fetch(domainService.getDotDomain(), {
+    method: "POST",
+    body: JSON.stringify(dotPackets),
+  });
+  if (response.ok) {
+    const responseObjects: unknown[] = await response.json();
+    const validDots: DotStatus[] = [];
+    for (const responseObject of responseObjects) {
+      if (isDotStatus(responseObject)) {
+        validDots.push(responseObject);
+      } else {
+        console.error("Не удалось обработать один из объектов от сервера.");
+      }
+    }
+    return validDots
+  } else {
+    return null;
+  }
 }
 
 export function packDotForm(form: HTMLFormElement): DotParams[] {
@@ -13,6 +31,10 @@ export function packDotForm(form: HTMLFormElement): DotParams[] {
   for (const [key, value] of formData.entries()) {
     if (key === 'X' && typeof value === 'string') {
       arrayX.push(value);
+      continue;
+    }
+    if (key === 'Y') {
+      rawDotParams['Y'] = Number(value);
       continue;
     }
     rawDotParams = {
@@ -54,7 +76,7 @@ addEventListener("DOMContentLoaded", function() {
   const labForm = this.document.getElementById(formId);
   if (labForm && labForm instanceof HTMLFormElement) {
     const formValidator = new ParamsFormValidator();
-    labForm.addEventListener("submit", function(event) {
+    labForm.addEventListener("submit", async function(event) {
       event.preventDefault();
       clearErrorPlaceholders(labForm);
       const formValidationStatus = formValidator.validate(labForm);
@@ -62,10 +84,8 @@ addEventListener("DOMContentLoaded", function() {
         processValidatorErrors(formValidationStatus, labForm);
         return;
       }
-      const packedForms = packDotForm(this);
-      for (const packetForm of packedForms) {
-        sendHelios(packetForm);
-      }
+      const dotResponse = await sendToServer(packDotForm(this), new LabDotDomainService());
+      console.log(dotResponse);
     });
     const inputY = labForm.querySelector("input[name='Y']");
     if (inputY && inputY instanceof HTMLInputElement) {
