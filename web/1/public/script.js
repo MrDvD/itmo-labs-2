@@ -22,6 +22,28 @@ export function packDotForm(form) {
     }
     return dotPackets;
 }
+export function clearErrorPlaceholders(form) {
+    const errorPlaceholders = form.getElementsByClassName("lab-form-error");
+    for (const errorPlaceholder of errorPlaceholders) {
+        errorPlaceholder.innerHTML = "";
+    }
+}
+export function processValidatorErrors(status, form) {
+    if (!status.errors || status.errors.length === 0) {
+        console.warn("Список ошибок пуст, нечего обрабатывать.");
+        return;
+    }
+    const errorPlaceholders = form.getElementsByClassName("lab-form-error");
+    for (const error of status.errors) {
+        const errorPlaceholder = errorPlaceholders[error.fieldIdx];
+        if (errorPlaceholder) {
+            errorPlaceholder.innerHTML += error.message + "<br>";
+        }
+        else {
+            console.warn(`Ошибка с индексом ${error.fieldIdx} не отображена`);
+        }
+    }
+}
 addEventListener("DOMContentLoaded", function () {
     const formId = "lab-form-params";
     const labForm = this.document.getElementById(formId);
@@ -29,9 +51,10 @@ addEventListener("DOMContentLoaded", function () {
         const formValidator = new ParamsFormValidator();
         labForm.addEventListener("submit", function (event) {
             event.preventDefault();
+            clearErrorPlaceholders(labForm);
             const formValidationStatus = formValidator.validate(labForm);
             if (!formValidationStatus.valid) {
-                alert("Форма не прошла проверку валидации.");
+                processValidatorErrors(formValidationStatus, labForm);
                 return;
             }
             const packedForms = packDotForm(this);
@@ -39,8 +62,26 @@ addEventListener("DOMContentLoaded", function () {
                 sendHelios(packetForm);
             }
         });
+        const inputY = labForm.querySelector("input[name='Y']");
+        if (inputY && inputY instanceof HTMLInputElement) {
+            inputY.addEventListener("keypress", function (event) {
+                let forbiddenChars;
+                if (/^\-/.test(inputY.value)) {
+                    forbiddenChars = /[^0-9]/;
+                }
+                else {
+                    forbiddenChars = /[^0-9\-]/;
+                }
+                if (forbiddenChars.test(event.key)) {
+                    event.preventDefault();
+                }
+            });
+            inputY.addEventListener("compositionstart", function (event) {
+                event.preventDefault();
+            });
+        }
     }
     else {
-        this.alert("Не удалось найти форму с подходящим id.");
+        console.error("Не удалось найти форму с подходящим id.");
     }
 });

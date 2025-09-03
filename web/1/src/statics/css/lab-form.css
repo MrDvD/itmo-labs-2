@@ -13,6 +13,15 @@
   gap: 10px;
 }
 
+.lab-form > .lab-form-error {
+  color: var(--font-error);
+  font-size: 12px;
+}
+
+.lab-form-error:empty {
+  display: none;
+}
+
 .underline-param-label {
   display: flex;
   flex-direction: column-reverse;
