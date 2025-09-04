@@ -15,11 +15,11 @@ func doesDotHit(dot DotParams) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if X <= 0 && dot.Y >= 0 && float64(dot.Y) <= math.Sqrt(float64(R*R-float64(X^2))) {
+	if X <= 0 && dot.Y >= 0 && dot.Y <= math.Sqrt(R*R-float64(X*X)) {
 		return true, nil
 	}
-	if X >= 0 && float64(X) <= R && float64(dot.Y) >= -R/2 {
-		return float64(dot.Y) <= R*(1-float64(X))/2, nil
+	if X >= 0 && float64(X) <= R && dot.Y >= -R/2 {
+		return dot.Y <= (R-float64(X))/2, nil
 	}
 	return false, nil
 }

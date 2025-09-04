@@ -100,13 +100,15 @@ addEventListener("DOMContentLoaded", function() {
     const inputY = labForm.querySelector("input[name='Y']");
     if (inputY && inputY instanceof HTMLInputElement) {
       inputY.addEventListener("keypress", function(event) {
-        let forbiddenChars: RegExp; 
-        if (/^\-/.test(inputY.value)) {
-          forbiddenChars = /[^0-9]/;
-        } else {
-          forbiddenChars = /[^0-9\-]/;
+        const allowedChars: string[] = [];
+        if (!/^\-/.test(inputY.value)) {
+          allowedChars.push("\-");
         }
-        if (forbiddenChars.test(event.key)) {
+        if (!/\./.test(inputY.value) && /\d$/.test(inputY.value)) {
+          allowedChars.push("\.")
+        }
+        const forbiddenRegex = new RegExp(`[^0-9${allowedChars.join("")}]`);
+        if (forbiddenRegex.test(event.key)) {
           event.preventDefault();
         }
       });
