@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp -r src/statics/* public"
+    "build": "tsc && cp -r src/statics/* public && go build -o bin/server .",
+    "start": "./bin/server"
   },
   "keywords": [],
   "author": "",

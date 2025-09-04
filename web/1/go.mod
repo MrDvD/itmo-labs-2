@@ -1,3 +1,3 @@
-module example/hello
+module mrdvd
 
 go 1.25.0
