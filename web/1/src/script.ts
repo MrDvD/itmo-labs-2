@@ -1,5 +1,6 @@
 import { isDotStatus, type DotParams, type DotStatus } from "./dto.js";
 import { LabDotDomainService, type DotDomainService } from "./services/domain-service/domain-service.js";
+import { HistoryService, HistoryServiceConstants } from "./services/history-service/history-service.js";
 import { ParamsFormValidator, type FormValidationStatus } from "./validators.js";
 
 export async function sendToServer(dotPackets: DotParams[], domainService: DotDomainService): Promise<DotStatus[] | null> {
@@ -72,6 +73,13 @@ export function processValidatorErrors(status: FormValidationStatus, form: HTMLF
 }
 
 addEventListener("DOMContentLoaded", function() {
+  const historyService = new HistoryService(HistoryServiceConstants.storageKey);
+  const historyTable = this.document.querySelector(HistoryServiceConstants.historyTableSelector);
+  if (historyTable instanceof HTMLTableElement) {
+    historyService.initHistoryTable(historyTable);
+  } else {
+    console.error("Не удалось найти историю запросов с подходящим селектором.");
+  }
   const formId = "lab-form-params";
   const labForm = this.document.getElementById(formId);
   if (labForm && labForm instanceof HTMLFormElement) {
@@ -85,7 +93,9 @@ addEventListener("DOMContentLoaded", function() {
         return;
       }
       const dotResponse = await sendToServer(packDotForm(this), new LabDotDomainService());
-      console.log(dotResponse);
+      if (dotResponse && historyTable instanceof HTMLTableElement) {
+        historyService.fillHistoryTable(dotResponse, historyTable);
+      }
     });
     const inputY = labForm.querySelector("input[name='Y']");
     if (inputY && inputY instanceof HTMLInputElement) {

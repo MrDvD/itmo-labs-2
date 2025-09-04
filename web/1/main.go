@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type DotParams struct {
@@ -20,8 +21,10 @@ type DotParams struct {
 }
 
 type DotStatus struct {
-	Entry DotParams `json:"entry"`
-	Hit   bool      `json:"hit"`
+	Entry    DotParams `json:"entry"`
+	Hit      bool      `json:"hit"`
+	Date     string    `json:"date"`
+	Duration string    `json:"duration"`
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
@@ -43,15 +46,15 @@ func doesDotHit(dot DotParams) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	R, err := strconv.Atoi(dot.R)
+	R, err := strconv.ParseFloat(dot.R, 32)
 	if err != nil {
 		return false, err
 	}
-	if X <= 0 && dot.Y >= 0 && float64(dot.Y) <= math.Sqrt(float64(R^2-X^2)) {
+	if X <= 0 && dot.Y >= 0 && float64(dot.Y) <= math.Sqrt(float64(R*R-float64(X^2))) {
 		return true, nil
 	}
-	if X >= 0 && X <= R && dot.Y >= -R/2 {
-		return dot.Y <= R*(1-X)/2, nil
+	if X >= 0 && float64(X) <= R && float64(dot.Y) >= -R/2 {
+		return float64(dot.Y) <= R*(1-float64(X))/2, nil
 	}
 	return false, nil
 }
@@ -59,8 +62,12 @@ func doesDotHit(dot DotParams) (bool, error) {
 func wrapDotStatus(dot DotParams) (DotStatus, error) {
 	var dotStatus DotStatus
 	var err error
+	startTime := time.Now()
+	dotStatus.Date = startTime.Format("2006-01-02 15:04:05")
 	dotStatus.Entry = dot
 	dotStatus.Hit, err = doesDotHit(dot)
+	endTime := time.Now()
+	dotStatus.Duration = endTime.Sub(startTime).String()
 	return dotStatus, err
 }
 
