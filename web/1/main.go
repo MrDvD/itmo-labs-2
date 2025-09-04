@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"mime"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -19,6 +21,7 @@ type DotParams struct {
 
 type DotStatus struct {
 	Entry DotParams `json:"entry"`
+	Hit   bool      `json:"hit"`
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +38,32 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func doesDotHit(dot DotParams) (bool, error) {
+	X, err := strconv.Atoi(dot.X)
+	if err != nil {
+		return false, err
+	}
+	R, err := strconv.Atoi(dot.R)
+	if err != nil {
+		return false, err
+	}
+	if X <= 0 && dot.Y >= 0 && float64(dot.Y) <= math.Sqrt(float64(R^2-X^2)) {
+		return true, nil
+	}
+	if X >= 0 && X <= R && dot.Y >= -R/2 {
+		return dot.Y <= R*(1-X)/2, nil
+	}
+	return false, nil
+}
+
+func wrapDotStatus(dot DotParams) (DotStatus, error) {
+	var dotStatus DotStatus
+	var err error
+	dotStatus.Entry = dot
+	dotStatus.Hit, err = doesDotHit(dot)
+	return dotStatus, err
+}
+
 func serveDotParams(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
@@ -44,11 +73,16 @@ func serveDotParams(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		var dotsStatus []DotStatus
+		var dotsStatuses []DotStatus
 		for _, dot := range dots {
-			dotsStatus = append(dotsStatus, DotStatus{Entry: dot})
+			dotStatus, err := wrapDotStatus(dot)
+			if err != nil {
+				http.Error(w, "400 bad request", http.StatusBadRequest)
+				return
+			}
+			dotsStatuses = append(dotsStatuses, dotStatus)
 		}
-		b, err := json.Marshal(dotsStatus)
+		b, err := json.Marshal(dotsStatuses)
 		if err != nil {
 			http.Error(w, "500 failure json serialization", http.StatusInternalServerError)
 			return

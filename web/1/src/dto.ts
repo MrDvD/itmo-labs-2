@@ -6,6 +6,7 @@ export type DotParams = {
 
 export type DotStatus = {
   entry: DotParams;
+  hit: boolean;
 };
 
 export function isDotParams(object: unknown): object is DotParams {
