@@ -4,6 +4,6 @@ export interface DotDomainService {
 
 export class LabDotDomainService {
   public getDotDomain(): string {
-    return "http://localhost:8080/dot-params";
+    return "https://lab-web.cloudpub.ru/dot-params";
   }
 }

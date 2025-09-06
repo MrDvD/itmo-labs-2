@@ -98,21 +98,19 @@ addEventListener("DOMContentLoaded", function () {
         });
         const inputY = labForm.querySelector("input[name='Y']");
         if (inputY && inputY instanceof HTMLInputElement) {
+            const numbers = "0123456789";
             inputY.addEventListener("keypress", function (event) {
-                const allowedChars = [];
-                if (!/^\-/.test(inputY.value)) {
-                    allowedChars.push("\-");
-                }
-                if (!/\./.test(inputY.value) && /\d$/.test(inputY.value)) {
-                    allowedChars.push("\.");
-                }
-                const forbiddenRegex = new RegExp(`[^0-9${allowedChars.join("")}]`);
-                if (forbiddenRegex.test(event.key)) {
+                const idx = inputY.selectionStart;
+                const isNegative = event.key === '-' && idx === 0;
+                const isFractional = event.key === '.' && idx > 0 && numbers.indexOf(inputY.value[idx - 1]) !== -1 && !/\./.test(inputY.value);
+                const isNumber = numbers.indexOf(event.key) != -1;
+                if (!(isNegative || isFractional || isNumber)) {
                     event.preventDefault();
                 }
             });
             inputY.addEventListener("compositionstart", function (event) {
                 event.preventDefault();
+                this.blur();
             });
         }
     }

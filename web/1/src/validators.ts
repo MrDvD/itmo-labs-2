@@ -24,15 +24,16 @@ export class ParamsFormValidator implements FormValidator {
             continue;
           }
           hasX = true;
-          const X = Number.parseInt(formInput.value);
-          if (isNaN(X) || X < -5 || X > 3) {
+          const X = Number(formInput.value);
+          const intX = Number.parseInt(formInput.value);
+          if (isNaN(X) || X !== intX || X < -5 || X > 3) {
             errors.push({ message: "X должен быть целым от -5 до 3 включительно.", fieldIdx: 0 });
           }
           continue;
         case "Y":
-          const Y = Number.parseInt(formInput.value);
+          const Y = Number(formInput.value);
           if (isNaN(Y) || Y < -5 || Y > 3) {
-            errors.push({ message: "Y должен быть целым от -5 до 3 включительно.", fieldIdx: 1 });
+            errors.push({ message: "Y должен быть дробным от -5 до 3 включительно.", fieldIdx: 1 });
           }
           continue;
         case "R":
