@@ -3,12 +3,15 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"mime"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/graphql-go/graphql"
 )
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
@@ -25,33 +28,45 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func serveDotParams(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		var dots []DotParams
-		err := json.NewDecoder(r.Body).Decode(&dots)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		var dotsStatuses []DotStatus
-		for _, dot := range dots {
-			dotStatus, err := wrapDotStatus(dot)
-			if err != nil {
-				http.Error(w, "400 bad request", http.StatusBadRequest)
-				return
-			}
-			dotsStatuses = append(dotsStatuses, dotStatus)
-		}
-		b, err := json.Marshal(dotsStatuses)
-		if err != nil {
-			http.Error(w, "500 failure json serialization", http.StatusInternalServerError)
-			return
-		}
-		w.Write(b)
-	default:
-		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
+func serveGraphql(w http.ResponseWriter, r *http.Request) {
+	schema, err := GetSchemaConfig()
+	if err != nil {
+		http.Error(w, "500 graphql schema failure", http.StatusInternalServerError)
+		return
 	}
+	buf := new(strings.Builder)
+	_, err = io.Copy(buf, r.Body)
+	if err != nil {
+		http.Error(w, "500 request read failure", http.StatusInternalServerError)
+		return
+	}
+	params := graphql.Params{Schema: schema, RequestString: buf.String()}
+	queryResult := graphql.Do(params)
+	if len(queryResult.Errors) > 0 {
+		http.Error(w, "500 graphql response failure", http.StatusInternalServerError)
+		return
+	}
+	// var dots []DotParams
+	// err := json.NewDecoder(r.Body).Decode(&dots)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
+	// var dotsStatuses []DotStatus
+	// for _, dot := range dots {
+	// 	dotStatus, err := wrapDotStatus(dot)
+	// 	if err != nil {
+	// 		http.Error(w, "400 bad request", http.StatusBadRequest)
+	// 		return
+	// 	}
+	// 	dotsStatuses = append(dotsStatuses, dotStatus)
+	// }
+	b, err := json.Marshal(queryResult)
+	if err != nil {
+		http.Error(w, "500 failure json serialization", http.StatusInternalServerError)
+		return
+	}
+	w.Write(b)
 }
 
 func servePublic(w http.ResponseWriter, r *http.Request) {
@@ -86,8 +101,8 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 	switch head {
 	case "":
 		serveIndex(w, r)
-	case "dot-params":
-		serveDotParams(w, r)
+	case "graphql":
+		serveGraphql(w, r)
 	default:
 		servePublic(w, r)
 	}
