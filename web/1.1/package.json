@@ -1,0 +1,17 @@
+{
+  "name": "1",
+  "version": "1.0.0",
+  "description": "Лабораторная работа №1 по веб-программированию",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && cp -r src/statics/* public && go build -o bin/server .",
+    "start": "./bin/server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}
