@@ -38,7 +38,6 @@ func serveGraphql(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(postData.Variables)
 	params := graphql.Params{
 		Schema:         schema,
 		RequestString:  postData.Query,
