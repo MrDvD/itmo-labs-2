@@ -1,13 +1,43 @@
 package lib
 
-import "github.com/graphql-go/graphql"
+import (
+	"errors"
+
+	"github.com/graphql-go/graphql"
+)
 
 func GetSchemaConfig() (graphql.Schema, error) {
 	fields := graphql.Fields{
-		"hello": &graphql.Field{
-			Type: graphql.String,
+		"dotParams": &graphql.Field{
+			Type: graphql.NewList(DotStatusSchema),
+			Args: graphql.FieldConfigArgument{
+				"dotParamsArray": &graphql.ArgumentConfig{
+					Type: graphql.NewList(graphql.NewNonNull(DotParamsInput)),
+				},
+			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				return "world", nil
+				dotParamsArray, ok := p.Args["dotParamsArray"].([]interface{})
+				if !ok {
+					return nil, errors.New("не удалось распознать аргументы запроса")
+				}
+				dotStatuses := []DotStatus{}
+				for _, rawDot := range dotParamsArray {
+					dotInterface, ok := rawDot.(map[string]interface{})
+					if !ok {
+						return nil, errors.New("не удалось распознать аргументы запроса")
+					}
+					dot := DotParams{
+						X: dotInterface["X"].(string),
+						Y: dotInterface["Y"].(float64),
+						R: dotInterface["R"].(string),
+					}
+					dotStatus, err := wrapDotStatus(dot)
+					if err != nil {
+						return nil, err
+					}
+					dotStatuses = append(dotStatuses, dotStatus)
+				}
+				return dotStatuses, nil
 			},
 		},
 	}

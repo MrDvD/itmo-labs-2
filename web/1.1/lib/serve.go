@@ -3,7 +3,6 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"mime"
 	"net/http"
 	"os"
@@ -19,7 +18,6 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		data, err := os.ReadFile("./public/index.html")
 		if err != nil {
-			fmt.Println(err)
 			return
 		}
 		w.Write(data)
@@ -31,36 +29,27 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 func serveGraphql(w http.ResponseWriter, r *http.Request) {
 	schema, err := GetSchemaConfig()
 	if err != nil {
-		http.Error(w, "500 graphql schema failure", http.StatusInternalServerError)
+		http.Error(w, "500 graphql schema init failure", http.StatusInternalServerError)
 		return
 	}
-	buf := new(strings.Builder)
-	_, err = io.Copy(buf, r.Body)
+	var postData graphqlPostData
+	err = json.NewDecoder(r.Body).Decode(&postData)
 	if err != nil {
-		http.Error(w, "500 request read failure", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	params := graphql.Params{Schema: schema, RequestString: buf.String()}
+	fmt.Println(postData.Variables)
+	params := graphql.Params{
+		Schema:         schema,
+		RequestString:  postData.Query,
+		VariableValues: postData.Variables,
+	}
 	queryResult := graphql.Do(params)
 	if len(queryResult.Errors) > 0 {
-		http.Error(w, "500 graphql response failure", http.StatusInternalServerError)
+		fmt.Println(queryResult.Errors)
+		http.Error(w, "400 graphql bad request", http.StatusBadRequest)
 		return
 	}
-	// var dots []DotParams
-	// err := json.NewDecoder(r.Body).Decode(&dots)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusBadRequest)
-	// 	return
-	// }
-	// var dotsStatuses []DotStatus
-	// for _, dot := range dots {
-	// 	dotStatus, err := wrapDotStatus(dot)
-	// 	if err != nil {
-	// 		http.Error(w, "400 bad request", http.StatusBadRequest)
-	// 		return
-	// 	}
-	// 	dotsStatuses = append(dotsStatuses, dotStatus)
-	// }
 	b, err := json.Marshal(queryResult)
 	if err != nil {
 		http.Error(w, "500 failure json serialization", http.StatusInternalServerError)
@@ -77,7 +66,6 @@ func servePublic(w http.ResponseWriter, r *http.Request) {
 		fileMimeType := mime.TypeByExtension(fileExtension)
 		w.Header().Set("Content-type", fileMimeType)
 		if err != nil {
-			fmt.Println(err)
 			return
 		}
 		w.Write(data)

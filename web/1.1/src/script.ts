@@ -1,17 +1,35 @@
-import { isDotStatus, type DotParams, type DotStatus } from "./dto.js";
+import { isDotStatus, type DotParams, type DotStatus, type GraphQLResponse } from "./dto.js";
 import { LabDotDomainService, type DotDomainService } from "./services/domain-service/domain-service.js";
 import { HistoryService, HistoryServiceConstants } from "./services/history-service/history-service.js";
 import { ParamsFormValidator, type FormValidationStatus } from "./validators.js";
 
+export function wrapDotParams(dotPackets: DotParams[]): string {
+  const graphqlRequest = {
+    query: `
+    query DotParamsQuery($array: [DotParamsInput!]!) {
+      dotParams(dotParamsArray: $array) {
+        entry {X Y R}
+        hit
+        date
+        duration
+      }
+    }`,
+    variables: {
+      array: dotPackets,
+    },
+  };
+  return JSON.stringify(graphqlRequest);
+}
+
 export async function sendToServer(dotPackets: DotParams[], domainService: DotDomainService): Promise<DotStatus[] | null> {
   const response = await fetch(domainService.getDotDomain(), {
     method: "POST",
-    body: JSON.stringify(dotPackets),
+    body: wrapDotParams(dotPackets),
   });
   if (response.ok) {
-    const responseObjects: unknown[] = await response.json();
+    const responseObjects: GraphQLResponse = await response.json();
     const validDots: DotStatus[] = [];
-    for (const responseObject of responseObjects) {
+    for (const responseObject of responseObjects.data.dotParams) {
       if (isDotStatus(responseObject)) {
         validDots.push(responseObject);
       } else {
