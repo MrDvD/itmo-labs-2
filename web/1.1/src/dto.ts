@@ -11,6 +11,12 @@ export type DotStatus = {
   duration: string;
 };
 
+export type GraphQLResponse = {
+  data: {
+    dotParams: DotStatus[];
+  }
+};
+
 export function isDotParams(object: unknown): object is DotParams {
   return object instanceof Object &&
     'X' in object && typeof object['X'] === 'string' &&
