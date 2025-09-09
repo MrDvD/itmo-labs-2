@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="script.js"></script>
+</head>
+<body>
+<div id="lab-body">
+  <header class="lab-header">
+    <div>
+      Лабин Макар Андреевич<br>
+      P3231
+    </div>
+    <div>
+      Вариант №466449
+    </div>
+  </header>
+  <form class="lab-form" id="lab-form-params" autocomplete="off">
+    Проверка точки
+    <div class="lab-form-field">
+      <p><b>X</b></p>
+      <label class="underline-param-label">
+        -5
+        <input name="X" type="checkbox" value="-5">
+      </label>
+      <label class="underline-param-label">
+        -4
+        <input name="X" type="checkbox" value="-4">
+      </label>
+      <label class="underline-param-label">
+        -3
+        <input name="X" type="checkbox" value="-3">
+      </label>
+      <label class="underline-param-label">
+        -2
+        <input name="X" type="checkbox" value="-2">
+      </label>
+      <label class="underline-param-label">
+        -1
+        <input name="X" type="checkbox" value="-1">
+      </label>
+      <label class="underline-param-label">
+        0
+        <input name="X" type="checkbox" value="0">
+      </label>
+      <label class="underline-param-label">
+        1
+        <input name="X" type="checkbox" value="1">
+      </label>
+      <label class="underline-param-label">
+        2
+        <input name="X" type="checkbox" value="2">
+      </label>
+      <label class="underline-param-label">
+        3
+        <input name="X" type="checkbox" value="3">
+      </label>
+    </div>
+    <div class="lab-form-error"></div>
+    <div class="lab-form-field">
+      <p><b>Y</b></p>
+      <input name="Y" type="text" class="wide-input" placeholder="Введите дробное число">
+    </div>
+    <div class="lab-form-error"></div>
+    <div class="lab-form-field">
+      <p><b>R</b></p>
+      <select name="R">
+        <option value="1">1</option>
+        <option value="1.5">1.5</option>
+        <option value="2">2</option>
+        <option value="2.5">2.5</option>
+      </select>
+    </div>
+    <div class="lab-form-error"></div>
+    <button type="submit">Отправить</button>
+  </form>
+  <footer class="lab-query-history">
+    <table>
+      <caption>
+        <b>История запросов</b>
+      </caption>
+      <thead>
+        <tr>
+          <td colspan="100" class="centered-cell">
+            <img src="./resources/png/hint.png" alt="Dot hint">
+          </td>
+        </tr>
+        <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td><td>Ожидание</td></tr>
+      </thead>
+      <tbody class="lab-query-history-body"></tbody>
+    </table>
+  </footer>
+</div>
+</body>
+</html>
