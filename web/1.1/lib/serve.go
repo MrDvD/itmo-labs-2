@@ -13,6 +13,8 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+var graphqlSchema, err = GetSchemaConfig()
+
 func serveIndex(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -27,7 +29,6 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveGraphql(w http.ResponseWriter, r *http.Request) {
-	schema, err := GetSchemaConfig()
 	if err != nil {
 		http.Error(w, "500 graphql schema init failure", http.StatusInternalServerError)
 		return
@@ -39,7 +40,7 @@ func serveGraphql(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	params := graphql.Params{
-		Schema:         schema,
+		Schema:         graphqlSchema,
 		RequestString:  postData.Query,
 		VariableValues: postData.Variables,
 	}
