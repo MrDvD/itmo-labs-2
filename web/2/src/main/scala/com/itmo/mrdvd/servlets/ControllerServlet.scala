@@ -12,7 +12,7 @@ import java.io.PrintWriter
   urlPatterns = Array("/")
 )
 class ControllerServlet extends HttpServlet:
-  private val msg: String = "Hello from ControllerServlet"
+  private val msg: String = "Привет от ControllerServlet"
 
   override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = 
     resp.setContentType("text/html")

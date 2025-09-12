@@ -11,7 +11,7 @@ import jakarta.servlet.annotation.WebServlet
   urlPatterns = Array("/AreaCheck")
 )
 class AreaCheckServlet extends HttpServlet:
-  private val msg: String = "Hello from AreaCheckServlet"
+  private val msg: String = "Привет от AreaCheckServlet\n"
 
   override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = 
     resp.setContentType("text/html")
