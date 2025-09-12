@@ -1,3 +1,8 @@
 package com.itmo.mrdvd
 
-@main def App(): Unit = println("Hello, Scala!")
+import com.itmo.mrdvd.servlets.ControllerServlet
+
+@main def App() = 
+  println("Hello, Scala!")
+  // println("yes")
+  // val myServlet = ControllerServlet()
