@@ -12,9 +12,5 @@ import java.io.PrintWriter
   urlPatterns = Array("/")
 )
 class ControllerServlet extends HttpServlet:
-  private val msg: String = "Привет от ControllerServlet"
-
   override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = 
-    resp.setContentType("text/html")
-    val out = resp.getWriter()
-    out.println("<h1>" + msg + "</h1>")
+    req.getRequestDispatcher("index.jsp").forward(req, resp)

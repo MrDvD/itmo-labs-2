@@ -4,6 +4,7 @@ services:
     volumes:
       - ./conf/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./target:/opt/jboss/wildfly/standalone/deployments/
+      - ./public:/opt/jboss/wildfly/resources
     ports:
       - "8080:8080"
       - "9990:9990"
