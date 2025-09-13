@@ -1,0 +1,6 @@
+target/
+.vscode/
+.bloop/
+.metals/
+public/
+node_modules/
