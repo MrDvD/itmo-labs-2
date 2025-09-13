@@ -1,1 +1,4 @@
-mvn clean package && sudo docker compose up
+mvn clean package && \
+rm -rf public && \
+npm run build && \
+sudo docker compose up

@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="script.js"></script>
+  <link rel="stylesheet" href="/resources/style.css">
+  <script type="module" src="/resources/script.js"></script>
 </head>
 <body>
 <div id="lab-body">
@@ -86,7 +86,7 @@
       <thead>
         <tr>
           <td colspan="100" class="centered-cell">
-            <img src="./resources/png/hint.png" alt="Dot hint">
+            <img src="/resources/images/png/hint.png" alt="Dot hint">
           </td>
         </tr>
         <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td><td>Ожидание</td></tr>
