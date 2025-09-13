@@ -1,53 +1,25 @@
-import { isDotStatus, type DotParams, type DotStatus } from "./dto.js";
-import { LabDotDomainService, type DotDomainService } from "./services/domain-service/domain-service.js";
-import { HistoryService, HistoryServiceConstants } from "./services/history-service/history-service.js";
-import { ParamsFormValidator, type FormValidationStatus } from "./validators.js";
+import { type FormValidationStatus } from "./validators.js";
 
-export async function sendToServer(dotPackets: DotParams[], domainService: DotDomainService): Promise<DotStatus[] | null> {
-  const response = await fetch(domainService.getDotDomain(), {
-    method: "POST",
-    body: JSON.stringify(dotPackets),
-  });
-  if (response.ok) {
-    const responseObjects: unknown[] = await response.json();
-    const validDots: DotStatus[] = [];
-    for (const responseObject of responseObjects) {
-      if (isDotStatus(responseObject)) {
-        validDots.push(responseObject);
-      } else {
-        console.error("Не удалось обработать один из объектов от сервера.");
-      }
-    }
-    return validDots
-  } else {
-    return null;
-  }
-}
-
-export function packDotForm(form: HTMLFormElement): DotParams[] {
-  const formData = new FormData(form);
-  const dotPackets: DotParams[] = [];
-  const arrayX: string[] = [];
-  let rawDotParams: Omit<DotParams, 'X'> = { Y: 0, R: '0'};
-  for (const [key, value] of formData.entries()) {
-    if (key === 'X' && typeof value === 'string') {
-      arrayX.push(value);
-      continue;
-    }
-    if (key === 'Y') {
-      rawDotParams['Y'] = Number(value);
-      continue;
-    }
-    rawDotParams = {
-      ...rawDotParams,
-      [key]: value,
-    };
-  }
-  for (const X of arrayX) {
-    dotPackets.push( { ...rawDotParams, X: X });
-  }
-  return dotPackets;
-}
+// export async function sendToServer(dotPackets: DotParams[], domainService: DotDomainService): Promise<DotStatus[] | null> {
+//   const response = await fetch(domainService.getDotDomain(), {
+//     method: "POST",
+//     body: JSON.stringify(dotPackets),
+//   });
+//   if (response.ok) {
+//     const responseObjects: unknown[] = await response.json();
+//     const validDots: DotStatus[] = [];
+//     for (const responseObject of responseObjects) {
+//       if (isDotStatus(responseObject)) {
+//         validDots.push(responseObject);
+//       } else {
+//         console.error("Не удалось обработать один из объектов от сервера.");
+//       }
+//     }
+//     return validDots
+//   } else {
+//     return null;
+//   }
+// }
 
 export function clearErrorPlaceholders(form: HTMLFormElement) {
   const errorPlaceholders = form.getElementsByClassName("lab-form-error");
@@ -73,30 +45,23 @@ export function processValidatorErrors(status: FormValidationStatus, form: HTMLF
 }
 
 addEventListener("DOMContentLoaded", function() {
-  const historyService = new HistoryService(HistoryServiceConstants.storageKey);
-  const historyTable = this.document.querySelector(HistoryServiceConstants.historyTableSelector);
-  if (historyTable instanceof HTMLTableElement) {
-    historyService.initHistoryTable(historyTable);
-  } else {
-    console.error("Не удалось найти историю запросов с подходящим селектором.");
-  }
   const formId = "lab-form-params";
   const labForm = this.document.getElementById(formId);
   if (labForm && labForm instanceof HTMLFormElement) {
-    const formValidator = new ParamsFormValidator();
-    labForm.addEventListener("submit", async function(event) {
-      event.preventDefault();
-      clearErrorPlaceholders(labForm);
-      const formValidationStatus = formValidator.validate(labForm);
-      if (!formValidationStatus.valid) {
-        processValidatorErrors(formValidationStatus, labForm);
-        return;
-      }
-      const dotResponse = await sendToServer(packDotForm(this), new LabDotDomainService());
-      if (dotResponse && historyTable instanceof HTMLTableElement) {
-        historyService.fillHistoryTable(dotResponse, historyTable);
-      }
-    });
+    // const formValidator = new ParamsFormValidator();
+    // labForm.addEventListener("submit", async function(event) {
+    //   // event.preventDefault();
+    //   // clearErrorPlaceholders(labForm);
+    //   // const formValidationStatus = formValidator.validate(labForm);
+    //   // if (!formValidationStatus.valid) {
+    //   //   processValidatorErrors(formValidationStatus, labForm);
+    //   //   return;
+    //   // }
+    //   // const dotResponse = await sendToServer(packDotForm(this), new LabDotDomainService());
+    //   // if (dotResponse && historyTable instanceof HTMLTableElement) {
+    //   //   historyService.fillHistoryTable(dotResponse, historyTable);
+    //   // }
+    // });
     const inputY = labForm.querySelector("input[name='Y']");
     if (inputY && inputY instanceof HTMLInputElement) {
       const numbers = "0123456789";
