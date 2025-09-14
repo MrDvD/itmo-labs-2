@@ -2,7 +2,6 @@
   margin: 20px auto;
 
   & > table {
-    /* display: block; */
     border-collapse: collapse;
   }
 
@@ -20,7 +19,6 @@
   }
 
   .lab-query-history-body {
-    /* display: block; */
     max-height: 200px;
     overflow-x: hidden;
     overflow-y: auto;
