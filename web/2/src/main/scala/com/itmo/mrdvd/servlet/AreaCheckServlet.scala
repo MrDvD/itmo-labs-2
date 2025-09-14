@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServlet
 import jakarta.servlet.annotation.WebServlet
 import com.itmo.mrdvd.mapper.RawDotMapper
-import com.itmo.mrdvd.validator.RawDotValidator
 import com.itmo.mrdvd.dto.RawDot
 import com.itmo.mrdvd.model.dotHistory.HttpDotHistoryModel
 import com.itmo.mrdvd.dto.Dot
+import com.itmo.mrdvd.model.dotArea.Lab2DotAreaModel
 
 @WebServlet(
   name = "AreaCheckServlet",
@@ -17,12 +17,14 @@ import com.itmo.mrdvd.dto.Dot
 )
 class AreaCheckServlet extends HttpServlet:
   protected val historyModel = HttpDotHistoryModel("dots-history")
-  protected val rawDotMapper = RawDotMapper(RawDotValidator()) 
+  protected val rawDotMapper = RawDotMapper() 
+  protected val dotAreaModel = Lab2DotAreaModel()
   override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = 
     val rawDot = req.getAttribute("rawDot").asInstanceOf[RawDot]
     val dot = rawDotMapper.map(rawDot)
     if dot.isEmpty then
       resp.sendError(400, "Bad request")
-    else
-      req.setAttribute("dots", this.historyModel.addDot(dot.get, req.getSession()))
-      req.getRequestDispatcher("components/area.jsp").forward(req, resp)
+      return
+    val areaResult = dotAreaModel.addDot(dot.get)
+    req.setAttribute("dots", this.historyModel.addEntry(areaResult, req.getSession()))
+    req.getRequestDispatcher("components/area.jsp").forward(req, resp)
