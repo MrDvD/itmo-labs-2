@@ -8,10 +8,6 @@ export class CanvasService {
     this.domService = domService;
   }
 
-  protected getScale(): number {
-    return this.domService.getCanvas().offsetWidth * 3 / 8;
-  }
-
   protected parseDotFromTr(tr: HTMLTableRowElement): Dot | null {
     if (tr.cells.length < 4) {
       return null;
@@ -36,6 +32,10 @@ export class CanvasService {
       }
     }
     return dots;
+  }
+
+  public getScale(): number {
+    return this.domService.getCanvas().offsetWidth * 3 / 8;
   }
 
   public clearDots(): void {

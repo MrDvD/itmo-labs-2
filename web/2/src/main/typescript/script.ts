@@ -15,6 +15,21 @@ export async function sendToServer(params: URLSearchParams, domainService: DotDo
   }
 }
 
+export async function analyzeDots(searchParams: URLSearchParams, R: number, domService: DomService, historyService: HistoryService, canvasService: CanvasService, searchValidator: ParamsFormValidator | null): Promise<void> {
+  if (searchValidator) {
+    const formValidationStatus = searchValidator.validate(searchParams);
+    if (!formValidationStatus.valid) {
+      processValidatorErrors(formValidationStatus, domService.getLabForm());
+      return;
+    }
+  }
+  const dotResponse = await sendToServer(searchParams, new LabDotDomainService());
+  if (dotResponse) {
+    historyService.fillHistoryTable(dotResponse);
+    canvasService.renderDots(R);
+  }
+}
+
 export function clearErrorPlaceholders(form: HTMLFormElement) {
   const errorPlaceholders = form.getElementsByClassName("lab-form-error");
   for (const errorPlaceholder of errorPlaceholders) {
@@ -55,7 +70,23 @@ addEventListener("DOMContentLoaded", function() {
       canvasService.renderDots(R);
     })
   })
-  // submit validation
+  // image submit
+  domService.getCanvas().addEventListener("click", async (event) => {
+    if (R === null) {
+      clearErrorPlaceholders(domService.getLabForm());
+      processValidatorErrors({ valid: false, errors: [{ message: "Установите R для однозначности.", fieldIdx: 2 }]}, domService.getLabForm());
+      return;
+    }
+    clearErrorPlaceholders(domService.getLabForm());
+    const X = Math.round((event.offsetX - domService.getCanvas().offsetWidth / 2) * 100 * R / canvasService.getScale()) / 100;
+    const Y = Math.round((event.offsetY - domService.getCanvas().offsetHeight / 2) * -100 * R / canvasService.getScale()) / 100;
+    const searchParams = new URLSearchParams();
+    searchParams.append("X", String(X));
+    searchParams.append("Y", String(Y));
+    searchParams.append("R", String(R));
+    await analyzeDots(searchParams, R, domService, historyService, canvasService, null);
+  });
+  // basic submit
   domService.getLabForm().addEventListener("submit", async function(event) {
     event.preventDefault();
     clearErrorPlaceholders(domService.getLabForm());
@@ -65,17 +96,8 @@ addEventListener("DOMContentLoaded", function() {
         formData.entries()).filter(([_, value]) => typeof value === 'string'
       ) as [string, string][]
     );
-    const formValidationStatus = searchValidator.validate(searchParams);
-    if (!formValidationStatus.valid) {
-      processValidatorErrors(formValidationStatus, domService.getLabForm());
-      return;
-    }
-    const dotResponse = await sendToServer(searchParams, new LabDotDomainService());
-    if (dotResponse) {
-      historyService.fillHistoryTable(dotResponse);
-      if (R !== null) {
-        canvasService.renderDots(R);
-      }
+    if (R !== null) {
+      await analyzeDots(searchParams, R, domService, historyService, canvasService, searchValidator);
     }
   });
   // Y input validation
