@@ -18,8 +18,11 @@
   <div class="lab-form-field">
     <p><b>R</b></p>
     <% for (float i = 1; i <= 3; i += 0.5) { %>
-      <input name="R" value="<%=i%>" type="submit">
+      <input name="R" type="button" value="<%=i%>">
     <% } %>
+    <input name="R" type="hidden">
+    <p class="r-last-scale"></p>
   </div>
   <div class="lab-form-error"></div>
+  <button type="submit">Отправить</button>
 </form>

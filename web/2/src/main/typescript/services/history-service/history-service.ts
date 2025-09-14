@@ -9,7 +9,7 @@ export class HistoryService {
     const historyTable = document.querySelector(this.tableSelector);
     if (!historyTable) {
       console.error("Не удалось найти тело таблицы.");
-      return
+      return;
     }
     historyTable.outerHTML = outerHTML;
   }

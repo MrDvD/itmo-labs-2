@@ -6,7 +6,7 @@ import com.itmo.mrdvd.dto.Dot
 class RawDotMapper extends Mapper[RawDot, Dot]:
   protected val rangeR = Array[Float](1, 1.5, 2, 2.5, 3)
   override def map(rawDot: RawDot): Option[Dot] =
-    val X = rawDot.X.toIntOption
+    val X = rawDot.X.toFloatOption
     val Y = rawDot.Y.toFloatOption
     val R = rawDot.R.toFloatOption
     if X.isEmpty || Y.isEmpty || R.isEmpty then
