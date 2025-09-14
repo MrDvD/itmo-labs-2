@@ -2,21 +2,18 @@
   margin: auto;
   margin-top: 50px;
   padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   border: 1px solid black;
   border-radius: 8px;
-}
+  
+  .lab-form-field {
+    display: flex;
+    gap: 10px;
+  }
 
-.lab-form > .lab-form-field {
-  display: flex;
-  gap: 10px;
-}
-
-.lab-form > .lab-form-error {
-  color: var(--font-error);
-  font-size: 12px;
+  .lab-form-error {
+    color: var(--font-error);
+    font-size: 12px;
+  }
 }
 
 .lab-form-error:empty {

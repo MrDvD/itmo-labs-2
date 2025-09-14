@@ -5,13 +5,6 @@
       <b>История запросов</b>
     </caption>
     <thead>
-      <tr>
-        <td colspan="100" class="centered-cell">
-          <div id="plot-area">
-            <img src="/resources/images/png/hint.png" alt="Dot hint">
-          </div>
-        </td>
-      </tr>
       <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td></tr>
       <%
          AreaResult[] dots = (AreaResult[]) request.getAttribute("dots");
