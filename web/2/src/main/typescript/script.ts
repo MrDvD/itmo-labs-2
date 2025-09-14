@@ -1,4 +1,5 @@
 import { CanvasService } from "./services/canvas-service/canvas-service.js";
+import { DomService } from "./services/dom-service/dom-service.js";
 import { LabDotDomainService, type DotDomainService } from "./services/domain-service/domain-service.js";
 import { HistoryService } from "./services/history-service/history-service.js";
 import { ParamsFormValidator, type URLParamsValidationStatus } from "./validators.js";
@@ -38,52 +39,35 @@ export function processValidatorErrors(status: URLParamsValidationStatus, form: 
 }
 
 addEventListener("DOMContentLoaded", function() {
-  const formId = "lab-form-params";
-  const labForm = this.document.getElementById(formId);
-  if (!(labForm && labForm instanceof HTMLFormElement)) {
-    console.error("Не удалось найти форму с подходящим id.");
-    return;
-  }
-  const rScale = labForm.querySelector('input[name="R"][type="hidden"]') as HTMLInputElement | null;
-  if (rScale === null) {
-    console.error("Не удалось найти скрытый input для R.");
-    return;
-  }
-  const rScalesText = labForm.getElementsByClassName("r-last-scale");
-  if (rScalesText.length === 0) {
-    console.error("Не удалось найти контейнер с масштабом изображения.");
-    return;
-  }
-  const rScaleText = rScalesText[0] as Element;
-  let R: number | null = null;
+  const domService = new DomService();
   const searchValidator = new ParamsFormValidator();
-  const historyService = new HistoryService();
-  const canvasService = new CanvasService();
+  const historyService = new HistoryService(domService);
+  const canvasService = new CanvasService(domService);
+  let R: number | null = null;
   if (R !== null) {
     canvasService.renderDots(R);
   }
-  labForm.querySelectorAll('input[name="R"][type="button"]').forEach((input) => {
+  domService.getLabForm().querySelectorAll('input[name="R"][type="button"]').forEach((input) => {
     input.addEventListener("click", (event) => {
-      rScaleText.innerHTML = (event.target as HTMLInputElement).value;
-      rScale.value = rScaleText.innerHTML;
-      R = Number(rScaleText.innerHTML);
+      domService.getRScaleText().innerHTML = (event.target as HTMLInputElement).value;
+      domService.getRScale().value = domService.getRScaleText().innerHTML;
+      R = Number(domService.getRScaleText().innerHTML);
       canvasService.renderDots(R);
     })
   })
   // submit validation
-  labForm.addEventListener("submit", async function(event) {
+  domService.getLabForm().addEventListener("submit", async function(event) {
     event.preventDefault();
-    clearErrorPlaceholders(labForm);
-    const formData = new FormData(labForm);
+    clearErrorPlaceholders(domService.getLabForm());
+    const formData = new FormData(domService.getLabForm());
     const searchParams = new URLSearchParams(
       Array.from(
         formData.entries()).filter(([_, value]) => typeof value === 'string'
       ) as [string, string][]
     );
-    console.log(searchParams.values);
     const formValidationStatus = searchValidator.validate(searchParams);
     if (!formValidationStatus.valid) {
-      processValidatorErrors(formValidationStatus, labForm);
+      processValidatorErrors(formValidationStatus, domService.getLabForm());
       return;
     }
     const dotResponse = await sendToServer(searchParams, new LabDotDomainService());
@@ -95,7 +79,7 @@ addEventListener("DOMContentLoaded", function() {
     }
   });
   // Y input validation
-  const inputY = labForm.querySelector("input[name='Y']");
+  const inputY = domService.getLabForm().querySelector("input[name='Y']");
   if (inputY && inputY instanceof HTMLInputElement) {
     const numbers = "0123456789";
     inputY.addEventListener("keypress", function(event) {

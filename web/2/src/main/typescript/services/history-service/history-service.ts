@@ -1,16 +1,14 @@
-export class HistoryService {
-  private tableSelector: string
+import { DomService } from "../dom-service/dom-service.js";
 
-  public constructor(tableSelector: string = ".lab-query-history") {
-    this.tableSelector = tableSelector;
+export class HistoryService {
+  private domService: DomService
+
+  public constructor(domService: DomService) {
+    this.domService = domService;
   }
 
   public fillHistoryTable(outerHTML: string): void {
-    const historyTable = document.querySelector(this.tableSelector);
-    if (!historyTable) {
-      console.error("Не удалось найти тело таблицы.");
-      return;
-    }
-    historyTable.outerHTML = outerHTML;
+    this.domService.getHistoryTable().outerHTML = outerHTML;
+    this.domService.refreshHistoryTable();
   }
 }

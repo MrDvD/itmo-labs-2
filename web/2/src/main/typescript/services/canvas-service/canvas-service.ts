@@ -1,23 +1,15 @@
 import type { Dot } from "../../dto.js";
+import type { DomService } from "../dom-service/dom-service.js";
 
 export class CanvasService {
-  private canvasId: string;
-  private tableSelector: string;
-  private scale: number;
+  private domService: DomService;
 
-  constructor(canvasId = "plot-area", tableSelector = ".lab-query-history tr:nth-child(n+3)") {
-    this.canvasId = canvasId;
-    this.tableSelector = tableSelector;
-    this.scale = this.calculateScale();
+  constructor(domService: DomService) {
+    this.domService = domService;
   }
 
-  protected calculateScale(): number {
-    const canvas = document.getElementById(this.canvasId);
-    if (canvas === null) {
-      console.error("Не удалось найти изображение для рендера точек.");
-      return 0;
-    }
-    return canvas.offsetWidth * 3 / 8;
+  protected getScale(): number {
+    return this.domService.getCanvas().offsetWidth * 3 / 8;
   }
 
   protected parseDotFromTr(tr: HTMLTableRowElement): Dot | null {
@@ -34,7 +26,7 @@ export class CanvasService {
 
   protected parseDots(): Dot[] {
     const dots: Dot[] = [];
-    const table = document.querySelectorAll(this.tableSelector);
+    const table = this.domService.getHistoryTable().querySelectorAll("tr:nth-child(n+2)");
     for (const tr of table) {
       if (tr instanceof HTMLTableRowElement) {
         const dot = this.parseDotFromTr(tr);
@@ -47,33 +39,23 @@ export class CanvasService {
   }
 
   public clearDots(): void {
-    const canvas = document.getElementById(this.canvasId);
-    if (canvas === null) {
-      console.error("Не удалось найти изображение для рендера точек.");
-      return;
+    const img = this.domService.getCanvas().querySelector("img") as HTMLImageElement;
+    while (this.domService.getCanvas().firstChild) {
+      this.domService.getCanvas().removeChild(this.domService.getCanvas().lastChild as Node);
     }
-    const img = canvas.querySelector("img") as HTMLImageElement;
-    while (canvas.firstChild) {
-      canvas.removeChild(canvas.lastChild as Node);
-    }
-    canvas.appendChild(img);
+    this.domService.getCanvas().appendChild(img);
   }
 
   public renderDots(R: number): void {
     this.clearDots();
-    const canvas = document.getElementById(this.canvasId);
-    if (canvas === null) {
-      console.error("Не удалось найти изображение для рендера точек.");
-      return;
-    }
     for (const dot of this.parseDots()) {
       if (Math.max(Math.abs(dot.X), Math.abs(dot.Y)) > R) {
         continue;
       }
       const drawnDot = document.createElement("div");
       drawnDot.className = `dot ${dot.hit ? "correct" : "wrong"}`;
-      drawnDot.style.transform = `translate(${dot.X * this.scale / R}px, ${-dot.Y * this.scale / R}px)`
-      canvas.appendChild(drawnDot);
+      drawnDot.style.transform = `translate(${dot.X * this.getScale() / R}px, ${-dot.Y * this.getScale() / R}px)`
+      this.domService.getCanvas().appendChild(drawnDot);
     }
   }
 }
