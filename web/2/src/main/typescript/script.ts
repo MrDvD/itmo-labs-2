@@ -1,25 +1,17 @@
-import { type FormValidationStatus } from "./validators.js";
+import { LabDotDomainService, type DotDomainService } from "./services/domain-service/domain-service.js";
+import { HistoryService } from "./services/history-service/history-service.js";
+import { ParamsFormValidator, type URLParamsValidationStatus } from "./validators.js";
 
-// export async function sendToServer(dotPackets: DotParams[], domainService: DotDomainService): Promise<DotStatus[] | null> {
-//   const response = await fetch(domainService.getDotDomain(), {
-//     method: "POST",
-//     body: JSON.stringify(dotPackets),
-//   });
-//   if (response.ok) {
-//     const responseObjects: unknown[] = await response.json();
-//     const validDots: DotStatus[] = [];
-//     for (const responseObject of responseObjects) {
-//       if (isDotStatus(responseObject)) {
-//         validDots.push(responseObject);
-//       } else {
-//         console.error("Не удалось обработать один из объектов от сервера.");
-//       }
-//     }
-//     return validDots
-//   } else {
-//     return null;
-//   }
-// }
+export async function sendToServer(params: URLSearchParams, domainService: DotDomainService): Promise<string | null> {
+  const response = await fetch(domainService.getDotDomain() + `?${params.toString()}`, {
+    method: "GET",
+  });
+  if (response.ok) {
+    return response.text();
+  } else {
+    return null;
+  }
+}
 
 export function clearErrorPlaceholders(form: HTMLFormElement) {
   const errorPlaceholders = form.getElementsByClassName("lab-form-error");
@@ -28,7 +20,7 @@ export function clearErrorPlaceholders(form: HTMLFormElement) {
   }
 }
 
-export function processValidatorErrors(status: FormValidationStatus, form: HTMLFormElement) {
+export function processValidatorErrors(status: URLParamsValidationStatus, form: HTMLFormElement) {
   if (!status.errors || status.errors.length === 0) {
     console.warn("Список ошибок пуст, нечего обрабатывать.");
     return;
@@ -48,20 +40,31 @@ addEventListener("DOMContentLoaded", function() {
   const formId = "lab-form-params";
   const labForm = this.document.getElementById(formId);
   if (labForm && labForm instanceof HTMLFormElement) {
-    // const formValidator = new ParamsFormValidator();
-    // labForm.addEventListener("submit", async function(event) {
-    //   // event.preventDefault();
-    //   // clearErrorPlaceholders(labForm);
-    //   // const formValidationStatus = formValidator.validate(labForm);
-    //   // if (!formValidationStatus.valid) {
-    //   //   processValidatorErrors(formValidationStatus, labForm);
-    //   //   return;
-    //   // }
-    //   // const dotResponse = await sendToServer(packDotForm(this), new LabDotDomainService());
-    //   // if (dotResponse && historyTable instanceof HTMLTableElement) {
-    //   //   historyService.fillHistoryTable(dotResponse, historyTable);
-    //   // }
-    // });
+    const searchValidator = new ParamsFormValidator();
+    const historyService = new HistoryService();
+    labForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      clearErrorPlaceholders(labForm);
+      const formData = new FormData(labForm);
+      const submitter = (event as SubmitEvent).submitter as HTMLInputElement | null;
+      if (submitter && submitter.name) {
+        formData.append(submitter.name, submitter.value);
+      }
+      const searchParams = new URLSearchParams(
+        Array.from(
+          formData.entries()).filter(([_, value]) => typeof value === 'string'
+        ) as [string, string][]
+      );
+      const formValidationStatus = searchValidator.validate(searchParams);
+      if (!formValidationStatus.valid) {
+        processValidatorErrors(formValidationStatus, labForm);
+        return;
+      }
+      const dotResponse = await sendToServer(searchParams, new LabDotDomainService());
+      if (dotResponse) {
+        historyService.fillHistoryTable(dotResponse);
+      }
+    });
     const inputY = labForm.querySelector("input[name='Y']");
     if (inputY && inputY instanceof HTMLInputElement) {
       const numbers = "0123456789";

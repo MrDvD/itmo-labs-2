@@ -1,51 +1,52 @@
-export interface FormValidator {
-  validate(form: HTMLFormElement): FormValidationStatus;
+export interface URLParamsValidator {
+  validate(params: URLSearchParams): URLParamsValidationStatus;
 }
 
-export type FormValidationStatus = {
+export type URLParamsValidationStatus = {
   valid: boolean;
-  errors?: FormValidationError[];
+  errors?: URLParamsValidationError[];
 }
 
-export type FormValidationError = {
+export type URLParamsValidationError = {
   message: string;
   fieldIdx: number;
 }
 
-export class ParamsFormValidator implements FormValidator {
-  public validate(form: HTMLFormElement): FormValidationStatus {
-    const formInputs = form.querySelectorAll("input");
-    const errors: FormValidationError[] = [];
-    let hasX = false;
-    for (const formInput of formInputs) {
-      switch (formInput.name) {
+export class ParamsFormValidator implements URLParamsValidator {
+  public validate(params: URLSearchParams): URLParamsValidationStatus {
+    const errors: URLParamsValidationError[] = [];
+    const isParamPresent = [false, false, false];
+    for (const [key, value] of params) {
+      switch (key) {
         case "X":
-          if (!formInput.checked) {
-            continue;
-          }
-          hasX = true;
-          const X = Number(formInput.value);
-          const intX = Number.parseInt(formInput.value);
-          if (isNaN(X) || X !== intX || X < -5 || X > 3) {
-            errors.push({ message: "X должен быть целым от -5 до 3 включительно.", fieldIdx: 0 });
+          const X = Number(value);
+          const intX = Number.parseInt(value);
+          isParamPresent[0] = true;
+          if (isNaN(X) || X !== intX || Math.abs(X) > 4) {
+            errors.push({ message: "X должен быть целым от -4 до 4 включительно.", fieldIdx: 0 });
           }
           continue;
         case "Y":
-          const Y = Number(formInput.value);
-          if (isNaN(Y) || Y < -5 || Y > 3) {
-            errors.push({ message: "Y должен быть дробным от -5 до 3 включительно.", fieldIdx: 1 });
+          const Y = Number.parseFloat(value);
+          isParamPresent[1] = true;
+          if (isNaN(Y) || Math.abs(Y) > 5) {
+            errors.push({ message: "Y должен быть дробным от -5 до 5 включительно.", fieldIdx: 1 });
           }
           continue;
         case "R":
-          const R = formInput.value;
-          if (['1', '1.5', '2', '2.5', '3'].indexOf(R) === -1) {
+          const R = Number.parseFloat(value);
+          isParamPresent[2] = true;
+          if ([1, 1.5, 2, 2.5, 3].indexOf(R) === -1) {
             errors.push({ message: "R должен быть одним из значений: 1, 1.5, 2, 2.5, 3.", fieldIdx: 2 });
           }
           continue;
       }
     }
-    if (!hasX) {
-      errors.push({ message: "X обязателен для заполнения.", fieldIdx: 0 });
+    const paramNames = "XYR";
+    for (let i = 0; i < 3; i++) {
+      if (!isParamPresent[i]) {
+        errors.push({ message: `Введите параметр ${paramNames[i]}`, fieldIdx: i });
+      }
     }
     if (errors.length) {
       return { valid: false, errors: errors };
