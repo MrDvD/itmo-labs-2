@@ -1,7 +1,7 @@
 import { DomService } from "../dom-service/dom-service.js";
 
 export class HistoryService {
-  private domService: DomService
+  private domService: DomService;
 
   public constructor(domService: DomService) {
     this.domService = domService;
