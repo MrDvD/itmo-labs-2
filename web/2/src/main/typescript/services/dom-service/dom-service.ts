@@ -26,12 +26,16 @@ export class DomService {
     return this.labForm;
   }
 
-  public refreshRScale(rScaleSelector = 'input[name="R"][type="hidden"]'): HTMLInputElement {
-    const rScale = this.getLabForm().querySelector(rScaleSelector) as HTMLInputElement | null;
+  public refreshRScale(
+    rScaleSelector = 'input[name="R"][type="hidden"]',
+  ): HTMLInputElement {
+    const rScale = this.getLabForm().querySelector(
+      rScaleSelector,
+    ) as HTMLInputElement | null;
     if (rScale === null) {
       throw new Error("Не удалось найти скрытый input для R.");
     }
-    this.rScale = rScale
+    this.rScale = rScale;
     return this.getRScale();
   }
 
@@ -40,7 +44,8 @@ export class DomService {
   }
 
   public refreshRScaleText(rScaleTextSelector = "r-last-scale"): Element {
-    const rScalesText = this.getLabForm().getElementsByClassName(rScaleTextSelector);
+    const rScalesText =
+      this.getLabForm().getElementsByClassName(rScaleTextSelector);
     if (rScalesText.length === 0) {
       throw new Error("Не удалось найти контейнер с масштабом изображения.");
     }
@@ -65,7 +70,9 @@ export class DomService {
     return this.canvas;
   }
 
-  public refreshHistoryTable(tableSelector = ".lab-query-history"): HTMLTableElement {
+  public refreshHistoryTable(
+    tableSelector = ".lab-query-history",
+  ): HTMLTableElement {
     const historyTable = document.querySelector(tableSelector);
     if (!historyTable) {
       throw new Error("Не удалось найти тело таблицы.");

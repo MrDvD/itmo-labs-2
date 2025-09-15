@@ -17,12 +17,14 @@ export class CanvasService {
       Y: Number(tr.cells[1]?.innerText),
       R: Number(tr.cells[2]?.innerText),
       hit: tr.cells[3]?.innerText === "да",
-    }
+    };
   }
 
   protected parseDots(): Dot[] {
     const dots: Dot[] = [];
-    const table = this.domService.getHistoryTable().querySelectorAll("tr:nth-child(n+2)");
+    const table = this.domService
+      .getHistoryTable()
+      .querySelectorAll("tr:nth-child(n+2)");
     for (const tr of table) {
       if (tr instanceof HTMLTableRowElement) {
         const dot = this.parseDotFromTr(tr);
@@ -35,13 +37,17 @@ export class CanvasService {
   }
 
   public getScale(): number {
-    return this.domService.getCanvas().offsetWidth * 3 / 8;
+    return (this.domService.getCanvas().offsetWidth * 3) / 8;
   }
 
   public clearDots(): void {
-    const img = this.domService.getCanvas().querySelector("img") as HTMLImageElement;
+    const img = this.domService
+      .getCanvas()
+      .querySelector("img") as HTMLImageElement;
     while (this.domService.getCanvas().firstChild) {
-      this.domService.getCanvas().removeChild(this.domService.getCanvas().lastChild as Node);
+      this.domService
+        .getCanvas()
+        .removeChild(this.domService.getCanvas().lastChild as Node);
     }
     this.domService.getCanvas().appendChild(img);
   }
@@ -54,7 +60,7 @@ export class CanvasService {
       }
       const drawnDot = document.createElement("div");
       drawnDot.className = `dot ${dot.hit ? "correct" : "wrong"}`;
-      drawnDot.style.transform = `translate(${dot.X * this.getScale() / R}px, ${-dot.Y * this.getScale() / R}px)`
+      drawnDot.style.transform = `translate(${(dot.X * this.getScale()) / R}px, ${(-dot.Y * this.getScale()) / R}px)`;
       this.domService.getCanvas().appendChild(drawnDot);
     }
   }

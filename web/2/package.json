@@ -5,12 +5,14 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp -r src/main/resources/* public"
+    "build": "tsc && cp -r src/main/resources/* public",
+    "format": "prettier src/main/typescript --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2"
   }
 }
