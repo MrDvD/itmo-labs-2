@@ -1,5 +1,4 @@
-mvn clean package && \
-export PATH=$PATH:~/wildfly-37.0.1.Final/bin && \
-cp conf/standalone.xml ~/wildfly-37.0.1.Final/standalone/configuration/ && \
-cp target/lab-2-1.0.war ~/wildfly-37.0.1.Final/standalone/deployments/ && \
-standalone.sh
+mvn -f $WEB_2 clean package && \
+cp $WEB_2/conf/standalone.xml $WILDFLY_HOME/standalone/configuration/ && \
+cp $WEB_2/target/lab-2-1.0.war $WILDFLY_HOME/standalone/deployments/ && \
+. $WILDFLY_HOME/standalone.sh
