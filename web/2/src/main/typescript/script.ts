@@ -179,5 +179,14 @@ addEventListener("DOMContentLoaded", function () {
       event.preventDefault();
       this.blur();
     });
+    inputY.addEventListener("paste", function (event) {
+      if (
+        !/-?[0123456789]+(?:\.[0123456789]+)?/.test(
+          (event as ClipboardEvent).clipboardData?.getData("text") ?? "",
+        )
+      ) {
+        event.preventDefault();
+      }
+    });
   }
 });

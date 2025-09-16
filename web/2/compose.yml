@@ -6,5 +6,5 @@ services:
       - ./target:/opt/jboss/wildfly/standalone/deployments/
       - ./public:/opt/jboss/wildfly/resources
     ports:
-      - "8080:8529"
-      - "9990:10439"
+      - "8529:8529"
+      - "10439:10439"
