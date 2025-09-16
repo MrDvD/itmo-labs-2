@@ -5,7 +5,8 @@ npm run format
 npm run build
 
 ssh -fNM -o ControlPath=$ssh_ctl helios && \
-ssh -o ControlPath=$ssh_ctl helios "git clone https://github.com/MrDvD/itmo-labs-2.git"
+ssh -o ControlPath=$ssh_ctl helios "rm -rf itmo-labs-2" && \
+ssh -o ControlPath=$ssh_ctl helios "git clone https://github.com/MrDvD/itmo-labs-2.git && cd itmo-labs-2 && git checkout web-2"
 
 WILDFLY_HOME=$(ssh -o ControlPath=$ssh_ctl helios 'source ~/.bashrc; echo $WILDFLY_HOME')
 WEB_2=$(ssh -o ControlPath=$ssh_ctl helios 'source ~/.bashrc; echo $WEB_2')
