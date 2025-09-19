@@ -1,8 +1,8 @@
-package com.itmo.mrdvd.model.dotArea
+package com.itmo.mrdvd.service.dotArea
 
 import com.itmo.mrdvd.dto.Dot
 import com.itmo.mrdvd.dto.AreaResult
 
-trait DotAreaModel {
+trait DotAreaService {
   def addDot(dot: Dot): AreaResult
 }

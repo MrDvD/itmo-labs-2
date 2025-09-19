@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse
 import java.io.PrintWriter
 import com.itmo.mrdvd.dto.Dot
 import com.itmo.mrdvd.dto.RawDot
-import com.itmo.mrdvd.model.dotHistory.HttpDotHistoryModel
+import com.itmo.mrdvd.service.dotHistory.HttpDotHistoryService
 
 @WebServlet(
   name = "ControllerServlet",
@@ -15,7 +15,7 @@ import com.itmo.mrdvd.model.dotHistory.HttpDotHistoryModel
   urlPatterns = Array("/")
 )
 class ControllerServlet extends HttpServlet:
-  protected val historyModel = HttpDotHistoryModel("dots-history")
+  protected val historyModel = HttpDotHistoryService(ControllerServlet.DotHistoryKey)
   override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit =
     val X = req.getParameter("X")
     val Y = req.getParameter("Y")
@@ -26,3 +26,6 @@ class ControllerServlet extends HttpServlet:
     else
       req.setAttribute("dots", this.historyModel.getHistory(req.getSession()))
       req.getRequestDispatcher("main.jsp").forward(req, resp)
+
+object ControllerServlet:
+  private val DotHistoryKey = "dots-history"

@@ -1,3 +1,3 @@
 package com.itmo.mrdvd.dto
 
-class Dot(val X: Float, val Y: Float, val R: Float)
+case class Dot(X: Float, Y: Float, R: Float)
