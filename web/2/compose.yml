@@ -1,0 +1,10 @@
+services:
+  wildfly:
+    image: quay.io/wildfly/wildfly:28.0.0.Final-jdk20
+    volumes:
+      - ./conf/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
+      - ./target:/opt/jboss/wildfly/standalone/deployments/
+      - ./public:/opt/jboss/wildfly/resources
+    ports:
+      - "8529:8529"
+      - "10439:10439"
