@@ -1,10 +1,10 @@
-package com.itmo.mrdvd.model.dotHistory
+package com.itmo.mrdvd.service.dotHistory
 
 import jakarta.servlet.http.HttpSession
 import com.itmo.mrdvd.dto.Dot
 import com.itmo.mrdvd.dto.AreaResult
 
-class HttpDotHistoryModel(protected val dotHistoryKey: String) extends DotHistoryModel[HttpSession]:
+class HttpDotHistoryService(protected val dotHistoryKey: String) extends DotHistoryService[HttpSession]:
   override def getHistory(session: HttpSession): Array[AreaResult] = 
     var rawDotHistory = session.getAttribute(this.dotHistoryKey)
     if rawDotHistory == null then

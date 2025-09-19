@@ -1,4 +1,4 @@
-package com.itmo.mrdvd.model.dotArea
+package com.itmo.mrdvd.service.dotArea
 
 import com.itmo.mrdvd.dto.Dot
 import com.itmo.mrdvd.dto.AreaResult
@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 import java.time.ZonedDateTime
 import java.time.ZoneId
 
-class Lab2DotAreaModel extends DotAreaModel {
+class Lab2DotAreaService extends DotAreaService {
   val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
   val zone = ZoneId.of("Europe/Moscow")
   override def addDot(dot: Dot): AreaResult =
