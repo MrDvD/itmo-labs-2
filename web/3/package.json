@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && cp -r src/main/resources/* public",
-    "format": "prettier src/main/typescript --write"
+    "format": "prettier src/main/typescript --write",
+    "clean": "rm -rf public/"
   },
   "keywords": [],
   "author": "",

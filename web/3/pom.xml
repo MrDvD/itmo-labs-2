@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.itmo.mrdvd</groupId>
-  <artifactId>lab-2</artifactId>
+  <artifactId>lab-3</artifactId>
   <version>1.0</version>
-  <name>lab-2</name>
+  <name>lab-3</name>
   <packaging>war</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,9 +17,19 @@
       <version>${scala.version}</version>
     </dependency>
     <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>6.1.0</version>
+      <groupId>jakarta.faces</groupId>
+      <artifactId>jakarta.faces-api</artifactId>
+      <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <version>4.1.0</version>
     </dependency>
   </dependencies>
   <build>
@@ -31,7 +41,6 @@
         <version>4.9.5</version>
         <executions>
           <execution>
-            <?m2e execute onConfiguration,onIncremental?>
             <goals>
               <goal>compile</goal>
             </goals>
