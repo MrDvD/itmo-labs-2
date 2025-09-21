@@ -1,0 +1,12 @@
+<navigation-rule>
+  <navigation-case>
+    <from-outcome>dots</from-outcome>
+    <to-view-id>/pages/dots.xhtml</to-view-id>
+    <redirect/>
+  </navigation-case>
+  <navigation-case>
+    <from-outcome>main</from-outcome>
+    <to-view-id>/pages/main.xhtml</to-view-id>
+    <redirect/>
+  </navigation-case>
+</navigation-rule>

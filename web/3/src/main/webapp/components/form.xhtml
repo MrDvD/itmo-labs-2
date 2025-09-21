@@ -1,0 +1,37 @@
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html"
+  xmlns:f="jakarta.faces.core">
+<form class="lab-form" id="lab-form-params" autocomplete="off">
+  <div class="horizontal-group">
+    <div class="vertical-group">
+      Проверка точки
+      <div class="lab-form-field">
+        <p><b>X</b></p>
+        <input name="X" type="text" class="wide-input" placeholder="Введите дробное число"/>
+      </div>
+      <div class="lab-form-error"></div>
+      <div class="lab-form-field">
+        <p><b>Y</b></p>
+        <h:selectOneMenu>
+          <f:selectItem itemLabel="Выберите опцию" itemValue=""/>
+          <f:selectItems value="#{dotForm.y}"/>
+        </h:selectOneMenu>
+      </div>
+      <div class="lab-form-error"></div>
+      <div class="lab-form-field">
+        <p><b>R</b></p>
+        <h:selectOneRadio>
+          <f:selectItems value="#{dotForm.r}"/>
+        </h:selectOneRadio>
+      </div>
+      <div class="lab-form-error"></div>
+      <button type="submit">Отправить</button>
+    </div>
+    <div id="plot-area">
+      <img src="/resources/images/png/plot.png" alt="Dot plot"/>
+    </div>
+  </div>
+</form>
+</ui:composition>
