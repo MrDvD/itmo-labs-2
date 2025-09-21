@@ -1,14 +1,14 @@
-import { CanvasService } from "./services/canvas-service/canvas-service.js";
-import { DomService } from "./services/dom-service/dom-service.js";
+import { CanvasService } from "../services/canvas-service/canvas-service.js";
+import { DomService } from "../services/dom-service/dom-service.js";
 import {
   LabDotDomainService,
   type DotDomainService,
-} from "./services/domain-service/domain-service.js";
-import { HistoryService } from "./services/history-service/history-service.js";
+} from "../services/domain-service/domain-service.js";
+import { HistoryService } from "../services/history-service/history-service.js";
 import {
   ParamsFormValidator,
   type URLParamsValidationStatus,
-} from "./validators.js";
+} from "../validators.js";
 
 export async function sendToServer(
   params: URLSearchParams,
