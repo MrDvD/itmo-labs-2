@@ -3,14 +3,15 @@
 
 <html
   xmlns = "http://www.w3.org/1999/xhtml"
-  xmlns:ui="jakarta.faces.facelets">
-<head>
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html">
+<h:head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Main</title>
-  <link rel="stylesheet" href="/resources/style.css"/>
-  <script type="module" src="/resources/script.js"></script>
-</head>
+  <h:outputStylesheet name="main/style.css" />
+  <script type="module" src="/resources/main/script.js"></script>
+</h:head>
 <body>
 <div id="lab-body">
   <ui:include src="/components/header.xhtml" />
