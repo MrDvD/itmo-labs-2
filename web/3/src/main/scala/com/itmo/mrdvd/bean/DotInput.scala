@@ -4,7 +4,7 @@ import jakarta.inject.Named
 import jakarta.enterprise.context.RequestScoped
 import com.itmo.mrdvd.dto.Dot
 
-@Named("dotInput")
+@Named
 @RequestScoped
 case class DotInput() extends Serializable:
   private var x: Float = 0
