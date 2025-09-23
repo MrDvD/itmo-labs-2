@@ -10,22 +10,20 @@
       <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td></tr>
     </thead>
     <tbody class="lab-query-history-body">
-      <!-- <%
-         AreaResult[] dots = (AreaResult[]) request.getAttribute("dots");
-         if (dots.length > 0) {
-          for (int i = dots.length - 1; i >= 0; i-) { %>
-          <tr>
-            <td><%=dots[i].dot().X()%></td>
-            <td><%=dots[i].dot().Y()%></td>
-            <td><%=dots[i].dot().R()%></td>
-            <td><%=dots[i].hit() ? "да" : "нет"%></td>
-            <td><%=dots[i].date()%></td>
-          </tr>
-      <% }} else { %>
-          <tr>
-            <td colspan="100">Нет запросов!</td>
-          </tr>
-      <% } %> -->
+      <ui:repeat value="#{dotCache.cache}" var="dotResult">
+        <tr>
+          <td>#{dotResult.dot().X()}</td>
+          <td>#{dotResult.dot().Y()}</td>
+          <td>#{dotResult.dot().R()}</td>
+          <td>#{dotResult.hit()}</td>
+          <td>#{dotResult.date()}</td>
+        </tr>
+      </ui:repeat>
+      <ui:fragment rendered="#{empty dotCache.cache}">
+        <tr>
+          <td colspan="100">Нет запросов!</td>
+        </tr>
+      </ui:fragment>
     </tbody>
   </table>
 </footer>
