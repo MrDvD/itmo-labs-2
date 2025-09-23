@@ -5,17 +5,17 @@ import jakarta.enterprise.context.ApplicationScoped
 import com.itmo.mrdvd.dto.DotResult
 import com.itmo.mrdvd.dto.Dot
 import jakarta.inject.Inject
+import com.itmo.mrdvd.service.dotArea.DotAreaService
 
-@Named("dotCache")
+@Named
 @ApplicationScoped
 class DotCache:
+  @Inject private var dotInput: DotInput = null
+  @Inject private var dotAreaService: DotAreaService = null
   private var cache: Array[DotResult] = Array()
-  @Inject @Named("dotInput") var dotInput: DotInput = null
 
   def getCache(): Array[DotResult] = cache
-
   def sendDotForm(): Unit =
-    cache :+= DotResult(dotInput.getDot(), true, "testdate")
-  
+    cache :+= dotAreaService.addDot(dotInput.getDot())
   def sendDotPlot(): Unit =
     return
