@@ -35,7 +35,7 @@
         </h:selectOneRadio>
       </div>
       <h:message for="R" styleClass="lab-form-error" />
-      <h:commandButton value="Отправить"/>
+      <h:commandButton value="Отправить" action="#{dotCache.sendDotForm}"/>
     </div>
     <div id="plot-area">
       <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
