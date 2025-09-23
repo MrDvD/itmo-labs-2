@@ -80,26 +80,25 @@ export function processValidatorErrors(
 
 addEventListener("DOMContentLoaded", function () {
   const domService = new DomService();
-  const searchValidator = new ParamsFormValidator();
   const historyService = new HistoryService(domService);
   const canvasService = new CanvasService(domService);
   let R: number | null = null;
   if (R !== null) {
     canvasService.renderDots(R);
   }
-  domService
-    .getLabForm()
-    .querySelectorAll('input[name="R"][type="button"]')
-    .forEach((input) => {
-      input.addEventListener("click", (event) => {
-        domService.getRScaleText().innerHTML = (
-          event.target as HTMLInputElement
-        ).value;
-        domService.getRScale().value = domService.getRScaleText().innerHTML;
-        R = Number(domService.getRScaleText().innerHTML);
-        canvasService.renderDots(R);
-      });
-    });
+  // domService
+  //   .getLabForm()
+  //   .querySelectorAll('input[name="R"][type="button"]')
+  //   .forEach((input) => {
+  //     input.addEventListener("click", (event) => {
+  //       domService.getRScaleText().innerHTML = (
+  //         event.target as HTMLInputElement
+  //       ).value;
+  //       domService.getRScale().value = domService.getRScaleText().innerHTML;
+  //       R = Number(domService.getRScaleText().innerHTML);
+  //       canvasService.renderDots(R);
+  //     });
+  //   });
   // image submit
   domService.getCanvas().addEventListener("click", async (event) => {
     if (R === null) {
@@ -137,56 +136,39 @@ addEventListener("DOMContentLoaded", function () {
       null,
     );
   });
-  // basic submit
-  domService.getLabForm().addEventListener("submit", async function (event) {
-    event.preventDefault();
-    clearErrorPlaceholders(domService.getLabForm());
-    const formData = new FormData(domService.getLabForm());
-    const searchParams = new URLSearchParams(
-      Array.from(formData.entries()).filter(
-        ([_, value]) => typeof value === "string",
-      ) as [string, string][],
-    );
-    if (R !== null) {
-      await analyzeDots(
-        searchParams,
-        R,
-        domService,
-        historyService,
-        canvasService,
-        searchValidator,
-      );
-    }
-  });
-  // Y input validation
-  const inputY = domService.getLabForm().querySelector("input[name='Y']");
-  if (inputY && inputY instanceof HTMLInputElement) {
-    const numbers = "0123456789";
-    inputY.addEventListener("keypress", function (event) {
-      const idx = inputY.selectionStart as number;
-      const isNegative = event.key === "-" && idx === 0;
-      const isFractional =
-        event.key === "." &&
-        idx > 0 &&
-        numbers.indexOf(inputY.value[idx - 1] as string) !== -1 &&
-        !/\./.test(inputY.value);
-      const isNumber = numbers.indexOf(event.key) != -1;
-      if (!(isNegative || isFractional || isNumber)) {
-        event.preventDefault();
+  // double input validation
+  domService
+    .getLabForm()
+    .querySelectorAll(".double-input")
+    .forEach((input) => {
+      if (input instanceof HTMLInputElement) {
+        const numbers = "0123456789";
+        input.addEventListener("keypress", function (event) {
+          const idx = input.selectionStart as number;
+          const isNegative = event.key === "-" && idx === 0;
+          const isFractional =
+            event.key === "." &&
+            idx > 0 &&
+            numbers.indexOf(input.value[idx - 1] as string) !== -1 &&
+            !/\./.test(input.value);
+          const isNumber = numbers.indexOf(event.key) != -1;
+          if (!(isNegative || isFractional || isNumber)) {
+            event.preventDefault();
+          }
+        });
+        input.addEventListener("compositionstart", function (event) {
+          event.preventDefault();
+          this.blur();
+        });
+        input.addEventListener("paste", function (event) {
+          if (
+            !/-?[0123456789]+(?:\.[0123456789]+)?/.test(
+              (event as ClipboardEvent).clipboardData?.getData("text") ?? "",
+            )
+          ) {
+            event.preventDefault();
+          }
+        });
       }
     });
-    inputY.addEventListener("compositionstart", function (event) {
-      event.preventDefault();
-      this.blur();
-    });
-    inputY.addEventListener("paste", function (event) {
-      if (
-        !/-?[0123456789]+(?:\.[0123456789]+)?/.test(
-          (event as ClipboardEvent).clipboardData?.getData("text") ?? "",
-        )
-      ) {
-        event.preventDefault();
-      }
-    });
-  }
 });

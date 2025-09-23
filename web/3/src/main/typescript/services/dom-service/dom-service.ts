@@ -1,14 +1,10 @@
 export class DomService {
   protected labForm: HTMLFormElement;
-  protected rScale: HTMLInputElement;
-  protected rScaleText: Element;
   protected canvas: HTMLElement;
   protected historyTable: HTMLTableElement;
 
   constructor() {
     this.labForm = this.refreshLabForm();
-    this.rScale = this.refreshRScale();
-    this.rScaleText = this.refreshRScaleText();
     this.canvas = this.refreshCanvas();
     this.historyTable = this.refreshHistoryTable();
   }
@@ -24,37 +20,6 @@ export class DomService {
 
   public getLabForm(): HTMLFormElement {
     return this.labForm;
-  }
-
-  public refreshRScale(
-    rScaleSelector = 'input[name="R"][type="hidden"]',
-  ): HTMLInputElement {
-    const rScale = this.getLabForm().querySelector(
-      rScaleSelector,
-    ) as HTMLInputElement | null;
-    if (rScale === null) {
-      throw new Error("Не удалось найти скрытый input для R.");
-    }
-    this.rScale = rScale;
-    return this.getRScale();
-  }
-
-  public getRScale(): HTMLInputElement {
-    return this.rScale;
-  }
-
-  public refreshRScaleText(rScaleTextSelector = "r-last-scale"): Element {
-    const rScalesText =
-      this.getLabForm().getElementsByClassName(rScaleTextSelector);
-    if (rScalesText.length === 0) {
-      throw new Error("Не удалось найти контейнер с масштабом изображения.");
-    }
-    this.rScaleText = rScalesText[0] as Element;
-    return this.getRScaleText();
-  }
-
-  public getRScaleText(): Element {
-    return this.rScaleText;
   }
 
   public refreshCanvas(canvasId = "plot-area"): HTMLElement {
