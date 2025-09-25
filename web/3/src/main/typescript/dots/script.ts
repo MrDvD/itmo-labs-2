@@ -1,28 +1,27 @@
 import { CanvasService } from "../services/canvas-service/canvas-service.js";
 import { DomService } from "../services/dom-service/dom-service.js";
 
+const domService = new DomService();
+const canvasService = new CanvasService(domService);
+
 addEventListener("DOMContentLoaded", function () {
-  const domService = new DomService();
-  const canvasService = new CanvasService(domService);
-  domService.getCanvas().addEventListener("click", async (event) => {
-    // if R is empty then throw error
-    const R = 0;
-    const X =
-      Math.round(
-        ((event.offsetX - domService.getCanvas().offsetWidth / 2) * 100 * R) /
-          canvasService.getScale(),
-      ) / 100;
-    const Y =
-      Math.round(
-        ((event.offsetY - domService.getCanvas().offsetHeight / 2) * -100 * R) /
-          canvasService.getScale(),
-      ) / 100;
-    const searchParams = new URLSearchParams();
-    searchParams.append("X", String(X));
-    searchParams.append("Y", String(Y));
-    searchParams.append("R", String(R));
-  });
-  // double input validation
+  domService
+    .getCanvas()
+    .querySelector("img")
+    ?.addEventListener("click", (event) => {
+      const [X, Y] = canvasService.getClickNormalizedCoordinates(event);
+      const plotX = domService.getCanvas().querySelector("#plot-area\\:plotX");
+      if (!(plotX && plotX instanceof HTMLInputElement)) {
+        throw new Error("Не удалось найти поле plotX");
+      }
+      plotX.value = String(X);
+      const plotY = domService.getCanvas().querySelector("#plot-area\\:plotY");
+      if (!(plotY && plotY instanceof HTMLInputElement)) {
+        throw new Error("Не удалось найти поле plotY");
+      }
+      plotY.value = String(Y);
+    });
+  // live input validation for Double
   domService
     .getLabForm()
     .querySelectorAll(".double-input")

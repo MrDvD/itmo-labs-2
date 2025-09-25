@@ -9,10 +9,14 @@ export class DomService {
     this.historyTable = this.refreshHistoryTable();
   }
 
-  public refreshLabForm(formId = "lab-form-params"): HTMLFormElement {
-    const labForm = document.getElementById(formId);
-    if (!(labForm && labForm instanceof HTMLFormElement)) {
-      throw new Error("Не удалось найти форму с подходящим id.");
+  public refreshLabForm(formClass = "lab-form-keys"): HTMLFormElement {
+    const labForms = document.getElementsByClassName(formClass);
+    if (labForms.length === 0) {
+      throw new Error("Не удалось найти форму по классу.");
+    }
+    const labForm = labForms.item(0);
+    if (!(labForm instanceof HTMLFormElement)) {
+      throw new Error("Переданный класс не соответствует HTML-форме.");
     }
     this.labForm = labForm;
     return this.getLabForm();

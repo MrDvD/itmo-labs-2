@@ -6,11 +6,13 @@
 <h:form id="plot-area">
   <h:inputHidden id="plotX" value="#{dotForm.plot.x}" />
   <h:inputHidden id="plotY" value="#{dotForm.plot.y}" />
-  <h:inputHidden id="plotR" value="#{dotForm.r}" required="true">
+  <h:inputHidden id="plotR" value="#{dotForm.r}" required="true" requiredMessage="Укажите R для определённости">
     <f:converter converterId="jakarta.faces.Double" />
     <f:validator validatorId="rRangeValidator" />
   </h:inputHidden>
-  <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
-  <h:message for="plotR" styleClass="lab-form-error" />
+  <h:commandLink action="#{dotCache.sendPlot}">
+    <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
+  </h:commandLink>
+  <p><h:message for="plotR" styleClass="lab-form-error" /></p>
 </h:form>
 </ui:composition>
