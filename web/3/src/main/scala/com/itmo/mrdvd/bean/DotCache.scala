@@ -18,4 +18,10 @@ class DotCache:
   def sendKeys(): Unit =
     cache :+= dotAreaService.addDot(form.getKeys().getDot())
   def sendPlot(): Unit =
-    cache :+= dotAreaService.addDot(form.getPlot().getDot())
+    var normalDot = form.getPlot().getDot()
+    cache :+= dotAreaService.addDot(Dot(
+      normalDot.X * normalDot.R,
+      normalDot.Y * normalDot.R,
+      normalDot.R
+      )
+    )

@@ -1,5 +1,6 @@
 package com.itmo.mrdvd.bean
 
+import java.lang.Double
 import jakarta.inject.Named;
 import jakarta.inject.Inject
 import jakarta.enterprise.context.SessionScoped
@@ -7,11 +8,11 @@ import jakarta.enterprise.context.SessionScoped
 @Named
 @SessionScoped
 class DotForm extends Serializable:
-  @Inject private var range: DotRange = null
+  @Inject private var range: DotAvaliableRange = null
   @Inject private var keys: DotInput = null
   @Inject private var plot: DotInput = null
   
-  def getRange(): DotRange = range
+  def getRange(): DotAvaliableRange = range
   def getKeys(): DotInput = keys
   def getPlot(): DotInput = plot
 
