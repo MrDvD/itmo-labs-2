@@ -16,7 +16,12 @@
 <div id="lab-body">
   <ui:include src="/components/header.xhtml" />
   <ui:include src="/components/back-to-services.xhtml" />
-  <ui:include src="/components/form.xhtml" />
+  <div class="lab-form">
+    <div class="horizontal-group">
+      <ui:include src="/components/form.xhtml" />
+      <ui:include src="/components/plot.xhtml" />
+    </div>
+  </div>
   <ui:include src="/components/history.xhtml" />
 </div>
 </body>
