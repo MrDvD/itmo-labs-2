@@ -4,6 +4,7 @@
   xmlns:h="jakarta.faces.html"
   xmlns:f="jakarta.faces.core">
 <h:form id="plot-area">
+  <h:inputHidden id="plotScale" value="#{dotForm.scale}" />
   <h:inputHidden id="plotX" value="#{dotForm.plot.x}" />
   <h:inputHidden id="plotY" value="#{dotForm.plot.y}" />
   <h:inputHidden id="plotR" value="#{dotForm.r}" required="true" requiredMessage="Укажите R для определённости">
@@ -12,6 +13,9 @@
   </h:inputHidden>
   <h:commandLink action="#{dotCache.sendPlot}">
     <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
+    <ui:repeat value="#{dotCache.cache}" var="dotResult">
+      <h:panelGroup styleClass='dot #{dotResult.hit() ? "correct" : "wrong"}' style="transform: translate(#{dotResult.dot().X() * dotForm.scale / dotForm.r}px, #{-dotResult.dot().Y() * dotForm.scale / dotForm.r}px);"></h:panelGroup>
+    </ui:repeat>
   </h:commandLink>
   <p><h:message for="plotR" styleClass="lab-form-error" /></p>
 </h:form>

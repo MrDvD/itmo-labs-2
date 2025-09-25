@@ -5,7 +5,7 @@ import jakarta.enterprise.context.Dependent
 import java.lang.Double
 
 @Dependent
-class DotInput() extends Serializable:
+class DotInput extends Serializable:
   private var x: Double = null
   private var y: Double = null
   private var r: Double = null
