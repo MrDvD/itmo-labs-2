@@ -5,6 +5,13 @@ const domService = new DomService();
 const canvasService = new CanvasService(domService);
 
 addEventListener("DOMContentLoaded", function () {
+  const plotScale = domService
+    .getCanvas()
+    .querySelector("#plot-area\\:plotScale");
+  if (!(plotScale && plotScale instanceof HTMLInputElement)) {
+    throw new Error("Не удалось найти поле plotScale");
+  }
+  plotScale.value = String(canvasService.getScale());
   domService
     .getCanvas()
     .querySelector("img")
