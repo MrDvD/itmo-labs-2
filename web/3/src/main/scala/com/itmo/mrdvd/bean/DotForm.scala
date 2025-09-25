@@ -1,13 +1,21 @@
 package com.itmo.mrdvd.bean
 
 import jakarta.inject.Named;
-import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.enterprise.context.SessionScoped
 
 @Named
-@ApplicationScoped
+@SessionScoped
 class DotForm extends Serializable:
-  private val yValues = Array(-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2)
-  private val rValues = Array(1, 1.5, 2, 2.5, 3)
+  @Inject private var range: DotRange = null
+  @Inject private var keys: DotInput = null
+  @Inject private var plot: DotInput = null
   
-  def getRangeY(): Array[Double] = yValues
-  def getRangeR(): Array[Double] = rValues
+  def getRange(): DotRange = range
+  def getKeys(): DotInput = keys
+  def getPlot(): DotInput = plot
+
+  def getR(): Double = keys.getR()
+  def setR(r: Double): Unit =
+    keys.setR(r)
+    plot.setR(r)

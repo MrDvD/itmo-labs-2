@@ -10,12 +10,12 @@ import com.itmo.mrdvd.service.dotArea.DotAreaService
 @Named
 @ApplicationScoped
 class DotCache:
-  @Inject private var dotInput: DotInput = null
   @Inject private var dotAreaService: DotAreaService = null
+  @Inject private var form: DotForm = null
   private var cache: Array[DotResult] = Array()
 
   def getCache(): Array[DotResult] = cache
-  def sendDotForm(): Unit =
-    cache :+= dotAreaService.addDot(dotInput.getDot())
-  def sendDotPlot(): Unit =
-    return
+  def sendKeys(): Unit =
+    cache :+= dotAreaService.addDot(form.getKeys().getDot())
+  def sendPlot(): Unit =
+    cache :+= dotAreaService.addDot(form.getPlot().getDot())

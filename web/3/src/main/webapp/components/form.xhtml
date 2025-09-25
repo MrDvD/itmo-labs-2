@@ -4,42 +4,35 @@
   xmlns:h="jakarta.faces.html"
   xmlns:f="jakarta.faces.core"
   xmlns:pt="jakarta.faces.passthrough">
-<h:form styleClass="lab-form" id="lab-form-params">
-  <div class="horizontal-group">
-    <div class="vertical-group">
-      <p>Проверка точки</p>
-      <div class="lab-form-field">
-        <p><b>X</b></p>
-        <h:inputText id="X" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{dotInput.x}">
-          <f:converter converterId="jakarta.faces.Double" />
-          <f:validator validatorId="xRangeValidator" />
-        </h:inputText>
-      </div>
-      <h:message for="X" styleClass="lab-form-error" />
-      <div class="lab-form-field">
-        <p><b>Y</b></p>
-        <h:selectOneMenu id="Y" required="true" value="#{dotInput.y}">
-          <f:selectItem itemLabel="Выберите опцию" itemValue=""/>
-          <f:selectItems value="#{dotForm.rangeY}"/>
-          <f:converter converterId="jakarta.faces.Double" />
-          <f:validator validatorId="yRangeValidator" />
-        </h:selectOneMenu>
-      </div>
-      <h:message for="Y" styleClass="lab-form-error" />
-      <div class="lab-form-field">
-        <p><b>R</b></p>
-        <h:selectOneRadio id="R" required="true" value="#{dotInput.r}">
-          <f:selectItems value="#{dotForm.rangeR}"/>
-          <f:converter converterId="jakarta.faces.Double" />
-          <f:validator validatorId="rRangeValidator" />
-        </h:selectOneRadio>
-      </div>
-      <h:message for="R" styleClass="lab-form-error" />
-      <h:commandButton value="Отправить" action="#{dotCache.sendDotForm}"/>
-    </div>
-    <div id="plot-area">
-      <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
-    </div>
+<h:form styleClass="vertical-group">
+  <p>Проверка точки</p>
+  <div class="lab-form-field">
+    <p><b>X</b></p>
+    <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{dotForm.keys.x}" required="true">
+      <f:converter converterId="jakarta.faces.Double" />
+      <f:validator validatorId="xRangeValidator" />
+    </h:inputText>
   </div>
+  <h:message for="keysX" styleClass="lab-form-error" />
+  <div class="lab-form-field">
+    <p><b>Y</b></p>
+    <h:selectOneMenu id="keysY" required="true" value="#{dotForm.keys.y}">
+      <f:selectItem itemLabel="Выберите опцию" itemValue=""/>
+      <f:selectItems value="#{dotForm.range.y}"/>
+      <f:converter converterId="jakarta.faces.Double" />
+      <f:validator validatorId="yRangeValidator" />
+    </h:selectOneMenu>
+  </div>
+  <h:message for="keysY" styleClass="lab-form-error" />
+  <div class="lab-form-field">
+    <p><b>R</b></p>
+    <h:selectOneRadio id="keysR" required="true" value="#{dotForm.r}">
+      <f:selectItems value="#{dotForm.range.r}"/>
+      <f:converter converterId="jakarta.faces.Double" />
+      <f:validator validatorId="rRangeValidator" />
+    </h:selectOneRadio>
+  </div>
+  <h:message for="keysR" styleClass="lab-form-error" />
+  <h:commandButton value="Отправить" action="#{dotCache.sendKeys}"/>
 </h:form>
 </ui:composition>

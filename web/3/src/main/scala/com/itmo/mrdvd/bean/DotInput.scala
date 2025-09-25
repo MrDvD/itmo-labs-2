@@ -1,21 +1,20 @@
 package com.itmo.mrdvd.bean
 
-import jakarta.inject.Named
-import jakarta.enterprise.context.RequestScoped
 import com.itmo.mrdvd.dto.Dot
+import jakarta.enterprise.context.Dependent
+import java.lang.Double
 
-@Named
-@RequestScoped
-case class DotInput() extends Serializable:
-  private var x: Float = 0
-  private var y: Float = 0
-  private var r: Float = 0
+@Dependent
+class DotInput() extends Serializable:
+  private var x: Double = null
+  private var y: Double = null
+  private var r: Double = null
 
-  def getX(): Float = x
-  def getY(): Float = y
-  def getR(): Float = r
+  def getX(): Double = x
+  def getY(): Double = y
+  def getR(): Double = r
   def getDot(): Dot = Dot(x, y, r)
 
-  def setX(X: Float): Unit = x = X
-  def setY(Y: Float): Unit = y = Y
-  def setR(R: Float): Unit = r = R
+  def setX(X: Double): Unit = x = X
+  def setY(Y: Double): Unit = y = Y
+  def setR(R: Double): Unit = r = R
