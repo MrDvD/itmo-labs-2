@@ -1,11 +1,9 @@
 export class DomService {
   protected labForm: HTMLFormElement;
-  protected canvas: HTMLElement;
   protected historyTable: HTMLTableElement;
 
   constructor() {
     this.labForm = this.refreshLabForm();
-    this.canvas = this.refreshCanvas();
     this.historyTable = this.refreshHistoryTable();
   }
 
@@ -26,17 +24,12 @@ export class DomService {
     return this.labForm;
   }
 
-  public refreshCanvas(canvasId = "plot-area"): HTMLElement {
+  public getCanvas(canvasId = "plot-area"): HTMLElement {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
       throw new Error("Не удалось найти изображение для рендера точек.");
     }
-    this.canvas = canvas;
-    return this.getCanvas();
-  }
-
-  public getCanvas(): HTMLElement {
-    return this.canvas;
+    return canvas;
   }
 
   public refreshHistoryTable(

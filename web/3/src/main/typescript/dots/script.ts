@@ -1,32 +1,38 @@
 import { CanvasService } from "../services/canvas-service/canvas-service.js";
 import { DomService } from "../services/dom-service/dom-service.js";
 
-const domService = new DomService();
-const canvasService = new CanvasService(domService);
+export const domService = new DomService();
+export const canvasService = new CanvasService(domService);
 
 addEventListener("DOMContentLoaded", function () {
-  const plotScale = domService
-    .getCanvas()
-    .querySelector("#plot-area\\:plotScale");
+  const plotScale = this.document.getElementById("plot-params:plotScale");
   if (!(plotScale && plotScale instanceof HTMLInputElement)) {
     throw new Error("Не удалось найти поле plotScale");
   }
   plotScale.value = String(canvasService.getScale());
   domService
     .getCanvas()
-    .querySelector("img")
+    .querySelector("a")
     ?.addEventListener("click", (event) => {
       const [X, Y] = canvasService.getClickNormalizedCoordinates(event);
-      const plotX = domService.getCanvas().querySelector("#plot-area\\:plotX");
+      const plotParams = this.document.getElementById("plot-params");
+      if (!(plotParams && plotParams instanceof HTMLFormElement)) {
+        throw new Error("Не удалось найти форму со скрытыми параметрами.");
+      }
+      const plotX = this.document.getElementById("plot-params:plotX");
       if (!(plotX && plotX instanceof HTMLInputElement)) {
         throw new Error("Не удалось найти поле plotX");
       }
       plotX.value = String(X);
-      const plotY = domService.getCanvas().querySelector("#plot-area\\:plotY");
+      const plotY = this.document.getElementById("plot-params:plotY");
       if (!(plotY && plotY instanceof HTMLInputElement)) {
         throw new Error("Не удалось найти поле plotY");
       }
       plotY.value = String(Y);
+      faces.ajax.request(plotParams, event, {
+        execute: "@form",
+        render: "@form",
+      });
     });
   // live input validation for Double
   domService

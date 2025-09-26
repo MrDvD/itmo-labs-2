@@ -3,16 +3,21 @@
   xmlns:ui="jakarta.faces.facelets"
   xmlns:h="jakarta.faces.html"
   xmlns:f="jakarta.faces.core">
-<h:form id="plot-area">
+<h:form id="plot-params">
   <h:inputHidden id="plotScale" value="#{dotForm.scale}" />
   <h:inputHidden id="plotX" value="#{dotForm.plot.x}" />
   <h:inputHidden id="plotY" value="#{dotForm.plot.y}" />
+</h:form>
+<h:form id="plot-area">
   <h:inputHidden id="plotR" value="#{dotForm.r}" required="true" requiredMessage="Укажите R для определённости">
     <f:converter converterId="jakarta.faces.Double" />
     <f:validator validatorId="rRangeValidator" />
   </h:inputHidden>
   <h:commandLink action="#{dotCache.sendPlot}">
     <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
+  </h:commandLink>
+  <p><h:message for="plotR" id="messagePlotR" styleClass="lab-form-error" /></p>
+  <h:panelGroup id="dots">
     <ui:repeat value="#{dotCache.cache}" var="dotResult">
       <h:panelGroup
         styleClass='dot #{dotResult.hit() ? "correct" : "wrong"}'
@@ -20,7 +25,6 @@
         rendered="#{dotForm.r eq dotResult.dot().R()}">
       </h:panelGroup>
     </ui:repeat>
-  </h:commandLink>
-  <p><h:message for="plotR" styleClass="lab-form-error" /></p>
+  </h:panelGroup>
 </h:form>
 </ui:composition>
