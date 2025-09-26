@@ -16,12 +16,13 @@ class DotCache:
 
   def getCache(): Array[DotResult] = cache
   def sendKeys(): Unit =
-    cache :+= dotAreaService.addDot(form.getKeys().getDot())
+    val keys = form.getKeys()
+    cache :+= dotAreaService.addDot(Dot(keys.getX(), keys.getY(), form.getR()))
   def sendPlot(): Unit =
-    var normalDot = form.getPlot().getDot()
+    var plot = form.getPlot()
     cache :+= dotAreaService.addDot(Dot(
-      normalDot.X * normalDot.R,
-      normalDot.Y * normalDot.R,
-      normalDot.R
+      plot.getX() * form.getR(),
+      plot.getY() * form.getR(),
+      form.getR()
       )
     )

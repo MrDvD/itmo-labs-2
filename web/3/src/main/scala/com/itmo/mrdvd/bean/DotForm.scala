@@ -9,18 +9,17 @@ import jakarta.enterprise.context.SessionScoped
 @SessionScoped
 class DotForm extends Serializable:
   @Inject private var range: DotAvaliableRange = null
-  @Inject private var keys: DotInput = null
-  @Inject private var plot: DotInput = null
+  @Inject private var keys: DotCoords = null
+  @Inject private var plot: DotCoords = null
   private var scale: Double = 0
+  private var r: Double = 0
   
   def getRange(): DotAvaliableRange = range
-  def getKeys(): DotInput = keys
-  def getPlot(): DotInput = plot
+  def getKeys(): DotCoords = keys
+  def getPlot(): DotCoords = plot
 
-  def getR(): Double = keys.getR()
-  def setR(r: Double): Unit =
-    keys.setR(r)
-    plot.setR(r)
+  def getR(): Double = r
+  def setR(R: Double): Unit = r = R
   
   def getScale(): Double = scale
   def setScale(newScale: Double) = scale = newScale
