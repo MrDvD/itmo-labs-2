@@ -27,13 +27,15 @@
   <div class="lab-form-field">
     <p><b>R</b></p>
     <h:selectOneRadio id="keysR" required="true" value="#{dotForm.r}">
-      <f:ajax event="click" execute="keysR" render="messageKeysR plot-area:plotR plot-area:dots plot-area:messagePlotR" />
+      <f:ajax execute="keysR" render="messageKeysR plot-area:plotR plot-area:dots plot-area:messagePlotR" />
       <f:selectItems value="#{dotForm.range.r}"/>
       <f:converter converterId="jakarta.faces.Double" />
       <f:validator validatorId="rRangeValidator" />
     </h:selectOneRadio>
   </div>
   <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
-  <h:commandButton value="Отправить" action="#{dotCache.sendKeys}"/>
+  <h:commandLink value="Отправить" action="#{dotCache.sendKeys}">
+    <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
+  </h:commandLink>
 </h:form>
 </ui:composition>

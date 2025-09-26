@@ -9,7 +9,15 @@ addEventListener("DOMContentLoaded", function () {
   if (!(plotScale && plotScale instanceof HTMLInputElement)) {
     throw new Error("Не удалось найти поле plotScale");
   }
+  const plotParams = this.document.getElementById("plot-params");
+  if (!(plotParams && plotParams instanceof HTMLFormElement)) {
+    throw new Error("Не удалось найти форму со скрытыми параметрами.");
+  }
   plotScale.value = String(canvasService.getScale());
+  faces.ajax.request(plotParams, {} as Event, {
+    execute: "@form",
+    render: "@form",
+  });
   domService
     .getCanvas()
     .querySelector("img")
