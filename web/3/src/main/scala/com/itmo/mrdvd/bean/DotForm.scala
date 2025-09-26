@@ -11,8 +11,8 @@ class DotForm extends Serializable:
   @Inject private var range: DotAvaliableRange = null
   @Inject private var keys: DotCoords = null
   @Inject private var plot: DotCoords = null
-  private var scale: Double = 0
-  private var r: Double = 0
+  private var scale: Double = null
+  private var r: Double = null
   
   def getRange(): DotAvaliableRange = range
   def getKeys(): DotCoords = keys
