@@ -6,6 +6,7 @@ import com.itmo.mrdvd.dto.DotResult
 import com.itmo.mrdvd.dto.Dot
 import jakarta.inject.Inject
 import com.itmo.mrdvd.service.dotArea.DotAreaService
+import scala.math.BigDecimal.RoundingMode
 
 @Named
 @ApplicationScoped
@@ -21,8 +22,8 @@ class DotCache:
   def sendPlot(): Unit =
     var plot = form.getPlot()
     cache :+= dotAreaService.addDot(Dot(
-      plot.getX() * form.getR(),
-      plot.getY() * form.getR(),
+      BigDecimal.valueOf(plot.getX() * form.getR()).setScale(2, RoundingMode.HALF_UP).doubleValue,
+      BigDecimal.valueOf(plot.getY() * form.getR()).setScale(2, RoundingMode.HALF_UP).doubleValue,
       form.getR()
       )
     )

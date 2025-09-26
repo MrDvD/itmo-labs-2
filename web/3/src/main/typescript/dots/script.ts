@@ -12,9 +12,13 @@ addEventListener("DOMContentLoaded", function () {
   plotScale.value = String(canvasService.getScale());
   domService
     .getCanvas()
-    .querySelector("a")
+    .querySelector("img")
     ?.addEventListener("click", (event) => {
       const [X, Y] = canvasService.getClickNormalizedCoordinates(event);
+      const plotArea = this.document.getElementById("plot-area");
+      if (!(plotArea && plotArea instanceof HTMLFormElement)) {
+        throw new Error("Не удалось найти форму с графиком.");
+      }
       const plotParams = this.document.getElementById("plot-params");
       if (!(plotParams && plotParams instanceof HTMLFormElement)) {
         throw new Error("Не удалось найти форму со скрытыми параметрами.");
@@ -32,6 +36,11 @@ addEventListener("DOMContentLoaded", function () {
       faces.ajax.request(plotParams, event, {
         execute: "@form",
         render: "@form",
+        onevent: function (data: { status: string }) {
+          if (data.status === "success") {
+            window.sendPlot();
+          }
+        },
       });
     });
   // live input validation for Double
