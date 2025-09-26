@@ -2,7 +2,8 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="jakarta.faces.facelets"
   xmlns:h="jakarta.faces.html"
-  xmlns:f="jakarta.faces.core">
+  xmlns:f="jakarta.faces.core"
+  xmlns:pt="jakarta.faces.passthrough">
 <h:form id="plot-params">
   <h:inputHidden id="plotScale" value="#{dotForm.scale}" />
   <h:inputHidden id="plotX" value="#{dotForm.plot.x}" />
@@ -13,9 +14,12 @@
     <f:converter converterId="jakarta.faces.Double" />
     <f:validator validatorId="rRangeValidator" />
   </h:inputHidden>
-  <h:commandLink action="#{dotCache.sendPlot}">
-    <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" />
-  </h:commandLink>
+  <h:commandScript
+    name="sendPlot"
+    action="#{dotCache.sendPlot}"
+    execute="plotR"
+    render="plot-area:messagePlotR plot-area:dots dot-history" />
+  <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" pt:draggable="false" />
   <p><h:message for="plotR" id="messagePlotR" styleClass="lab-form-error" /></p>
   <h:panelGroup id="dots">
     <ui:repeat value="#{dotCache.cache}" var="dotResult">
