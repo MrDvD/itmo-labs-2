@@ -12,37 +12,43 @@ import com.itmo.mrdvd.mapper.ResultSetMapper
 class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
   @Inject protected var rsMapper: ResultSetMapper = null
   private val sqlCreate =
-    "insert into DOTS_HISTORY (x, y, r, hit, date) values (?, ?, ?, ?, ?)";
-  private val sqlGetAll = "select * from DOTS_HISTORY";
+    "insert into DOTS_HISTORY (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
+  private val sqlGetAll = "select x, y, r, hit, date from DOTS_HISTORY"
+  private val sqlClearAll = "truncate DOTS_HISTORY cascade"
 
   override def create(dot: DotResult): Try[DotResult] =
-    Using(JdbcConnector.getConnection())(conn =>
-      Using(conn.prepareStatement(sqlCreate))(stmt =>
-        stmt.setDouble(1, dot.dot.X)
-        stmt.setDouble(2, dot.dot.Y)
-        stmt.setDouble(3, dot.dot.R)
-        stmt.setBoolean(4, dot.hit)
-        stmt.setString(5, dot.date)
-        if stmt.executeUpdate() > 0 then Success(dot)
-        else Failure(Error("Database insertion error"))
-      ).flatten
-    ).flatten
+    Using.Manager(use =>
+      val conn = use(JdbcConnector.getConnection())
+      val stmt = use(conn.prepareStatement(sqlCreate))
+      stmt.setDouble(1, dot.dot.X)
+      stmt.setDouble(2, dot.dot.Y)
+      stmt.setDouble(3, dot.dot.R)
+      stmt.setBoolean(4, dot.hit)
+      stmt.setString(5, dot.date)
+      if stmt.executeUpdate() > 0 then dot
+      else throw Error("Database insertion error")
+    )
   override def getAll(): Array[DotResult] =
     var dotArray = Array[DotResult]()
-    Using(JdbcConnector.getConnection())(conn =>
-      Using(conn.createStatement())(stmt =>
-        Using(stmt.executeQuery(sqlGetAll))(rs =>
-          while rs.next() do
-            val dotResult = rsMapper(rs)
-            dotResult match
-              case Left(value) =>
-                dotArray = value +: dotArray
-              case Right(value) =>
-                throw Error("Database selection error")
-        )
-      )
+    Using.Manager(use =>
+      val conn = JdbcConnector.getConnection()
+      val stmt = conn.createStatement()
+      val rs = stmt.executeQuery(sqlGetAll)
+      while rs.next() do
+        val dotResult = rsMapper(rs)
+        dotResult match
+          case Left(value) =>
+            dotArray = value +: dotArray
+          case Right(value) =>
+            throw Error("Database selection error")
     )
     return dotArray
+  override def clearAll(): Unit =
+    Using.Manager(use =>
+      val conn = use(JdbcConnector.getConnection())
+      val stmt = use(conn.createStatement())
+      stmt.executeUpdate(sqlClearAll)
+    )
 
 object JdbcConnector:
   val getEnv = (envVar: String) =>

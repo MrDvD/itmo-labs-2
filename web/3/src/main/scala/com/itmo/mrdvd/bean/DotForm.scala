@@ -43,7 +43,6 @@ class DotForm extends Serializable:
             throw exception
           case Success(value) =>
             return
-
   def sendPlot(): Unit =
     dotResultMapper(
       Dot(
@@ -66,3 +65,5 @@ class DotForm extends Serializable:
             throw exception
           case Success(value) =>
             return
+  def clearDots(): Unit =
+    dotRepository.clearAll()
