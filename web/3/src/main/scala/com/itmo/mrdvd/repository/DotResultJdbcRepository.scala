@@ -37,7 +37,7 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
             val dotResult = rsMapper (rs)
             dotResult match
               case Left(value) =>
-                dotArray +:= value
+                dotArray = value +: dotArray
               case Right(value) =>
                 throw Error("Database selection error")
         )
