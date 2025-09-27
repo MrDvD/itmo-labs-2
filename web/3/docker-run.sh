@@ -1,4 +1,5 @@
 npm i && \
+scalafmt && \
 mvn clean package && \
 npm run clean && \
 npm run format && \
