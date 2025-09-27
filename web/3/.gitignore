@@ -5,3 +5,4 @@ target/
 public/
 node_modules/
 temp/
+postgresql/
