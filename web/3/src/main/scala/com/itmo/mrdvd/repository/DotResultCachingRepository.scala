@@ -19,7 +19,7 @@ class DotResultCachingRepository extends CachingRepository[DotResult, DotResult]
   override def create(item: DotResult): Try[DotResult] =
     genericRepository.create(item) match
       case Success(value) =>
-        cache +:= value
+        cache = value +: cache
         Success(value)
       case Failure(exception) =>
         Failure(exception)
