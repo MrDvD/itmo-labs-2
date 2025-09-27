@@ -6,6 +6,8 @@ import scala.util.{Try, Using, Success, Failure}
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.{Named, Inject}
 import com.itmo.mrdvd.mapper.ResultSetMapper
+import java.sql.ResultSet
+import scala.annotation.tailrec
 
 @Named("jdbcRepository")
 @ApplicationScoped
@@ -16,6 +18,17 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
   private val sqlGetAll = "select x, y, r, hit, date from DOTS_HISTORY"
   private val sqlClearAll = "truncate DOTS_HISTORY cascade"
 
+  @tailrec
+  private def readDots(
+      rs: ResultSet,
+      dotArray: Array[DotResult]
+  ): Array[DotResult] =
+    if !rs.next() then dotArray
+    else
+      rsMapper(rs) match
+        case Left(value)  => readDots(rs, value +: dotArray)
+        case Right(value) =>
+          throw Error("Database selection error")
   override def create(dot: DotResult): Try[DotResult] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection())
@@ -29,20 +42,14 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
       else throw Error("Database insertion error")
     )
   override def getAll(): Array[DotResult] =
-    var dotArray = Array[DotResult]()
-    Using.Manager(use =>
-      val conn = JdbcConnector.getConnection()
-      val stmt = conn.createStatement()
-      val rs = stmt.executeQuery(sqlGetAll)
-      while rs.next() do
-        val dotResult = rsMapper(rs)
-        dotResult match
-          case Left(value) =>
-            dotArray = value +: dotArray
-          case Right(value) =>
-            throw Error("Database selection error")
-    )
-    return dotArray
+    Using
+      .Manager(use =>
+        val conn = use(JdbcConnector.getConnection())
+        val stmt = use(conn.createStatement())
+        val rs = use(stmt.executeQuery(sqlGetAll))
+        readDots(rs, Array[DotResult]())
+      )
+      .get
   override def clearAll(): Unit =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection())
