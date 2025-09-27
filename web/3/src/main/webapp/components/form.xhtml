@@ -34,7 +34,7 @@
     </h:selectOneRadio>
   </div>
   <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
-  <h:commandLink value="Отправить" action="#{dotCache.sendKeys}">
+  <h:commandLink value="Отправить" action="#{dotForm.sendKeys}">
     <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
   </h:commandLink>
 </h:form>
