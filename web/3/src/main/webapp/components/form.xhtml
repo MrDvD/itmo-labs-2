@@ -37,5 +37,8 @@
   <h:commandLink value="Отправить" action="#{dotForm.sendKeys}">
     <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
   </h:commandLink>
+  <h:commandLink value="Очистить" action="#{dotForm.clearDots}">
+    <f:ajax render="plot-area:dots dot-history"></f:ajax>
+  </h:commandLink>
 </h:form>
 </ui:composition>

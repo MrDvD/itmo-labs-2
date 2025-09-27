@@ -26,3 +26,6 @@ class DotResultCachingRepository
       case Failure(exception) =>
         Failure(exception)
   override def setCache(newCache: Array[DotResult]): Unit = cache = newCache
+  override def clearAll(): Unit =
+    genericRepository.clearAll()
+    cache = Array()
