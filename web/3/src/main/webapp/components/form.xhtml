@@ -1,0 +1,44 @@
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html"
+  xmlns:f="jakarta.faces.core"
+  xmlns:pt="jakarta.faces.passthrough">
+<h:form styleClass="lab-form-keys vertical-group">
+  <p>Проверка точки</p>
+  <div class="lab-form-field">
+    <p><b>X</b></p>
+    <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{dotForm.keys.x}" required="true">
+      <f:converter converterId="jakarta.faces.Double" />
+      <f:validator validatorId="xRangeValidator" />
+    </h:inputText>
+  </div>
+  <h:message for="keysX" styleClass="lab-form-error" />
+  <div class="lab-form-field">
+    <p><b>Y</b></p>
+    <h:selectOneMenu id="keysY" required="true" value="#{dotForm.keys.y}">
+      <f:selectItem itemLabel="Выберите опцию" itemValue=""/>
+      <f:selectItems value="#{dotForm.range.y}"/>
+      <f:converter converterId="jakarta.faces.Double" />
+      <f:validator validatorId="yRangeValidator" />
+    </h:selectOneMenu>
+  </div>
+  <h:message for="keysY" styleClass="lab-form-error" />
+  <div class="lab-form-field">
+    <p><b>R</b></p>
+    <h:selectOneRadio id="keysR" required="true" value="#{dotForm.r}">
+      <f:ajax execute="keysR" render="messageKeysR plot-area:plotR plot-area:dots plot-area:messagePlotR" />
+      <f:selectItems value="#{dotForm.range.r}"/>
+      <f:converter converterId="jakarta.faces.Double" />
+      <f:validator validatorId="rRangeValidator" />
+    </h:selectOneRadio>
+  </div>
+  <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
+  <h:commandLink value="Отправить" action="#{dotForm.sendKeys}">
+    <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
+  </h:commandLink>
+  <h:commandLink value="Очистить" action="#{dotForm.clearDots}">
+    <f:ajax render="plot-area:dots dot-history"></f:ajax>
+  </h:commandLink>
+</h:form>
+</ui:composition>

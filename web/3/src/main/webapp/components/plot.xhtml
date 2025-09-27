@@ -1,0 +1,34 @@
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html"
+  xmlns:f="jakarta.faces.core"
+  xmlns:pt="jakarta.faces.passthrough">
+<h:form id="plot-params">
+  <h:inputHidden id="plotScale" value="#{dotForm.scale}" />
+  <h:inputHidden id="plotX" value="#{dotForm.plot.x}" />
+  <h:inputHidden id="plotY" value="#{dotForm.plot.y}" />
+</h:form>
+<h:form id="plot-area">
+  <h:inputHidden id="plotR" value="#{dotForm.r}" required="true" requiredMessage="Укажите R для определённости">
+    <f:converter converterId="jakarta.faces.Double" />
+    <f:validator validatorId="rRangeValidator" />
+  </h:inputHidden>
+  <h:commandScript
+    name="sendPlot"
+    action="#{dotForm.sendPlot}"
+    execute="plotR"
+    render="plot-area:messagePlotR plot-area:dots dot-history" />
+  <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" pt:draggable="false" />
+  <p><h:message for="plotR" id="messagePlotR" styleClass="lab-form-error" /></p>
+  <h:panelGroup id="dots">
+    <ui:repeat value="#{dotForm.cache}" var="dotResult">
+      <h:panelGroup
+        styleClass='dot #{dotResult.hit() ? "correct" : "wrong"}'
+        style="transform: translate(#{dotResult.dot().X() * dotForm.scale / dotForm.r}px, #{-dotResult.dot().Y() * dotForm.scale / dotForm.r}px);"
+        rendered="#{dotForm.r ge dotResult.dot().maxCoord()}">
+      </h:panelGroup>
+    </ui:repeat>
+  </h:panelGroup>
+</h:form>
+</ui:composition>
