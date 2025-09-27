@@ -1,10 +1,8 @@
 export class DomService {
   protected labForm: HTMLFormElement;
-  protected historyTable: HTMLTableElement;
 
   constructor() {
     this.labForm = this.refreshLabForm();
-    this.historyTable = this.refreshHistoryTable();
   }
 
   public refreshLabForm(formClass = "lab-form-keys"): HTMLFormElement {
@@ -30,20 +28,5 @@ export class DomService {
       throw new Error("Не удалось найти изображение для рендера точек.");
     }
     return canvas;
-  }
-
-  public refreshHistoryTable(
-    tableSelector = ".lab-query-history",
-  ): HTMLTableElement {
-    const historyTable = document.querySelector(tableSelector);
-    if (!historyTable) {
-      throw new Error("Не удалось найти тело таблицы.");
-    }
-    this.historyTable = historyTable as HTMLTableElement;
-    return this.getHistoryTable();
-  }
-
-  public getHistoryTable(): HTMLTableElement {
-    return this.historyTable;
   }
 }
