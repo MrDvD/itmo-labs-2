@@ -26,7 +26,7 @@
       <h:panelGroup
         styleClass='dot #{dotResult.hit() ? "correct" : "wrong"}'
         style="transform: translate(#{dotResult.dot().X() * dotForm.scale / dotForm.r}px, #{-dotResult.dot().Y() * dotForm.scale / dotForm.r}px);"
-        rendered="#{dotForm.r eq dotResult.dot().R()}">
+        rendered="#{dotForm.r eq dotResult.dot().R() and dotForm.r ge dotResult.dot().maxCoord()}">
       </h:panelGroup>
     </ui:repeat>
   </h:panelGroup>
