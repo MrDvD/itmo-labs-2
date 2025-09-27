@@ -10,31 +10,30 @@ import com.itmo.mrdvd.mapper.ResultSetMapper
 @Named("jdbcRepository")
 @ApplicationScoped
 class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
-  @Inject private var rsMapper: ResultSetMapper = null
-  private val sqlCreate = "insert into DOTS_HISTORY (x, y, r, hit, date) values (?, ?, ?, ?, ?)";
+  @Inject protected var rsMapper: ResultSetMapper = null
+  private val sqlCreate =
+    "insert into DOTS_HISTORY (x, y, r, hit, date) values (?, ?, ?, ?, ?)";
   private val sqlGetAll = "select * from DOTS_HISTORY";
 
   override def create(dot: DotResult): Try[DotResult] =
-    Using(JdbcConnector.getConnection()) (conn =>
-      Using(conn.prepareStatement(sqlCreate)) (stmt => 
+    Using(JdbcConnector.getConnection())(conn =>
+      Using(conn.prepareStatement(sqlCreate))(stmt =>
         stmt.setDouble(1, dot.dot.X)
         stmt.setDouble(2, dot.dot.Y)
         stmt.setDouble(3, dot.dot.R)
         stmt.setBoolean(4, dot.hit)
         stmt.setString(5, dot.date)
-        if stmt.executeUpdate() > 0 then
-          Success(dot)
-        else
-          Failure(Error("Database insertion error"))
+        if stmt.executeUpdate() > 0 then Success(dot)
+        else Failure(Error("Database insertion error"))
       ).flatten
     ).flatten
   override def getAll(): Array[DotResult] =
     var dotArray = Array[DotResult]()
-    Using(JdbcConnector.getConnection()) (conn =>
-      Using(conn.createStatement()) (stmt =>
-        Using(stmt.executeQuery(sqlGetAll)) (rs =>
+    Using(JdbcConnector.getConnection())(conn =>
+      Using(conn.createStatement())(stmt =>
+        Using(stmt.executeQuery(sqlGetAll))(rs =>
           while rs.next() do
-            val dotResult = rsMapper (rs)
+            val dotResult = rsMapper(rs)
             dotResult match
               case Left(value) =>
                 dotArray = value +: dotArray
@@ -46,11 +45,12 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
     return dotArray
 
 object JdbcConnector:
-  val getEnv = (envVar: String) => () =>
-    val rawVar = sys.env.get(envVar)
-    if rawVar.isEmpty then
-      throw Error(s"Environment variable ${envVar} is not found.")
-    rawVar.get
+  val getEnv = (envVar: String) =>
+    () =>
+      val rawVar = sys.env.get(envVar)
+      if rawVar.isEmpty then
+        throw Error(s"Environment variable ${envVar} is not found.")
+      rawVar.get
   val dbHost = getEnv("POSTGRES_HOST")
   val dbName = getEnv("POSTGRES_DB")
   val jdbcUrl = s"jdbc:postgresql://${dbHost()}:5432/${dbName()}"

@@ -8,12 +8,14 @@ import jakarta.annotation.PostConstruct
 
 @Named("cachingRepository")
 @ApplicationScoped
-class DotResultCachingRepository extends CachingRepository[DotResult, DotResult]:
-  @Inject @Named("jdbcRepository") private var genericRepository: GenericRepository[DotResult, DotResult] = null
+class DotResultCachingRepository
+    extends CachingRepository[DotResult, DotResult]:
+  @Inject @Named("jdbcRepository") protected var genericRepository
+      : GenericRepository[DotResult, DotResult] = null
   private var cache: Array[DotResult] = Array()
 
   @PostConstruct
-  private def init(): Unit =
+  protected def init(): Unit =
     setCache(genericRepository.getAll())
   override def getAll(): Array[DotResult] = cache
   override def create(item: DotResult): Try[DotResult] =

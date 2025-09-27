@@ -1,6 +1,5 @@
 package com.itmo.mrdvd.bean
 
-import com.itmo.mrdvd.dto.Dot
 import jakarta.enterprise.context.Dependent
 import java.lang.Double
 import scala.math.BigDecimal.RoundingMode
@@ -13,5 +12,7 @@ class DotCoords extends Serializable:
   def getX(): Double = x
   def getY(): Double = y
 
-  def setX(X: Double): Unit = x = BigDecimal.valueOf(X).setScale(2, RoundingMode.HALF_UP).doubleValue
-  def setY(Y: Double): Unit = y = BigDecimal.valueOf(Y).setScale(2, RoundingMode.HALF_UP).doubleValue
+  def setX(X: Double): Unit = x =
+    BigDecimal.valueOf(X).setScale(2, RoundingMode.HALF_UP).doubleValue
+  def setY(Y: Double): Unit = y =
+    BigDecimal.valueOf(Y).setScale(2, RoundingMode.HALF_UP).doubleValue
