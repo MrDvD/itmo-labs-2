@@ -4,10 +4,21 @@ import (
 	"fmt"
 	"mrdvd/lib"
 	"net/http"
+	"os"
 )
 
 func main() {
-	host := "localhost:8080"
+	domain, ok := os.LookupEnv("APP_DOMAIN")
+	if !ok {
+		fmt.Printf("APP_DOMAIN environment variable is not set!")
+		return
+	}
+	port, ok := os.LookupEnv("APP_PORT")
+	if !ok {
+		fmt.Printf("APP_PORT environment variable is not set!")
+		return
+	}
+	host := fmt.Sprintf("%s:%s", domain, port)
 	s := &http.Server{
 		Addr:    host,
 		Handler: http.HandlerFunc(lib.Serve),

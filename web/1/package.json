@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp -r src/statics/* public && go build -o bin/server .",
+    "build": "tsc && cp -r src/statics/* public && GOOS=freebsd go build -o bin/server .",
     "start": "./bin/server"
   },
   "keywords": [],

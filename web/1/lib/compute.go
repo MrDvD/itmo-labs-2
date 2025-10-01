@@ -25,13 +25,17 @@ func doesDotHit(dot DotParams) (bool, error) {
 }
 
 func wrapDotStatus(dot DotParams) (DotStatus, error) {
-	var dotStatus DotStatus
-	var err error
 	startTime := time.Now()
-	dotStatus.Date = startTime.Format("2006-01-02 15:04:05")
-	dotStatus.Entry = dot
-	dotStatus.Hit, err = doesDotHit(dot)
+	doesHit, err := doesDotHit(dot)
+	if err != nil {
+		return DotStatus{}, err
+	}
+	dotStatus := DotStatus{
+		Date:  startTime.Format("2006-01-02 15:04:05"),
+		Entry: dot,
+		Hit:   doesHit,
+	}
 	endTime := time.Now()
 	dotStatus.Duration = endTime.Sub(startTime).String()
-	return dotStatus, err
+	return dotStatus, nil
 }
