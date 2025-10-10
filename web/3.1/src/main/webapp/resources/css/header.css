@@ -1,0 +1,10 @@
+@import url("#{resource['css:colors.css']}");
+
+.lab-header {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  justify-content: space-between;
+  background-color: var(--header-color);
+}
