@@ -7,7 +7,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
     volumes:
-      - ./src/main/resources/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./app/src/main/resources/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgresql:/var/lib/postgresql/18/data
     networks:
       - backend
@@ -24,8 +24,8 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
     volumes:
-      - ./src/main/resources/wildfly/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
-      - ./target:/opt/jboss/wildfly/standalone/deployments/
+      - ./app/src/main/resources/wildfly/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
+      - ./app/target:/opt/jboss/wildfly/standalone/deployments/
       - ./public:/opt/jboss/wildfly/resources
     networks:
       - backend

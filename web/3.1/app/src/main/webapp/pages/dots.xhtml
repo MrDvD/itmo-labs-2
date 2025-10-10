@@ -4,7 +4,8 @@
 <html
   xmlns = "http://www.w3.org/1999/xhtml"
   xmlns:ui="jakarta.faces.facelets"
-  xmlns:h="jakarta.faces.html">
+  xmlns:h="jakarta.faces.html"
+  xmlns:itmo="jakarta.faces.composite/itmo/point-form">
 <h:head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -18,7 +19,7 @@
   <ui:include src="/components/back-to-services.xhtml" />
   <div class="lab-form">
     <div class="horizontal-group">
-      <ui:include src="/components/form.xhtml" />
+      <itmo:PointForm />
       <ui:include src="/components/plot.xhtml" />
     </div>
   </div>
