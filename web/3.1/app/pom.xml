@@ -4,19 +4,20 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.itmo.mrdvd</groupId>
-    <artifactId>lab-3-dop</artifactId>
+    <artifactId>lab-3-app</artifactId>
     <version>1.0</version>
-    <name>lab-3-dop</name>
-    <packaging>pom</packaging>
-    <modules>
-      <module>app</module>
-      <module>jsf-component</module>
-    </modules>
+    <name>lab-3-app</name>
+    <packaging>war</packaging>
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <scala.version>3.3.6</scala.version>
     </properties>
     <dependencies>
+      <dependency>
+        <groupId>com.itmo.mrdvd</groupId>
+        <artifactId>lab-3-component</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.scala-lang</groupId>
         <artifactId>scala3-library_3</artifactId>
@@ -46,6 +47,33 @@
     <build>
       <sourceDirectory>src/main/scala</sourceDirectory>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.9.0</version>
+          <executions>
+            <execution>
+              <id>copy-target-jar</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>copy</goal>
+              </goals>
+              <configuration>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>com.itmo.mrdvd</groupId>
+                    <artifactId>lab-3-component</artifactId>
+                    <version>1.0</version>
+                    <type>jar</type>
+                    <overWrite>true</overWrite>
+                  </artifactItem>
+                </artifactItems>
+                <outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
+                <stripVersion>false</stripVersion>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>

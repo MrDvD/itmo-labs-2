@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src/main/typescript",
+    "rootDir": "app/src/main/typescript",
     "outDir": "./public",
 
     "module": "nodenext",

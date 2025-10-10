@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier src/main/typescript --write",
+    "format": "prettier app/src/main/typescript --write",
     "clean": "rm -rf public/"
   },
   "keywords": [],
