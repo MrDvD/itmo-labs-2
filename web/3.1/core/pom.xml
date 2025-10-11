@@ -4,19 +4,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.itmo.mrdvd</groupId>
-    <artifactId>lab-3-component</artifactId>
+    <artifactId>lab-3-core</artifactId>
     <version>1.0</version>
-    <name>lab-3-component</name>
+    <name>lab-3-core</name>
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <scala.version>3.3.6</scala.version>
     </properties>
     <dependencies>
-      <dependency>
-        <groupId>com.itmo.mrdvd</groupId>
-        <artifactId>lab-3-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.scala-lang</groupId>
         <artifactId>scala3-library_3</artifactId>
