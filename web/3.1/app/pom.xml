@@ -15,6 +15,11 @@
     <dependencies>
       <dependency>
         <groupId>com.itmo.mrdvd</groupId>
+        <artifactId>lab-3-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.itmo.mrdvd</groupId>
         <artifactId>lab-3-component</artifactId>
         <version>${project.version}</version>
       </dependency>

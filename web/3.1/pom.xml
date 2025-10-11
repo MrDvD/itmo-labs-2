@@ -9,66 +9,8 @@
     <name>lab-3-dop</name>
     <packaging>pom</packaging>
     <modules>
+      <module>core</module>
       <module>app</module>
       <module>jsf-component</module>
     </modules>
-    <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <scala.version>3.3.6</scala.version>
-    </properties>
-    <dependencies>
-      <dependency>
-        <groupId>org.scala-lang</groupId>
-        <artifactId>scala3-library_3</artifactId>
-        <version>${scala.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.faces</groupId>
-        <artifactId>jakarta.faces-api</artifactId>
-        <version>4.1.2</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.inject</groupId>
-        <artifactId>jakarta.inject-api</artifactId>
-        <version>2.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.enterprise</groupId>
-        <artifactId>jakarta.enterprise.cdi-api</artifactId>
-        <version>4.1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.7.8</version>
-      </dependency>
-    </dependencies>
-    <build>
-      <sourceDirectory>src/main/scala</sourceDirectory>
-      <plugins>
-        <plugin>
-          <groupId>net.alchim31.maven</groupId>
-          <artifactId>scala-maven-plugin</artifactId>
-          <version>4.9.5</version>
-          <executions>
-            <execution>
-              <?m2e execute onConfiguration?>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>3.4.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.wildfly.plugins</groupId>
-          <artifactId>wildfly-maven-plugin</artifactId>
-          <version>5.1.4.Final</version>
-        </plugin>
-      </plugins>
-    </build>
 </project>

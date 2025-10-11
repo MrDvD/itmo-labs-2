@@ -17,14 +17,12 @@ class DotForm extends Serializable:
       : CachingRepository[DotResult, DotResult] = null
   @Inject private var dotResultMapper: Mapper[Dot, DotResult] = null
   @Inject protected var range: DotAvaliableRange = null
-  @Inject protected var keys: DotCoords = null
   @Inject protected var plot: DotCoords = null
   private var scale: Double = null
   private var r: Double = null
 
   def getRange(): DotAvaliableRange = range
   def getCache(): Array[DotResult] = dotRepository.getAll()
-  def getKeys(): DotCoords = keys
   def getPlot(): DotCoords = plot
 
   def getR(): Double = r
@@ -33,16 +31,6 @@ class DotForm extends Serializable:
   def getScale(): Double = scale
   def setScale(newScale: Double) = scale = newScale
 
-  def sendKeys(): Unit =
-    dotResultMapper(Dot(keys.getX(), keys.getY(), r)) match
-      case Right(value) =>
-        throw value
-      case Left(value) =>
-        dotRepository.create(value) match
-          case Failure(exception) =>
-            throw exception
-          case Success(value) =>
-            return
   def sendPlot(): Unit =
     dotResultMapper(
       Dot(
@@ -65,5 +53,3 @@ class DotForm extends Serializable:
             throw exception
           case Success(value) =>
             return
-  def clearDots(): Unit =
-    dotRepository.clearAll()
