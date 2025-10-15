@@ -2,45 +2,59 @@
               xmlns:cc="jakarta.faces.composite"
               xmlns:h="jakarta.faces.html"
               xmlns:f="jakarta.faces.core"
-              xmlns:pt="jakarta.faces.passthrough">
-  <cc:interface>
-    <cc:attribute name="valueX" />
-    <cc:attribute name="valueY" />
-    <cc:attribute name="valueR" />
+              xmlns:pt="jakarta.faces.passthrough"
+              xmlns:p="primefaces">
+  <cc:interface componentType="pointForm">
+    <cc:attribute name="value_X" type="java.lang.Double" />
+    <cc:attribute name="input_type_X" type="java.lang.String" />
+    <cc:attribute name="value_Y" type="java.lang.Double" />
+    <cc:attribute name="input_type_Y" type="java.lang.String" />
+    <cc:attribute name="value_R" type="java.lang.Double" />
+    <cc:attribute name="input_type_R" type="java.lang.String" />
   </cc:interface>
 
   <cc:implementation>
+    <f:event type="preRenderComponent" listener="#{cc.validateInputTypes}" />
+
     <h:form styleClass="lab-form-keys vertical-group">
       <p>Проверка точки</p>
       <div class="lab-form-field">
         <p><b>X</b></p>
-        <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueX}" required="true">
+        <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_X}" required="true" rendered="#{cc.attrs.input_type_X == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="xRangeValidator" />
         </h:inputText>
+        <h:panelGrid rendered="#{cc.attrs.input_type_X == 'slider'}">
+          <h:inputHidden id="sliderValueX" value="#{cc.attrs.value_X}"/>
+          <p:slider for="sliderValueX" range="false"/>
+        </h:panelGrid>
       </div>
       <h:message for="keysX" styleClass="lab-form-error" />
       <div class="lab-form-field">
         <p><b>Y</b></p>
-        <h:selectOneMenu id="keysY" required="true" value="#{cc.attrs.valueY}">
-          <f:selectItem itemLabel="Выберите опцию" itemValue=""/>
-          <f:selectItems value="#{pointForm.range.y}"/>
+        <h:inputText id="keysY" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_Y}" required="true" rendered="#{cc.attrs.input_type_Y == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="yRangeValidator" />
-        </h:selectOneMenu>
+        </h:inputText>
+        <h:panelGrid rendered="#{cc.attrs.input_type_Y == 'slider'}">
+          <h:inputHidden id="sliderValueY" value="#{cc.attrs.value_Y}"/>
+          <p:slider for="sliderValueY" range="false"/>
+        </h:panelGrid>
       </div>
       <h:message for="keysY" styleClass="lab-form-error" />
       <div class="lab-form-field">
         <p><b>R</b></p>
-        <h:selectOneRadio id="keysR" required="true" value="#{cc.attrs.valueR}">
-          <f:ajax execute="keysR" render="messageKeysR plot-area:plotR plot-area:dots plot-area:messagePlotR" />
-          <f:selectItems value="#{pointForm.range.r}"/>
+        <h:inputText id="keysR" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_R}" required="true" rendered="#{cc.attrs.input_type_R == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="rRangeValidator" />
-        </h:selectOneRadio>
+        </h:inputText>
+        <h:panelGrid rendered="#{cc.attrs.input_type_R == 'slider'}">
+          <h:inputHidden id="sliderValueR" value="#{cc.attrs.value_R}"/>
+          <p:slider for="sliderValueR" range="false"/>
+        </h:panelGrid>
       </div>
       <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
-      <h:commandLink id="sendButton" value="Отправить" action="#{pointForm.send(cc.attrs.valueX, cc.attrs.valueY, cc.attrs.valueR)}">
+      <h:commandLink id="sendButton" value="Отправить" action="#{pointForm.send(cc.attrs.value_X, cc.attrs.value_Y, cc.attrs.value_R)}">
         <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
       </h:commandLink>
       <h:commandLink value="Очистить" action="#{pointForm.clear}">
