@@ -18,6 +18,12 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.primefaces</groupId>
+        <artifactId>primefaces</artifactId>
+        <version>15.0.0</version>
+        <classifier>jakarta</classifier>
+      </dependency>
+      <dependency>
         <groupId>org.scala-lang</groupId>
         <artifactId>scala3-library_3</artifactId>
         <version>${scala.version}</version>
