@@ -15,7 +15,7 @@
 
   <cc:implementation>
     <f:event type="preRenderComponent" listener="#{cc.validateInputTypes}" />
-
+    <h:outputStylesheet library="itmo" name="point-form/style.css" />
     <h:form styleClass="lab-form-keys vertical-group">
       <p>Проверка точки</p>
       <div class="lab-form-field">
@@ -24,36 +24,48 @@
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="xRangeValidator" />
         </h:inputText>
-        <h:panelGrid rendered="#{cc.attrs.input_type_X == 'slider'}">
-          <h:inputHidden id="sliderValueX" value="#{cc.attrs.value_X}"/>
-          <p:slider for="sliderValueX" range="false"/>
+        <h:panelGrid rendered="#{cc.attrs.input_type_X == 'slider'}" styleClass="input-slider">
+          <p:slider for="sliderValueX" minValue="#{pointAvailableRange.min['X']}" maxValue="#{pointAvailableRange.max['X']}" />
+          <h:inputHidden id="sliderValueX" value="#{cc.attrs.value_X}">
+            <f:converter converterId="jakarta.faces.Double" />
+            <f:validator validatorId="xRangeValidator" />
+          </h:inputHidden>
         </h:panelGrid>
       </div>
       <h:message for="keysX" styleClass="lab-form-error" />
+      <h:message for="sliderValueX" id="messageSliderX" styleClass="lab-form-error" />
       <div class="lab-form-field">
         <p><b>Y</b></p>
         <h:inputText id="keysY" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_Y}" required="true" rendered="#{cc.attrs.input_type_Y == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="yRangeValidator" />
         </h:inputText>
-        <h:panelGrid rendered="#{cc.attrs.input_type_Y == 'slider'}">
-          <h:inputHidden id="sliderValueY" value="#{cc.attrs.value_Y}"/>
-          <p:slider for="sliderValueY" range="false"/>
+        <h:panelGrid rendered="#{cc.attrs.input_type_Y == 'slider'}" styleClass="input-slider">
+          <p:slider for="sliderValueY" minValue="#{pointAvailableRange.min['Y']}" maxValue="#{pointAvailableRange.max['Y']}" />
+          <h:inputHidden id="sliderValueY" value="#{cc.attrs.value_Y}">
+            <f:converter converterId="jakarta.faces.Double" />
+            <f:validator validatorId="yRangeValidator" />
+          </h:inputHidden>
         </h:panelGrid>
       </div>
       <h:message for="keysY" styleClass="lab-form-error" />
+      <h:message for="sliderValueY" id="messageSliderY" styleClass="lab-form-error" />
       <div class="lab-form-field">
         <p><b>R</b></p>
         <h:inputText id="keysR" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_R}" required="true" rendered="#{cc.attrs.input_type_R == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="rRangeValidator" />
         </h:inputText>
-        <h:panelGrid rendered="#{cc.attrs.input_type_R == 'slider'}">
-          <h:inputHidden id="sliderValueR" value="#{cc.attrs.value_R}"/>
-          <p:slider for="sliderValueR" range="false"/>
+        <h:panelGrid rendered="#{cc.attrs.input_type_R == 'slider'}" styleClass="input-slider">
+          <p:slider for="sliderValueR" minValue="#{pointAvailableRange.min['R']}" maxValue="#{pointAvailableRange.max['R']}" />
+          <h:inputHidden id="sliderValueR" value="#{cc.attrs.value_R}">
+            <f:converter converterId="jakarta.faces.Double" />
+            <f:validator validatorId="rRangeValidator" />
+          </h:inputHidden>
         </h:panelGrid>
       </div>
       <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
+      <h:message for="sliderValueR" id="messageSliderR" styleClass="lab-form-error" />
       <h:commandLink id="sendButton" value="Отправить" action="#{pointForm.send(cc.attrs.value_X, cc.attrs.value_Y, cc.attrs.value_R)}">
         <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
       </h:commandLink>

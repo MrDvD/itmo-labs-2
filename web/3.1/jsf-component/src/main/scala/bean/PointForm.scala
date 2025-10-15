@@ -5,7 +5,6 @@ import com.itmo.mrdvd.dto.{DotResult, Dot}
 import com.itmo.mrdvd.mapper.Mapper
 import java.lang.Double
 import scala.util.{Success, Failure}
-import com.itmo.mrdvd.bean.DotAvaliableRange
 import com.itmo.mrdvd.bean.DotCoords
 import com.itmo.mrdvd.event.PointResultEvent
 import jakarta.faces.component.UINamingContainer
@@ -18,10 +17,7 @@ class PointForm extends UINamingContainer, Serializable:
   @Inject @Named("cachingRepository") private var dotRepository
       : CachingRepository[DotResult, DotResult] = null
   @Inject private var dotResultMapper: Mapper[Dot, DotResult] = null
-  @Inject protected var range: DotAvaliableRange = null
   private val allowedInputTypes = Set("text", "slider")
-
-  def getRange(): DotAvaliableRange = range
 
   def fireResultEvent(result: DotResult): Unit =
     val context = FacesContext.getCurrentInstance

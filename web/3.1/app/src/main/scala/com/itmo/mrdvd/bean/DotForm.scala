@@ -16,12 +16,10 @@ class DotForm extends Serializable:
   @Inject @Named("cachingRepository") private var dotRepository
       : CachingRepository[DotResult, DotResult] = null
   @Inject private var dotResultMapper: Mapper[Dot, DotResult] = null
-  @Inject protected var range: DotAvaliableRange = null
   @Inject protected var plot: DotCoords = null
   private var scale: Double = null
   private var r: Double = null
 
-  def getRange(): DotAvaliableRange = range
   def getCache(): Array[DotResult] = dotRepository.getAll()
   def getPlot(): DotCoords = plot
 
