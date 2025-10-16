@@ -4,7 +4,9 @@ import com.itmo.mrdvd.dto.{Dot, DotResult}
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Named
 
+@Named
 @ApplicationScoped
 class DotResultMapper extends Mapper[Dot, DotResult]:
   val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
