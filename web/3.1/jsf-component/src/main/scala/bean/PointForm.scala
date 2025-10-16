@@ -11,13 +11,29 @@ import jakarta.faces.component.UINamingContainer
 import jakarta.faces.context.FacesContext
 import jakarta.faces.event.ComponentSystemEvent
 import jakarta.faces.component.FacesComponent
+import java.util.logging.Logger
+import jakarta.faces.application.FacesMessage
+import jakarta.enterprise.inject.spi.CDI
+import jakarta.enterprise.util.AnnotationLiteral
+import jakarta.enterprise.inject.literal.NamedLiteral
+import jakarta.enterprise.context.ApplicationScoped
+import com.itmo.mrdvd.mapper.DotResultMapper
+import com.itmo.mrdvd.repository.DotResultCachingRepository
+import jakarta.enterprise.util.TypeLiteral
 
 @FacesComponent
 class PointForm extends UINamingContainer, Serializable:
-  @Inject @Named("cachingRepository") private var dotRepository
-      : CachingRepository[DotResult, DotResult] = null
-  @Inject private var dotResultMapper: Mapper[Dot, DotResult] = null
+  private lazy val dotRepository = CDI
+    .current()
+    .select(
+      new TypeLiteral[CachingRepository[DotResult, DotResult]] {},
+      NamedLiteral.of("cachingRepository")
+    )
+    .get()
+  private lazy val dotResultMapper =
+    CDI.current().select(new TypeLiteral[Mapper[Dot, DotResult]] {}).get()
   private val allowedInputTypes = Set("text", "slider")
+  private val inputFieldNames = Seq("inputTypeX", "inputTypeY", "inputTypeR")
 
   def fireResultEvent(result: DotResult): Unit =
     val context = FacesContext.getCurrentInstance
@@ -27,6 +43,15 @@ class PointForm extends UINamingContainer, Serializable:
       PointResultEvent[DotResult](this, result)
     )
   def send(x: Double, y: Double, r: Double): Unit =
+    val context = FacesContext.getCurrentInstance
+    context.addMessage(
+      null,
+      new FacesMessage(
+        FacesMessage.SEVERITY_ERROR,
+        "Validation Error",
+        f"sending values: $x, $y, $r"
+      )
+    )
     dotResultMapper(Dot(x, y, r)) match
       case Right(value) =>
         throw value
@@ -36,7 +61,7 @@ class PointForm extends UINamingContainer, Serializable:
             throw exception
           case Success(value) => fireResultEvent(value)
   def validateInputTypes(): Unit =
-    for (inputName <- Seq("input_type_X", "input_type_Y", "input_type_R"))
+    for (inputName <- inputFieldNames)
       val input = getAttributes().get(inputName).asInstanceOf[String]
       if !allowedInputTypes.contains(input) then
         throw Error(

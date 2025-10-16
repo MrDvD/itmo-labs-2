@@ -5,12 +5,12 @@
               xmlns:pt="jakarta.faces.passthrough"
               xmlns:p="primefaces">
   <cc:interface componentType="pointForm">
-    <cc:attribute name="value_X" type="java.lang.Double" />
-    <cc:attribute name="input_type_X" type="java.lang.String" />
-    <cc:attribute name="value_Y" type="java.lang.Double" />
-    <cc:attribute name="input_type_Y" type="java.lang.String" />
-    <cc:attribute name="value_R" type="java.lang.Double" />
-    <cc:attribute name="input_type_R" type="java.lang.String" />
+    <cc:attribute name="valueX" type="java.lang.Double" />
+    <cc:attribute name="inputTypeX" type="java.lang.String" default="text" />
+    <cc:attribute name="valueY" type="java.lang.Double" />
+    <cc:attribute name="inputTypeY" type="java.lang.String" default="text" />
+    <cc:attribute name="valueR" type="java.lang.Double" />
+    <cc:attribute name="inputTypeR" type="java.lang.String" default="slider" />
     <cc:attribute name="inputRange" type="com.itmo.mrdvd.bean.CoordsRange" required="true" />
   </cc:interface>
 
@@ -21,16 +21,16 @@
       <p>Проверка точки</p>
       <div class="lab-form-field">
         <p><b>X</b></p>
-        <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_X}" required="true" rendered="#{cc.attrs.input_type_X == 'text'}">
+        <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueX}" required="true" rendered="#{cc.attrs.inputTypeX == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="inRangeValidator">
             <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
             <f:attribute name="max" value="#{cc.attrs.inputRange.max['X']}" />
           </f:validator>
         </h:inputText>
-        <h:panelGrid rendered="#{cc.attrs.input_type_X == 'slider'}" styleClass="input-slider">
+        <h:panelGrid rendered="#{cc.attrs.inputTypeX == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueX" minValue="#{cc.attrs.inputRange.min['X']}" maxValue="#{cc.attrs.inputRange.max['X']}" />
-          <h:inputHidden id="sliderValueX" value="#{cc.attrs.value_X}">
+          <h:inputHidden id="sliderValueX" value="#{cc.attrs.valueX}">
             <f:converter converterId="jakarta.faces.Double" />
             <f:validator validatorId="inRangeValidator">
               <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
@@ -43,16 +43,16 @@
       <h:message for="sliderValueX" id="messageSliderX" styleClass="lab-form-error" />
       <div class="lab-form-field">
         <p><b>Y</b></p>
-        <h:inputText id="keysY" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_Y}" required="true" rendered="#{cc.attrs.input_type_Y == 'text'}">
+        <h:inputText id="keysY" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueY}" required="true" rendered="#{cc.attrs.inputTypeY == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="inRangeValidator">
             <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
             <f:attribute name="max" value="#{cc.attrs.inputRange.max['Y']}" />
           </f:validator>
         </h:inputText>
-        <h:panelGrid rendered="#{cc.attrs.input_type_Y == 'slider'}" styleClass="input-slider">
+        <h:panelGrid rendered="#{cc.attrs.inputTypeY == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueY" minValue="#{cc.attrs.inputRange.min['Y']}" maxValue="#{cc.attrs.inputRange.max['Y']}" />
-          <h:inputHidden id="sliderValueY" value="#{cc.attrs.value_Y}">
+          <h:inputHidden id="sliderValueY" value="#{cc.attrs.valueY}">
             <f:converter converterId="jakarta.faces.Double" />
             <f:validator validatorId="inRangeValidator">
               <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
@@ -65,16 +65,16 @@
       <h:message for="sliderValueY" id="messageSliderY" styleClass="lab-form-error" />
       <div class="lab-form-field">
         <p><b>R</b></p>
-        <h:inputText id="keysR" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.value_R}" required="true" rendered="#{cc.attrs.input_type_R == 'text'}">
+        <h:inputText id="keysR" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueR}" required="true" rendered="#{cc.attrs.inputTypeR == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
           <f:validator validatorId="inRangeValidator">
             <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />
             <f:attribute name="max" value="#{cc.attrs.inputRange.max['R']}" />
           </f:validator>
         </h:inputText>
-        <h:panelGrid rendered="#{cc.attrs.input_type_R == 'slider'}" styleClass="input-slider">
+        <h:panelGrid rendered="#{cc.attrs.inputTypeR == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueR" minValue="#{cc.attrs.inputRange.min['R']}" maxValue="#{cc.attrs.inputRange.max['R']}" />
-          <h:inputHidden id="sliderValueR" value="#{cc.attrs.value_R}">
+          <h:inputHidden id="sliderValueR" value="#{cc.attrs.valueR}">
             <f:converter converterId="jakarta.faces.Double" />
             <f:validator validatorId="inRangeValidator">
               <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />
@@ -85,10 +85,10 @@
       </div>
       <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
       <h:message for="sliderValueR" id="messageSliderR" styleClass="lab-form-error" />
-      <h:commandLink id="sendButton" value="Отправить" action="#{pointForm.send(cc.attrs.value_X, cc.attrs.value_Y, cc.attrs.value_R)}">
-        <f:ajax execute="@form" render="@form plot-area:dots dot-history"></f:ajax>
+      <h:commandLink id="sendButton" value="Отправить" action="#{cc.send(cc.attrs.valueX, cc.attrs.valueY, cc.attrs.valueR)}">
+        <f:ajax execute="@form" render="@form"></f:ajax>
       </h:commandLink>
-      <h:commandLink value="Очистить" action="#{pointForm.clear}">
+      <h:commandLink value="Очистить" action="#{cc.clear}">
         <f:ajax render="plot-area:dots dot-history"></f:ajax>
       </h:commandLink>
     </h:form>
