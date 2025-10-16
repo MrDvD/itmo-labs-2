@@ -12,7 +12,10 @@
 <h:form id="plot-area">
   <h:inputHidden id="plotR" value="#{dotForm.r}" required="true" requiredMessage="Укажите R для определённости">
     <f:converter converterId="jakarta.faces.Double" />
-    <f:validator validatorId="rRangeValidator" />
+    <f:validator validatorId="inRangeValidator">
+      <f:attribute name="min" value="#{pointAvailableRange.min['R']}" />
+      <f:attribute name="max" value="#{pointAvailableRange.max['R']}" />
+    </f:validator>
   </h:inputHidden>
   <h:commandScript
     name="sendPlot"

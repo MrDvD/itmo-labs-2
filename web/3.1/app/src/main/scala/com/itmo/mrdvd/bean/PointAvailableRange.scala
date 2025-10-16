@@ -7,16 +7,13 @@ import java.lang.Double
 
 @Named
 @ApplicationScoped
-class PointAvailableRange extends Serializable:
+class PointAvailableRange extends CoordsRange, Serializable:
   private val minMaxValues = Map(
-    "X" -> Array(1.0, 5.0),
-    "Y" -> Array(1.0, 5.0),
-    "R" -> Array(2.0, 5.0)
+    "X" -> Array(-3.0, 5.0),
+    "Y" -> Array(-2.0, 2.0),
+    "R" -> Array(1.0, 3.0)
   )
-
-  def getMin: java.util.Map[String, Double] = {
+  override def getMin: java.util.Map[String, Double] =
     minMaxValues.view.mapValues(arr => arr(0): Double).toMap.asJava
-  }
-  def getMax: java.util.Map[String, Double] = {
+  def getMax: java.util.Map[String, Double] =
     minMaxValues.view.mapValues(arr => arr(1): Double).toMap.asJava
-  }
