@@ -5,11 +5,11 @@
               xmlns:pt="jakarta.faces.passthrough"
               xmlns:p="primefaces">
   <cc:interface componentType="pointForm">
-    <cc:attribute name="valueX" type="java.lang.Double" />
+    <cc:attribute name="valueX" type="java.lang.Double" default="#{defaultPoint.x}" />
     <cc:attribute name="inputTypeX" type="java.lang.String" default="text" />
-    <cc:attribute name="valueY" type="java.lang.Double" />
+    <cc:attribute name="valueY" type="java.lang.Double" default="#{defaultPoint.y}" />
     <cc:attribute name="inputTypeY" type="java.lang.String" default="text" />
-    <cc:attribute name="valueR" type="java.lang.Double" />
+    <cc:attribute name="valueR" type="java.lang.Double" default="#{defaultPoint.r}" />
     <cc:attribute name="inputTypeR" type="java.lang.String" default="slider" />
     <cc:attribute name="inputRange" type="com.itmo.mrdvd.bean.CoordsRange" required="true" />
   </cc:interface>
