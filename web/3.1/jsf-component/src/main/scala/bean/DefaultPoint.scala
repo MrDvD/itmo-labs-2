@@ -7,9 +7,9 @@ import jakarta.inject.Named
 @Named
 @ViewScoped
 class DefaultPoint extends Serializable:
-  private var X: Double = null
-  private var Y: Double = null
-  private var R: Double = null
+  private var X: Double = 0
+  private var Y: Double = 0
+  private var R: Double = 0
 
   def getX(): Double = X
   def getY(): Double = Y
