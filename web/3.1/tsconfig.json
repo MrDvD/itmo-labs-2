@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // File Layout
-    "rootDir": "app/src/main/typescript",
+    "rootDirs": ["app/src/main/typescript", "jsf-component/src/main/resources/META-INF/resources"],
     "outDir": "./public",
 
     "module": "nodenext",

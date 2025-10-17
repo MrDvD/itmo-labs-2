@@ -17,6 +17,7 @@
   <cc:implementation>
     <f:event type="preRenderComponent" listener="#{cc.validateInputTypes}" />
     <h:outputStylesheet library="itmo" name="point-form/style.css" />
+    <script type="module" src="/resources/itmo/point-form/script.js"></script>
     <h:form id="keys-form" styleClass="lab-form-keys vertical-group">
       <p>Проверка точки</p>
       <div class="lab-form-field">
@@ -40,8 +41,10 @@
           <p>?</p>
         </h:panelGroup>
       </div>
-      <h:message for="keysX" id="messageKeysX" styleClass="lab-form-error" />
-      <h:message for="sliderValueX" id="messageSliderX" styleClass="lab-form-error" />
+      <div class="lab-form-error">
+        <h:message for="keysX" id="messageKeysX" />
+        <h:message for="sliderValueX" id="messageSliderX" />
+      </div>
       <div class="lab-form-field">
         <p><b>Y</b></p>
         <h:inputText id="keysY" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueY}" required="true" rendered="#{cc.attrs.inputTypeY == 'text'}">
@@ -63,8 +66,10 @@
           <p>?</p>
         </h:panelGroup>
       </div>
-      <h:message for="keysY" id="messageKeysY" styleClass="lab-form-error" />
-      <h:message for="sliderValueY" id="messageSliderY" styleClass="lab-form-error" />
+      <div class="lab-form-error">
+        <h:message for="keysY" id="messageKeysY" />
+        <h:message for="sliderValueY" id="messageSliderY" />
+      </div>
       <div class="lab-form-field">
         <p><b>R</b></p>
         <h:inputText id="keysR" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueR}" required="true" rendered="#{cc.attrs.inputTypeR == 'text'}">
@@ -86,13 +91,15 @@
           <p>?</p>
         </h:panelGroup>
       </div>
-      <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
-      <h:message for="sliderValueR" id="messageSliderR" styleClass="lab-form-error" />
+      <div class="lab-form-error">
+        <h:message for="keysR" id="messageKeysR" />
+        <h:message for="sliderValueR" id="messageSliderR" />
+      </div>
       <h:commandLink id="sendButton" value="Отправить" action="#{cc.send(cc.attrs.valueX, cc.attrs.valueY, cc.attrs.valueR)}">
         <f:ajax execute="@form" render="messageSliderX messageSliderY messageSliderR messageKeysX messageKeysY messageKeysR"></f:ajax>
       </h:commandLink>
       <h:commandLink value="Очистить" action="#{cc.clear}">
-        <f:ajax render="plot-area:dots dot-history"></f:ajax>
+        <f:ajax />
       </h:commandLink>
     </h:form>
   </cc:implementation>

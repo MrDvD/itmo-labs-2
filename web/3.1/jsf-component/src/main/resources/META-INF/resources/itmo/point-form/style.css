@@ -1,3 +1,7 @@
 .input-slider {
   width: stretch;
 }
+
+p:has(.lab-form-error) {
+  transform: translateY(11px);
+}
