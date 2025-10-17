@@ -1,0 +1,28 @@
+#plot-area {
+  position: relative;
+  width: fit-content;
+  margin: auto;
+  cursor: pointer;
+
+  .workaround {
+    position: absolute;
+    width: stretch;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    top: 46.9%;
+    left: 46.65%;
+
+    &.wrong {
+      background-color: red;
+    }
+
+    &.correct {
+      background-color: green;
+    }
+  }
+}
