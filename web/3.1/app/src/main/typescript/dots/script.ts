@@ -5,6 +5,26 @@ export const domService = new DomService();
 export const canvasService = new CanvasService(domService);
 
 addEventListener("DOMContentLoaded", function () {
+  this.document.querySelectorAll(".input-slider").forEach((slider) => {
+    const input = slider.querySelector("input");
+    const placeholder =
+      slider.nextElementSibling as HTMLParagraphElement | null;
+    if (input != null && placeholder != null) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === "value") {
+            placeholder.innerText = input.value;
+          }
+        });
+      });
+      observer.observe(input, { attributes: true });
+    } else {
+      console.warn(
+        "Не удалось найти placeholder для вывода значения слайдера.",
+      );
+    }
+  });
+
   const plotScale = this.document.getElementById("plot-params:plotScale");
   if (!(plotScale && plotScale instanceof HTMLInputElement)) {
     throw new Error("Не удалось найти поле plotScale");
