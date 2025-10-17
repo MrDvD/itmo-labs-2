@@ -24,7 +24,7 @@
   <div class="lab-form-field">
     <p><b>R</b></p>
     <h:panelGrid styleClass="input-slider">
-      <p:slider for="plotR" minValue="#{pointAvailableRange.min['R']}" maxValue="#{pointAvailableRange.max['R']}" />
+      <p:slider for="plotR" minValue="#{pointAvailableRange.min['R']}" maxValue="#{pointAvailableRange.max['R']}" step="#{pointAvailableRange.step['R']}" />
       <h:inputHidden id="plotR" value="#{plotForm.r}" required="true" requiredMessage="Укажите R для определённости">
         <f:converter converterId="jakarta.faces.Double" />
         <f:validator validatorId="inRangeValidator">
