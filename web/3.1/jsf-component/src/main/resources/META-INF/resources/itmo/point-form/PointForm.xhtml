@@ -23,19 +23,17 @@
         <p><b>X</b></p>
         <h:inputText id="keysX" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueX}" required="true" rendered="#{cc.attrs.inputTypeX == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
-          <f:validator validatorId="inRangeValidator">
-            <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
-            <f:attribute name="max" value="#{cc.attrs.inputRange.max['X']}" />
-          </f:validator>
+          <f:validator validatorId="inRangeValidator" />
+          <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
+          <f:attribute name="max" value="#{cc.attrs.inputRange.max['X']}" />
         </h:inputText>
         <h:panelGrid rendered="#{cc.attrs.inputTypeX == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueX" minValue="#{cc.attrs.inputRange.min['X']}" maxValue="#{cc.attrs.inputRange.max['X']}" />
           <h:inputHidden id="sliderValueX" value="#{cc.attrs.valueX}" required="true">
             <f:converter converterId="jakarta.faces.Double" />
-            <f:validator validatorId="inRangeValidator">
-              <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
-              <f:attribute name="max" value="#{cc.attrs.inputRange.max['X']}" />
-            </f:validator>
+            <f:validator validatorId="inRangeValidator" />
+            <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
+            <f:attribute name="max" value="#{cc.attrs.inputRange.max['X']}" />
           </h:inputHidden>
         </h:panelGrid>
         <h:panelGroup rendered="#{cc.attrs.inputTypeX == 'slider'}" layout="block">
@@ -48,19 +46,17 @@
         <p><b>Y</b></p>
         <h:inputText id="keysY" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueY}" required="true" rendered="#{cc.attrs.inputTypeY == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
-          <f:validator validatorId="inRangeValidator">
-            <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
-            <f:attribute name="max" value="#{cc.attrs.inputRange.max['Y']}" />
-          </f:validator>
+          <f:validator validatorId="inRangeValidator" />
+          <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
+          <f:attribute name="max" value="#{cc.attrs.inputRange.max['Y']}" />
         </h:inputText>
         <h:panelGrid rendered="#{cc.attrs.inputTypeY == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueY" minValue="#{cc.attrs.inputRange.min['Y']}" maxValue="#{cc.attrs.inputRange.max['Y']}" />
           <h:inputHidden id="sliderValueY" value="#{cc.attrs.valueY}" required="true">
             <f:converter converterId="jakarta.faces.Double" />
-            <f:validator validatorId="inRangeValidator">
-              <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
-              <f:attribute name="max" value="#{cc.attrs.inputRange.max['Y']}" />
-            </f:validator>
+            <f:validator validatorId="inRangeValidator" />
+            <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
+            <f:attribute name="max" value="#{cc.attrs.inputRange.max['Y']}" />
           </h:inputHidden>
         </h:panelGrid>
         <h:panelGroup rendered="#{cc.attrs.inputTypeY == 'slider'}" layout="block">
@@ -73,19 +69,17 @@
         <p><b>R</b></p>
         <h:inputText id="keysR" pt:placeholder="Введите дробное число" styleClass="wide-input double-input" autocomplete="off" value="#{cc.attrs.valueR}" required="true" rendered="#{cc.attrs.inputTypeR == 'text'}">
           <f:converter converterId="jakarta.faces.Double" />
-          <f:validator validatorId="inRangeValidator">
-            <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />
-            <f:attribute name="max" value="#{cc.attrs.inputRange.max['R']}" />
-          </f:validator>
+          <f:validator validatorId="inRangeValidator" />
+          <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />
+          <f:attribute name="max" value="#{cc.attrs.inputRange.max['R']}" />
         </h:inputText>
         <h:panelGrid rendered="#{cc.attrs.inputTypeR == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueR" minValue="#{cc.attrs.inputRange.min['R']}" maxValue="#{cc.attrs.inputRange.max['R']}" />
           <h:inputHidden id="sliderValueR" value="#{cc.attrs.valueR}" required="true">
             <f:converter converterId="jakarta.faces.Double" />
-            <f:validator validatorId="inRangeValidator">
-              <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />
-              <f:attribute name="max" value="#{cc.attrs.inputRange.max['R']}" />
-            </f:validator>
+            <f:validator validatorId="inRangeValidator" />
+            <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />
+            <f:attribute name="max" value="#{cc.attrs.inputRange.max['R']}" />
           </h:inputHidden>
         </h:panelGrid>
         <h:panelGroup rendered="#{cc.attrs.inputTypeR == 'slider'}" layout="block">
