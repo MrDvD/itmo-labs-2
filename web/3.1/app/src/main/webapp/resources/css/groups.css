@@ -1,0 +1,11 @@
+.horizontal-group {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.vertical-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
