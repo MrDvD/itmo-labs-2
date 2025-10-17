@@ -4,6 +4,11 @@
   margin: auto;
   cursor: pointer;
 
+  .workaround {
+    position: absolute;
+    width: stretch;
+  }
+
   .dot {
     width: 10px;
     height: 10px;
