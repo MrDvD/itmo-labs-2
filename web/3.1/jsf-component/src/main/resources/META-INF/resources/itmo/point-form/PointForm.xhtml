@@ -30,7 +30,7 @@
         </h:inputText>
         <h:panelGrid rendered="#{cc.attrs.inputTypeX == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueX" minValue="#{cc.attrs.inputRange.min['X']}" maxValue="#{cc.attrs.inputRange.max['X']}" />
-          <h:inputHidden id="sliderValueX" value="#{cc.attrs.valueX}">
+          <h:inputHidden id="sliderValueX" value="#{cc.attrs.valueX}" required="true">
             <f:converter converterId="jakarta.faces.Double" />
             <f:validator validatorId="inRangeValidator">
               <f:attribute name="min" value="#{cc.attrs.inputRange.min['X']}" />
@@ -55,7 +55,7 @@
         </h:inputText>
         <h:panelGrid rendered="#{cc.attrs.inputTypeY == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueY" minValue="#{cc.attrs.inputRange.min['Y']}" maxValue="#{cc.attrs.inputRange.max['Y']}" />
-          <h:inputHidden id="sliderValueY" value="#{cc.attrs.valueY}">
+          <h:inputHidden id="sliderValueY" value="#{cc.attrs.valueY}" required="true">
             <f:converter converterId="jakarta.faces.Double" />
             <f:validator validatorId="inRangeValidator">
               <f:attribute name="min" value="#{cc.attrs.inputRange.min['Y']}" />
@@ -80,7 +80,7 @@
         </h:inputText>
         <h:panelGrid rendered="#{cc.attrs.inputTypeR == 'slider'}" styleClass="input-slider">
           <p:slider for="sliderValueR" minValue="#{cc.attrs.inputRange.min['R']}" maxValue="#{cc.attrs.inputRange.max['R']}" />
-          <h:inputHidden id="sliderValueR" value="#{cc.attrs.valueR}">
+          <h:inputHidden id="sliderValueR" value="#{cc.attrs.valueR}" required="true">
             <f:converter converterId="jakarta.faces.Double" />
             <f:validator validatorId="inRangeValidator">
               <f:attribute name="min" value="#{cc.attrs.inputRange.min['R']}" />

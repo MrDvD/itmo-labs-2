@@ -16,6 +16,10 @@
     action="#{plotForm.send}"
     execute="plotR"
     render="plot-area:messagePlotR plot-area:dots dot-history" />
+  <h:commandScript
+    name="updatePlotRadius"
+    execute="plotR"
+    render="plot-area:messagePlotR plot-area:dots" />
   <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" pt:draggable="false" />
   <div class="lab-form-field">
     <p><b>R</b></p>
