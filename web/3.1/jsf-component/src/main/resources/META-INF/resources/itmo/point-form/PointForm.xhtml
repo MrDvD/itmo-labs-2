@@ -38,6 +38,9 @@
             </f:validator>
           </h:inputHidden>
         </h:panelGrid>
+        <h:panelGroup rendered="#{cc.attrs.inputTypeX == 'slider'}" layout="block">
+          <p>?</p>
+        </h:panelGroup>
       </div>
       <h:message for="keysX" styleClass="lab-form-error" />
       <h:message for="sliderValueX" id="messageSliderX" styleClass="lab-form-error" />
@@ -60,6 +63,9 @@
             </f:validator>
           </h:inputHidden>
         </h:panelGrid>
+        <h:panelGroup rendered="#{cc.attrs.inputTypeY == 'slider'}" layout="block">
+          <p>?</p>
+        </h:panelGroup>
       </div>
       <h:message for="keysY" styleClass="lab-form-error" />
       <h:message for="sliderValueY" id="messageSliderY" styleClass="lab-form-error" />
@@ -82,6 +88,9 @@
             </f:validator>
           </h:inputHidden>
         </h:panelGrid>
+        <h:panelGroup rendered="#{cc.attrs.inputTypeR == 'slider'}" layout="block">
+          <p>?</p>
+        </h:panelGroup>
       </div>
       <h:message for="keysR" id="messageKeysR" styleClass="lab-form-error" />
       <h:message for="sliderValueR" id="messageSliderR" styleClass="lab-form-error" />
