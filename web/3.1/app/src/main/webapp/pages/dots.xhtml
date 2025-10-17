@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dots</title>
   <h:outputStylesheet name="dots/style.css" />
-  <script type="module" src="/resources/dots/script.js"></script>
+  <script type="module" src="/resources/app/dots/script.js"></script>
 </h:head>
 <body>
 <div id="lab-body">
@@ -19,7 +19,7 @@
   <ui:include src="/components/back-to-services.xhtml" />
   <div class="lab-form">
     <div class="horizontal-group">
-      <itmo:PointForm value_R="#{dotForm.r}" inputTypeX="slider" inputTypeR="text" inputRange="#{pointAvailableRange}" />
+      <itmo:PointForm inputTypeX="slider" inputTypeR="text" inputRange="#{pointAvailableRange}" />
       <ui:include src="/components/plot.xhtml" />
     </div>
   </div>

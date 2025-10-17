@@ -18,6 +18,7 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.util.TypeLiteral
 import jakarta.enterprise.event.Event
 import com.itmo.mrdvd.dto.PointResultEvent
+import com.itmo.mrdvd.dto.ClearPointsEvent
 
 @FacesComponent
 class PointForm extends UINamingContainer, Serializable:
@@ -33,6 +34,10 @@ class PointForm extends UINamingContainer, Serializable:
   private val pointResultEvent = CDI
     .current()
     .select(new TypeLiteral[Event[PointResultEvent[DotResult]]] {})
+    .get()
+  private val clearPointsEvent = CDI
+    .current()
+    .select(new TypeLiteral[Event[ClearPointsEvent]] {})
     .get()
   private val allowedInputTypes = Set("text", "slider")
   private val inputFieldNames = Seq("inputTypeX", "inputTypeY", "inputTypeR")
@@ -56,3 +61,4 @@ class PointForm extends UINamingContainer, Serializable:
         )
   def clear(): Unit =
     dotRepository.clearAll
+    clearPointsEvent.fire(ClearPointsEvent())

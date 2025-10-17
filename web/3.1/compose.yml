@@ -26,7 +26,8 @@ services:
     volumes:
       - ./app/src/main/resources/wildfly/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./app/target:/opt/jboss/wildfly/standalone/deployments/
-      - ./public:/opt/jboss/wildfly/resources
+      - ./public/app/src/main/typescript:/opt/jboss/wildfly/resources/app
+      - ./public/jsf-component/src/main/resources/META-INF/resources/itmo:/opt/jboss/wildfly/resources/itmo
     networks:
       - backend
     ports:

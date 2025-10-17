@@ -16,7 +16,7 @@
   }
 }
 
-.lab-form-error:empty {
+.lab-form-error span:empty {
   display: none;
 }
 
