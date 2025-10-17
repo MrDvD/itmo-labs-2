@@ -1,0 +1,98 @@
+\include{Preamble}
+
+\begin{document}
+
+\include{Title}
+
+\section{Фрактал «Кривая Гильберта»}
+
+\subsection{Описание структуры и построения}
+
+\textbf{Кривая Гильберта} — это пространство-заполняющая кривая, впервые предложенная Давидом Гильбертом в 1891 году. Она является примером непрерывного отображения от единичного отрезка на единичный квадрат, при этом полностью заполняет его область. Кривая Гильберта строится итерационно, при каждой итерации увеличивая уровень вложенности и детализации.
+
+\subsubsection{Алгоритм построения}
+
+Построение кривой Гильберта основано на рекурсивной перестройке базового шаблона из четырёх подкрестов, соединённых под определённым углом. Каждый следующий порядок кривой делит квадрат на четыре меньших и встраивает в них повернутые копии кривой предыдущего порядка.
+
+Кривую можно построить с помощью рекурсивной функции, описывающей направления движения пера:
+
+\[
+\text{Hilbert}(n, d) =
+\begin{cases}
+\text{влево},\, \text{Hilbert}(n-1, -d),\, \text{вперёд},\, \text{Направо}, \\
+\text{Hilbert}(n-1, d),\, \text{вперёд},\, \text{Hilbert}(n-1, d), \\
+\text{направо},\, \text{вперёд},\, \text{Hilbert}(n-1, -d)
+\end{cases}
+\]
+
+где \( n \) — порядок кривой, а \( d \) определяет направление поворота.
+
+\begin{lstlisting}[caption=Построение кривой Гильберта]
+import matplotlib.pyplot as plt
+
+def hilbert_curve(n, angle=90, step=10):
+    path = []
+    def hilbert(level, sign):
+        if level == 0:
+            return
+        plt.right(sign * angle)
+        hilbert(level - 1, -sign)
+        plt.forward(step)
+        plt.left(sign * angle)
+        hilbert(level - 1, sign)
+        plt.forward(step)
+        hilbert(level - 1, sign)
+        plt.left(sign * angle)
+        plt.forward(step)
+        hilbert(level - 1, -sign)
+        plt.right(sign * angle)
+    hilbert(n, 1)
+
+import turtle as plt
+plt.speed(0)
+hilbert_curve(5, step=8)
+plt.hideturtle()
+plt.done()
+\end{lstlisting}
+
+\subsection{Визуализации}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        % \includegraphics[width=\textwidth]{hilbert_1.png}
+        \caption{Кривая Гильберта 1-го порядка}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        % \includegraphics[width=\textwidth]{hilbert_3.png}
+        \caption{Кривая Гильберта 3-го порядка}
+    \end{subfigure}
+    \\
+    \begin{subfigure}{0.45\textwidth}
+        % \includegraphics[width=\textwidth]{hilbert_5.png}
+        \caption{Кривая Гильберта 5-го порядка}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        % \includegraphics[width=\textwidth]{hilbert_zoom.png}
+        \caption{Фрагмент с увеличением, показывающий самоподобие}
+    \end{subfigure}
+    \caption{Построения кривой Гильберта разных порядков}
+\end{figure}
+
+\subsection{Анализ структуры}
+
+Кривая Гильберта обладает рядом интересных свойств:
+\begin{itemize}
+    \item \textbf{Самоподобие}: каждый уровень построения представляет собой масштабированную копию предыдущего, повернутую под разными углами.
+    \item \textbf{Непрерывность}: кривая является непрерывной, но нигде не дифференцируемой функцией.
+    \item \textbf{Заполнение пространства}: при бесконечном числе итераций кривая заполняет весь квадрат, переходя из одномерного пространства в двумерное.
+\end{itemize}
+
+\section*{Заключение}
+
+Были исследованы методы построения кривой Гильберта и показано, как простое рекурсивное правило приводит к образованию сложной, самоподобной структуры. Этот фрактал является классическим примером пространства-заполняющих кривых и демонстрирует идею предельного перехода от дискретных линий к непрерывной плоской форме.
+
+
+\end{document}
