@@ -1,27 +1,4 @@
 export class DomService {
-  protected labForm: HTMLFormElement;
-
-  constructor() {
-    this.labForm = this.refreshLabForm();
-  }
-
-  public refreshLabForm(formClass = "lab-form-keys"): HTMLFormElement {
-    const labForms = document.getElementsByClassName(formClass);
-    if (labForms.length === 0) {
-      throw new Error("Не удалось найти форму по классу.");
-    }
-    const labForm = labForms.item(0);
-    if (!(labForm instanceof HTMLFormElement)) {
-      throw new Error("Переданный класс не соответствует HTML-форме.");
-    }
-    this.labForm = labForm;
-    return this.getLabForm();
-  }
-
-  public getLabForm(): HTMLFormElement {
-    return this.labForm;
-  }
-
   public getCanvas(canvasId = "plot-area"): HTMLElement {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
