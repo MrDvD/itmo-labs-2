@@ -3,6 +3,7 @@ package com.itmo.mrdvd.bean
 import jakarta.faces.view.ViewScoped
 import java.lang.Double
 import jakarta.inject.Named
+import scala.math.BigDecimal.RoundingMode
 
 @Named
 @ViewScoped

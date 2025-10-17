@@ -11,7 +11,7 @@
       <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td></tr>
     </thead>
     <tbody class="lab-query-history-body">
-      <ui:repeat value="#{dotForm.cache}" var="dotResult">
+      <ui:repeat value="#{plotForm.cache}" var="dotResult">
         <tr>
           <td>#{dotResult.dot().X()}</td>
           <td>#{dotResult.dot().Y()}</td>
@@ -20,7 +20,7 @@
           <td>#{dotResult.date()}</td>
         </tr>
       </ui:repeat>
-      <ui:fragment rendered="#{empty dotForm.cache}">
+      <ui:fragment rendered="#{empty plotForm.cache}">
         <tr>
           <td colspan="100">Нет запросов!</td>
         </tr>

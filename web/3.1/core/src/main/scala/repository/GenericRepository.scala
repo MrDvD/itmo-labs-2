@@ -4,5 +4,5 @@ import scala.util.Try
 
 trait GenericRepository[T, U]:
   def create(item: T): Try[U]
-  def getAll(): Array[U]
-  def clearAll(): Unit
+  def getAll: Array[U]
+  def clearAll: Unit

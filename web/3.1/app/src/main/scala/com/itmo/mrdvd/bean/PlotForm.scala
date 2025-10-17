@@ -12,24 +12,24 @@ import scala.util.Success
 
 @Named
 @SessionScoped
-class DotForm extends Serializable:
+class PlotForm extends Serializable:
   @Inject @Named("cachingRepository") private var dotRepository
       : CachingRepository[DotResult, DotResult] = null
   @Inject private var dotResultMapper: Mapper[Dot, DotResult] = null
-  @Inject protected var plot: DotCoords = null
+  @Inject protected var plot: DefaultPoint = null
   private var scale: Double = null
   private var r: Double = null
 
-  def getCache(): Array[DotResult] = dotRepository.getAll()
-  def getPlot(): DotCoords = plot
+  def getCache: Array[DotResult] = dotRepository.getAll
+  def getPlot: DefaultPoint = plot
 
-  def getR(): Double = r
+  def getR: Double = r
   def setR(R: Double): Unit = r = R
 
-  def getScale(): Double = scale
+  def getScale: Double = scale
   def setScale(newScale: Double) = scale = newScale
 
-  def sendPlot(): Unit =
+  def send: Unit =
     dotResultMapper(
       Dot(
         BigDecimal
