@@ -31,7 +31,7 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
           throw Error("Database selection error")
   override def create(dot: DotResult): Try[DotResult] =
     Using.Manager(use =>
-      val conn = use(JdbcConnector.getConnection())
+      val conn = use(JdbcConnector.getConnection)
       val stmt = use(conn.prepareStatement(sqlCreate))
       stmt.setDouble(1, dot.dot.X)
       stmt.setDouble(2, dot.dot.Y)
@@ -41,18 +41,18 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
       if stmt.executeUpdate() > 0 then dot
       else throw Error("Database insertion error")
     )
-  override def getAll(): Array[DotResult] =
+  override def getAll: Array[DotResult] =
     Using
       .Manager(use =>
-        val conn = use(JdbcConnector.getConnection())
+        val conn = use(JdbcConnector.getConnection)
         val stmt = use(conn.createStatement())
         val rs = use(stmt.executeQuery(sqlGetAll))
         readDots(rs, Array[DotResult]())
       )
       .get
-  override def clearAll(): Unit =
+  override def clearAll: Unit =
     Using.Manager(use =>
-      val conn = use(JdbcConnector.getConnection())
+      val conn = use(JdbcConnector.getConnection)
       val stmt = use(conn.createStatement())
       stmt.executeUpdate(sqlClearAll)
     )
@@ -70,5 +70,5 @@ object JdbcConnector:
   val dbUsername = getEnv("POSTGRES_USER")
   val dbPassword = getEnv("POSTGRES_PASSWORD")
 
-  def getConnection(): Connection =
+  def getConnection: Connection =
     DriverManager.getConnection(jdbcUrl, dbUsername(), dbPassword())

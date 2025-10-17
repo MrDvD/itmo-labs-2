@@ -5,7 +5,6 @@ import com.itmo.mrdvd.dto.{DotResult, Dot}
 import com.itmo.mrdvd.mapper.Mapper
 import java.lang.Double
 import scala.util.{Success, Failure}
-import com.itmo.mrdvd.bean.DotCoords
 import jakarta.faces.component.UINamingContainer
 import jakarta.faces.context.FacesContext
 import jakarta.faces.event.ComponentSystemEvent
@@ -16,7 +15,6 @@ import jakarta.enterprise.inject.spi.CDI
 import jakarta.enterprise.util.AnnotationLiteral
 import jakarta.enterprise.inject.literal.NamedLiteral
 import jakarta.enterprise.context.ApplicationScoped
-import com.itmo.mrdvd.mapper.DotResultMapper
 import jakarta.enterprise.util.TypeLiteral
 import jakarta.enterprise.event.Event
 import com.itmo.mrdvd.dto.PointResultEvent
@@ -57,4 +55,4 @@ class PointForm extends UINamingContainer, Serializable:
           f"Unknown input type \"$input\" specified for attribute $inputName."
         )
   def clear(): Unit =
-    dotRepository.clearAll()
+    dotRepository.clearAll

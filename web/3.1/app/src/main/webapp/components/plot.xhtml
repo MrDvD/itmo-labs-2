@@ -5,12 +5,12 @@
   xmlns:f="jakarta.faces.core"
   xmlns:pt="jakarta.faces.passthrough">
 <h:form id="plot-params">
-  <h:inputHidden id="plotScale" value="#{dotForm.scale}" />
-  <h:inputHidden id="plotX" value="#{dotForm.plot.x}" />
-  <h:inputHidden id="plotY" value="#{dotForm.plot.y}" />
+  <h:inputHidden id="plotScale" value="#{plotForm.scale}" />
+  <h:inputHidden id="plotX" value="#{plotForm.plot.x}" />
+  <h:inputHidden id="plotY" value="#{plotForm.plot.y}" />
 </h:form>
 <h:form id="plot-area">
-  <h:inputHidden id="plotR" value="#{dotForm.r}" required="true" requiredMessage="Укажите R для определённости">
+  <h:inputHidden id="plotR" value="#{plotForm.r}" required="true" requiredMessage="Укажите R для определённости">
     <f:converter converterId="jakarta.faces.Double" />
     <f:validator validatorId="inRangeValidator">
       <f:attribute name="min" value="#{pointAvailableRange.min['R']}" />
@@ -19,17 +19,17 @@
   </h:inputHidden>
   <h:commandScript
     name="sendPlot"
-    action="#{dotForm.sendPlot}"
+    action="#{plotForm.send}"
     execute="plotR"
     render="plot-area:messagePlotR plot-area:dots dot-history" />
   <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" pt:draggable="false" />
   <p><h:message for="plotR" id="messagePlotR" styleClass="lab-form-error" /></p>
   <h:panelGroup id="dots">
-    <ui:repeat value="#{dotForm.cache}" var="dotResult">
+    <ui:repeat value="#{plotForm.cache}" var="dotResult">
       <h:panelGroup
         styleClass='dot #{dotResult.hit() ? "correct" : "wrong"}'
-        style="transform: translate(#{dotResult.dot().X() * dotForm.scale / dotForm.r}px, #{-dotResult.dot().Y() * dotForm.scale / dotForm.r}px);"
-        rendered="#{dotForm.r ge dotResult.dot().maxCoord()}">
+        style="transform: translate(#{dotResult.dot().X() * plotForm.scale / plotForm.r}px, #{-dotResult.dot().Y() * plotForm.scale / plotForm.r}px);"
+        rendered="#{plotForm.r ge dotResult.dot().maxCoord()}">
       </h:panelGroup>
     </ui:repeat>
   </h:panelGroup>
