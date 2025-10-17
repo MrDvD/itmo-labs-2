@@ -20,7 +20,7 @@ addEventListener("DOMContentLoaded", function () {
     });
   });
   observer.observe(plotRadius, { attributes: true });
-
+  // set scale for plot
   const plotScale = this.document.getElementById("plot-params:plotScale");
   if (!(plotScale && plotScale instanceof HTMLInputElement)) {
     throw new Error("Не удалось найти поле plotScale");
@@ -34,6 +34,7 @@ addEventListener("DOMContentLoaded", function () {
     execute: "@form",
     render: "@form",
   });
+  // sending plot form on click
   domService
     .getCanvas()
     .querySelector("img")
@@ -66,40 +67,5 @@ addEventListener("DOMContentLoaded", function () {
           }
         },
       });
-    });
-  // live input validation for Double
-  domService
-    .getLabForm()
-    .querySelectorAll(".double-input")
-    .forEach((input) => {
-      if (input instanceof HTMLInputElement) {
-        const numbers = "0123456789";
-        input.addEventListener("keypress", function (event) {
-          const idx = input.selectionStart as number;
-          const isNegative = event.key === "-" && idx === 0;
-          const isFractional =
-            event.key === "." &&
-            idx > 0 &&
-            numbers.indexOf(input.value[idx - 1] as string) !== -1 &&
-            !/\./.test(input.value);
-          const isNumber = numbers.indexOf(event.key) != -1;
-          if (!(isNegative || isFractional || isNumber)) {
-            event.preventDefault();
-          }
-        });
-        input.addEventListener("compositionstart", function (event) {
-          event.preventDefault();
-          this.blur();
-        });
-        input.addEventListener("paste", function (event) {
-          if (
-            !/-?[0123456789]+(?:\.[0123456789]+)?/.test(
-              (event as ClipboardEvent).clipboardData?.getData("text") ?? "",
-            )
-          ) {
-            event.preventDefault();
-          }
-        });
-      }
     });
 });
