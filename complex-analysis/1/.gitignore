@@ -1,4 +1,5 @@
+venv/
+temp/
 *.aux
 *.log
 *.out
-temp/
