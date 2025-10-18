@@ -1,22 +1,24 @@
 \documentclass[12pt]{article}
-\usepackage[T1]{fontenc}
+\usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english, russian]{babel}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{array}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \usepackage[a4paper,
             left=3cm,
             right=3cm,
             top=2cm,
             bottom=3cm]{geometry}
 
-\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Определение}
 
 % Настройки для листингов кода
 \lstset{
@@ -32,7 +34,7 @@
     frame=single,
     tabsize=4,
     breaklines=true,
-    breakatwhitespace=true
+    showstringspaces=false
 }
 
 % Параметры для гиперссылок
@@ -43,7 +45,3 @@
     urlcolor=cyan,
     pdftitle={Отчет по фракталам}
 }
-
-\title{Отчёт по исследованию фракталов}
-\author{Ваше Имя \\ Ваша Группа}
-\date{\today}
