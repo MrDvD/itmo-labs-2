@@ -2,10 +2,7 @@ package com.itmo.mrdvd.mapper
 
 import com.itmo.mrdvd.dto.Dot
 import scala.math.BigDecimal.RoundingMode
-import jakarta.enterprise.context.Dependent
-import jakarta.inject.Named
 
-@Dependent
 class RoundDotMapper extends Mapper[Dot, Dot]:
   override def apply(dot: Dot): Either[Dot, Error] =
     Left(

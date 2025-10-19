@@ -2,9 +2,7 @@ package com.itmo.mrdvd.mapper
 
 import java.sql.ResultSet
 import com.itmo.mrdvd.dto.{Dot, DotResult}
-import jakarta.enterprise.context.ApplicationScoped
 
-@ApplicationScoped
 class ResultSetMapper extends Mapper[ResultSet, DotResult]:
   override def apply(rs: ResultSet): Either[DotResult, Error] =
     Left(

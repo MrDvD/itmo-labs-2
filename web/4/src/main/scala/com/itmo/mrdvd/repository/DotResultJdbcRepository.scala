@@ -3,16 +3,12 @@ package com.itmo.mrdvd.repository
 import com.itmo.mrdvd.dto.DotResult
 import java.sql.{Connection, DriverManager}
 import scala.util.{Try, Using, Success, Failure}
-import jakarta.enterprise.context.ApplicationScoped
-import jakarta.inject.{Named, Inject}
 import com.itmo.mrdvd.mapper.ResultSetMapper
 import java.sql.ResultSet
 import scala.annotation.tailrec
 
-@Named("jdbcRepository")
-@ApplicationScoped
 class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
-  @Inject protected var rsMapper: ResultSetMapper = null
+  protected var rsMapper: ResultSetMapper = null
   private val sqlCreate =
     "insert into DOTS_HISTORY (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
   private val sqlGetAll = "select x, y, r, hit, date from DOTS_HISTORY"

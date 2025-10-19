@@ -3,13 +3,9 @@ package com.itmo.mrdvd.mapper
 import com.itmo.mrdvd.dto.{Dot, DotResult}
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
-import jakarta.enterprise.context.ApplicationScoped
-import jakarta.inject.Named
-import jakarta.inject.Inject
 
-@ApplicationScoped
 class DotResultMapper extends Mapper[Dot, DotResult]:
-  @Inject protected var roundDotMapper: RoundDotMapper = null
+  protected var roundDotMapper: RoundDotMapper = null
   val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
   val zone = ZoneId.of("Europe/Moscow")
   override def apply(dot: Dot): Either[DotResult, Error] =
