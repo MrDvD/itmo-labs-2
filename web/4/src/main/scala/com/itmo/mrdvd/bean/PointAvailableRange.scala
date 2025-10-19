@@ -1,12 +1,8 @@
 package com.itmo.mrdvd.bean
 
-import jakarta.enterprise.context.ApplicationScoped
 import scala.jdk.CollectionConverters._
-import jakarta.inject.Named
 import java.lang.Double
 
-@Named
-@ApplicationScoped
 class PointAvailableRange extends CoordsRange, Serializable:
   private val minMaxValues = Map(
     "X" -> Array(-3.0, 5.0, 0.1),
