@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html
+  xmlns = "http://www.w3.org/1999/xhtml"
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html">
+<h:head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Main</title>
+  <h:outputStylesheet name="main/style.css" />
+  <script type="module" src="/resources/app/main/script.js"></script>
+</h:head>
+<body>
+<div id="lab-body">
+  <ui:include src="/components/header.xhtml" />
+  <ui:include src="/components/clock.xhtml" />
+  <ui:include src="/components/available-services.xhtml" />
+</div>
+</body>
+</html>
