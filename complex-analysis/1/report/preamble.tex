@@ -1,6 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage[T2A]{fontenc}
-\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
 \usepackage[english, russian]{babel}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{graphicx}
@@ -19,6 +18,10 @@
             bottom=3cm]{geometry}
 
 \newtheorem{definition}{Определение}
+
+\setmainfont{CMU Serif}
+\setsansfont{CMU Sans Serif}
+\setmonofont{CMU Typewriter Text}
 
 % Настройки для листингов кода
 \lstset{
