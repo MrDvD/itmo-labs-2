@@ -49,7 +49,7 @@ def draw_hilbert_from_string(hilbert_string, level, step=10, angle=90, filename=
       linewidth=1)
   plt.axis('off')
 
-  total_segments = len([c for c in hilbert_string if c == 'F'])
+  total_segments = hilbert_string.count('F')
   print(f'Hilbert Curve - Level {level}')
   print(f'Total segments: {total_segments:,}')
   print(f'Saving plot to: {filename}')
