@@ -1,0 +1,31 @@
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="jakarta.faces.html"
+  xmlns:ui="jakarta.faces.facelets">
+<h:panelGroup styleClass="lab-query-history" id="dot-history">
+  <table>
+    <caption>
+      <b>История запросов</b>
+    </caption>
+    <thead>
+      <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td></tr>
+    </thead>
+    <tbody class="lab-query-history-body">
+      <ui:repeat value="#{plotForm.cache}" var="dotResult">
+        <tr>
+          <td>#{dotResult.dot().X()}</td>
+          <td>#{dotResult.dot().Y()}</td>
+          <td>#{dotResult.dot().R()}</td>
+          <td>#{dotResult.hit() ? "да" : "нет"}</td>
+          <td>#{dotResult.date()}</td>
+        </tr>
+      </ui:repeat>
+      <ui:fragment rendered="#{empty plotForm.cache}">
+        <tr>
+          <td colspan="100">Нет запросов!</td>
+        </tr>
+      </ui:fragment>
+    </tbody>
+  </table>
+</h:panelGroup>
+</ui:composition>

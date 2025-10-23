@@ -1,0 +1,49 @@
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html"
+  xmlns:f="jakarta.faces.core"
+  xmlns:pt="jakarta.faces.passthrough"
+  xmlns:p="primefaces">
+<h:form id="plot-params">
+  <h:inputHidden id="plotScale" value="#{plotForm.scale}" />
+  <h:inputHidden id="plotX" value="#{plotForm.plot.x}" />
+  <h:inputHidden id="plotY" value="#{plotForm.plot.y}" />
+</h:form>
+<h:form id="plot-area">
+  <h:commandScript
+    name="sendPlot"
+    action="#{plotForm.send}"
+    execute="plotR"
+    render="plot-area:messagePlotR plot-area:dots dot-history" />
+  <h:commandScript
+    name="updatePlotRadius"
+    execute="plotR"
+    render="plot-area:messagePlotR plot-area:dots" />
+  <h:graphicImage library="images" name="png/plot.png" alt="Dot plot" pt:draggable="false" />
+  <div class="lab-form-field workaround">
+    <p><b>R</b></p>
+    <h:panelGrid styleClass="input-slider">
+      <p:slider for="plotR" minValue="#{pointAvailableRange.min['R']}" maxValue="#{pointAvailableRange.max['R']}" step="#{pointAvailableRange.step['R']}" />
+      <h:inputHidden id="plotR" value="#{plotForm.r}" required="true" requiredMessage="Укажите R для определённости">
+        <f:converter converterId="jakarta.faces.Double" />
+        <f:validator validatorId="inRangeValidator">
+          <f:attribute name="min" value="#{pointAvailableRange.min['R']}" />
+          <f:attribute name="max" value="#{pointAvailableRange.max['R']}" />
+        </f:validator>
+      </h:inputHidden>
+    </h:panelGrid>
+    <p>?</p>
+  </div>
+  <p><h:message for="plotR" id="messagePlotR" styleClass="lab-form-error" /></p>
+  <h:panelGroup id="dots" >
+    <ui:repeat value="#{plotForm.cache}" var="dotResult">
+      <h:panelGroup
+        styleClass='dot #{dotResult.hit() ? "correct" : "wrong"}'
+        style="transform: translate(#{dotResult.dot().X() * plotForm.scale / plotForm.r}px, #{-dotResult.dot().Y() * plotForm.scale / plotForm.r}px);"
+        rendered="#{plotForm.r ge dotResult.dot().maxCoord()}">
+      </h:panelGroup>
+    </ui:repeat>
+  </h:panelGroup>
+</h:form>
+</ui:composition>
