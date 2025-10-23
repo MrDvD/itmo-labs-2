@@ -3,3 +3,4 @@ temp/
 *.aux
 *.log
 *.out
+*.toc
