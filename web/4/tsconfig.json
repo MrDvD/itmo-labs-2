@@ -3,6 +3,7 @@
     // File Layout
     "rootDir": "src/main/webapp",
     "outDir": "./public",
+    "baseUrl": "src/main/webapp",
 
     "module": "nodenext",
     "target": "esnext",

@@ -2,7 +2,18 @@
   @import '../style.css';
 </style>
 
-<form class='lab-form'>
+<script lang="ts">
+  import { AppServices } from 'lib/services.js';
+  import { handleSubmit } from '../script.js';
+
+  const dotsRepository = AppServices.DOTS_REPOSITORY.get();
+
+  function myHandleSubmit(event: Event) {
+    handleSubmit(event, dotsRepository);
+  }
+</script>
+
+<form class='lab-form' on:submit|preventDefault={myHandleSubmit}>
   <p>Проверка точки</p>
   <div class="form-field">
     <p><b>X</b></p>
@@ -19,6 +30,6 @@
     <input type="text" class="wide-input" placeholder="Введите дробное число" />
   </div>
   <p class="form-error"></p>
-  <button>Отправить</button>
-  <button>Очистить</button>
+  <button type="submit">Отправить</button>
+  <button type="button">Очистить</button>
 </form>

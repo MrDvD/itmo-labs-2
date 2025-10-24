@@ -8,6 +8,10 @@
   import DotFormComponent from '/components/forms/dot-form/DotFormComponent.svelte';
   import PlotFormComponent from '/components/forms/plot-form/PlotFormComponent.svelte';
   import DotHistoryComponent from '/components/dot-history/DotHistoryComponent.svelte';
+  import { DotsRepository } from 'lib/repository/dots.js';
+  import { AppServices } from 'lib/services.js';
+
+  AppServices.DOTS_REPOSITORY.set(DotsRepository());
 </script>
 
 <div class="lab-body">
