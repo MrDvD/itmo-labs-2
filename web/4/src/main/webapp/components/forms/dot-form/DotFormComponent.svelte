@@ -5,11 +5,16 @@
 <script lang="ts">
   import { AppServices } from 'lib/services.js';
   import { handleSubmit } from '../script.js';
+  import { handleClean } from './script.js';
 
   const dotsRepository = AppServices.DOTS_REPOSITORY.get();
 
   function myHandleSubmit(event: Event) {
     handleSubmit(event, dotsRepository);
+  }
+
+  function myHandleClean(event: Event) {
+    handleClean(event, dotsRepository);
   }
 </script>
 
@@ -31,5 +36,5 @@
   </div>
   <p class="form-error"></p>
   <button type="submit">Отправить</button>
-  <button type="button">Очистить</button>
+  <button type="button" on:click={myHandleClean}>Очистить</button>
 </form>

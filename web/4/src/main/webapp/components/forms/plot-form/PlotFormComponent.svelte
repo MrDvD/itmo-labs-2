@@ -14,7 +14,7 @@
   }
 </script>
 
-<form class="lab-form" on:submit|preventDefault={handleSubmit}>
+<form class="lab-form" on:submit|preventDefault={myHandleSubmit}>
   <img src="/resources/png/plot.png" alt="Dot plot" draggable="false" />
   <div id="dots"></div>
   <div class="form-field">
