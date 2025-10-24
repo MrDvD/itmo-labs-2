@@ -10,4 +10,4 @@ const svelteApp = mount(currentPageComponent, {
   target: app,
 });
 
-export default svelteApp
+export default svelteApp;
