@@ -1,16 +1,9 @@
-.lab-query-history {
+.query-history {
   margin: 20px auto;
-
-  & > table {
-    border-collapse: collapse;
-  }
+  border-collapse: collapse;
 
   td {
     padding: 0 10px;
-  }
-
-  .centered-cell {
-    text-align: center;
   }
 
   .header-row {
@@ -18,7 +11,7 @@
     border-bottom: 1px solid black;
   }
 
-  .lab-query-history-body {
+  .query-history-body {
     max-height: 200px;
     overflow-x: hidden;
     overflow-y: auto;

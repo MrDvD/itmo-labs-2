@@ -1,5 +1,4 @@
 import { mount } from 'svelte'
-import App from './App.svelte'
 
 const app = document.getElementById('app');
 if (!app) {
@@ -7,9 +6,8 @@ if (!app) {
 }
 
 const { currentPageComponent } = (window as any).initialData || {};
-const svelteApp = mount(App, {
+const svelteApp = mount(currentPageComponent, {
   target: app,
-  props: { currentComponent: currentPageComponent }
-})
+});
 
 export default svelteApp

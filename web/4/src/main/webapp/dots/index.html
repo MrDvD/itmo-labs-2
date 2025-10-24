@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dots</title>
     <script type="module">
-      import DotsPage from '/pages/dots/DotsPage.svelte'
+      import DotsPage from '/components/pages/dots/DotsPage.svelte'
       window.initialData = {
         currentPageComponent: DotsPage,
       };
     </script>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/svelteApp.js"></script>
+    <link rel="stylesheet" href="/base.css" />
   </head>
   <body>
     <div id="app"></div>
