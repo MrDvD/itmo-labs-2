@@ -1,0 +1,27 @@
+.lab-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-field {
+  display: flex;
+  gap: 10px;
+
+  .wide-input {
+    flex: 1;
+    
+    &::placeholder {
+      font-style: italic;
+    }
+  }
+}
+
+.form-error {
+  color: var(--font-error);
+  font-size: 12px;
+}
+
+.form-error:empty {
+  display: none;
+}
