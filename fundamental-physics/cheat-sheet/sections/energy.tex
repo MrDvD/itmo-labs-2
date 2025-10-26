@@ -1,3 +1,68 @@
-\section{Энергия}
+\section{Работа, мощность, энергия}
 
-w.i.p
+\setcounter{footnote}{-3}
+
+\begin{center}
+\begin{tblr}{
+  colspec = {X[1.2,c]X[2,c]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries,mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c,m},
+  rowsep = 6pt
+}
+\text{Работа и мощность} & \text{Формулы} \\
+\text{Механическая работа} & 
+A = \int_L \vec{F}\cdot d\vec{r} = \vec{F}\cdot\vec{s} = Fs\cos\alpha
+\\
+\text{Мощность} & P = \dfrac{dA}{dt} = \vec{F}\cdot\vec{v} = Fv\cos\alpha \\
+\end{tblr}
+\end{center}
+
+\begin{center}
+\begin{tblr}{
+  colspec = {X[1.2,c]X[2,c]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries,mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {c,m},
+  rowsep = 6pt
+}
+\text{Энергия} & \text{Формулы и определения} \\
+\begin{tabular}{@{}c@{}}Полная \\ механическая энергия\end{tabular} & 
+\begin{tabular}{@{}c@{}}
+$E = K + T + U$ \\
+$\begin{array}{l}
+K - \text{поступательная кинетическая} \\
+T - \text{вращательная кинетическая} \\
+U - \text{потенциальная энергия}
+\end{array}$
+\end{tabular}
+\\
+\begin{tabular}{@{}c@{}}Кинетические энергии\end{tabular} & 
+\begin{tabular}{@{}c@{}}
+$\displaystyle K = \frac{1}{2}mv^2$ \qquad
+$\displaystyle T = \frac{1}{2}I\omega^2$
+\end{tabular} \\
+\begin{tabular}{@{}c@{}}Закон сохранения \\ механической энергии\end{tabular} & 
+\begin{tabular}{@{}c@{}}
+$E_1 = E_2$ \\
+для консервативных систем
+\end{tabular} \\
+\begin{tabular}{@{}c@{}}Консервативные силы\end{tabular} & 
+\begin{tabular}{@{}c@{}}
+$\displaystyle \vec{F} = -\nabla U=-\grad U$\footnotemark \\
+$\displaystyle A_{1\to2} = U_1 - U_2$
+\end{tabular} \\
+\begin{tabular}{@{}c@{}}Примеры \\ потенциальных \\ энергий\end{tabular} & 
+\begin{tabular}{@{}c@{}}
+Гравитация: $U = mgh$ \\
+Упругость: $U = \dfrac{1}{2}kx^2$ \\
+Кулоновская: $U = \dfrac{kq_1q_2}{r}$
+\end{tabular} \\
+\end{tblr}
+\end{center}
+
+\footnotetext{$\nabla$ -- оператор набла (градиент): $\nabla = \left(\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y}, \dfrac{\partial}{\partial z}\right)=\dfrac{\partial}{\partial x}\vec{i}+\dfrac{\partial }{\partial y}\vec{j}+\dfrac{\partial }{\partial z}\vec{k}$}
