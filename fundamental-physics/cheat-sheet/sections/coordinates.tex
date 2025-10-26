@@ -1,0 +1,102 @@
+\section{Системы координат}
+
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c]X[c]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries,mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {c,m},
+  rowsep = 6pt
+}
+\text{Левая система координат} & \text{Правая система координат} \\
+\begin{tikzpicture}[scale=1.0, >=stealth]
+  %--- координаты ---
+  \coordinate (O) at (0,0);
+  % Левая система: ось x направлена вправо, ось y "вглубь" (влево-вниз)
+  \coordinate (X) at (2.2,0);
+  \coordinate (Y) at (-1.2,-1.4);
+  \coordinate (Z) at (0,2.0);
+
+  %--- положительные оси ---
+  \draw[line width=0.9pt,->] (O) -- (X) node[below right,font=\small] {$x$};
+  \draw[line width=0.9pt,->] (O) -- (Y) node[below left,font=\small] {$y$};
+  \draw[line width=0.9pt,->] (O) -- (Z) node[above,font=\small] {$z$};
+
+  %--- отрицательные направления ---
+  \draw[dashed] (O) -- ($(O)!-0.6!(X)$);
+  \draw[dashed] (O) -- ($(O)!-0.6!(Y)$);
+  \draw[dashed] (O) -- ($(O)!-0.5!(Z)$);
+
+  %--- метка начала ---
+  \node[font=\small] at ($(O)+(0.15,-0.2)$) {$O$};
+\end{tikzpicture}
+&
+\begin{tikzpicture}[scale=1.0, >=stealth]
+  %--- координаты ---
+  \coordinate (O) at (0,0);
+  % Левая система: ось x направлена вправо, ось y "вглубь" (влево-вниз)
+  \coordinate (Y) at (2.2,0);
+  \coordinate (X) at (-1.2,-1.4);
+  \coordinate (Z) at (0,2.0);
+
+  %--- положительные оси ---
+  \draw[line width=0.9pt,->] (O) -- (X) node[below left,font=\small] {$x$};
+  \draw[line width=0.9pt,->] (O) -- (Y) node[below right,font=\small] {$y$};
+  \draw[line width=0.9pt,->] (O) -- (Z) node[above,font=\small] {$z$};
+
+  %--- отрицательные направления ---
+  \draw[dashed] (O) -- ($(O)!-0.6!(X)$);
+  \draw[dashed] (O) -- ($(O)!-0.6!(Y)$);
+  \draw[dashed] (O) -- ($(O)!-0.5!(Z)$);
+
+  %--- метка начала ---
+  \node[font=\small] at ($(O)+(0.15,-0.2)$) {$O$};
+\end{tikzpicture}
+\\
+Векторное произведение: & Векторное произведение: \\
+$\vec{x} \times \vec{y} = -\vec{z}$ & $\vec{x} \times \vec{y} = \vec{z}$ \\
+Используется редко & Стандарт в нашем курсе \\
+\end{tblr}
+\end{center}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tblr}{
+  colspec = {X[1,c]X[2,c]X[1,c]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries,mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c,m},
+  rowsep = 6pt
+}
+\text{Система} & \text{Координаты} & \text{Формулы связи} \\
+\text{Декартова} & 
+(x, y, z) & 
+--- \\
+\text{Полярная} & 
+\begin{array}{c} (r, \varphi) \\ \text{радиус, полярный угол} \end{array} & 
+\begin{array}{l}
+x = r\cos\varphi \\
+y = r\sin\varphi
+\end{array} \\
+\text{Цилиндрическая} & 
+\begin{array}{c} (\rho, \varphi, z) \\ \text{радиус, полярный угол, высота} \end{array} & 
+\begin{array}{l}
+x = \rho\cos\varphi \\
+y = \rho\sin\varphi \\
+z = z
+\end{array} \\
+\text{Сферическая} & 
+\begin{array}{c} (r, \theta, \varphi) \\ \text{радиус, зенит, азимут} \end{array} & 
+\begin{array}{l}
+x = r\sin\theta\cos\varphi \\
+y = r\sin\theta\sin\varphi \\
+z = r\cos\theta
+\end{array} \\
+\end{tblr}
+\end{center}
+\caption{Связи координат в различных системах}
+\end{table}
