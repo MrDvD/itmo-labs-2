@@ -1,0 +1,116 @@
+\section{Вращательное движение твёрдого тела}
+
+\begin{table}[ht]
+\centering
+\begin{tblr}{
+  colspec = {XX},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c},
+  rowsep = 6pt
+}
+\text{Поступательное движение} & \text{Вращательное движение} \\
+\vec{r} & \alpha \\
+\frac{\diff\vec{r}}{\diff t} = \vec{v}\quad\left[\frac{\text{м}}{\text{с}}\right] & \frac{\diff\alpha}{\diff t} = \vec{\omega}\quad\left[\frac{\text{рад}}{\text{с}}\right] \\
+\begin{array}{c} \vec{f} \\ \text{сила} \end{array} & \begin{array}{c} \vec{M}=[\vec{r}\times\vec{f}] \\ \text{момент силы} \end{array} \\
+\begin{array}{c} m \\ \text{масса} \end{array} & \begin{array}{c} I \\ \text{момент инерции} \end{array} \\
+\begin{array}{c} \vec{p} = m \vec{v} \\ \text{импульс} \end{array} & \begin{array}{c} \vec{L} = I \vec{\omega} \\ \text{момент импульса} \end{array} \\
+\frac{\diff \vec{p}}{\diff t} = \vec{f} & \frac{\diff \vec{L}}{\diff t} = \vec{M} \\
+\end{tblr}
+\caption{Сравнение параметров движения}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tblr}{
+  colspec = {X[1.7,c]X[3,c]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c,m},
+  rowsep = 8pt
+}
+\text{Тип системы} & \text{Формула момента инерции} \\
+\text{Точечные массы} & I = \sum\limits_{i} m_i r_i^2 = m_1r_1^2 + m_2r_2^2 + \cdots + m_nr_n^2 \\
+\text{Непрерывное тело} & I = \int r^2  dm = \int_V \rho(\vec{r}) r^2  dV \\
+\text{Линейная плотность} & I = \int r^2  dm = \int_L \lambda(l) r^2  dl,\quad dm = \lambda  dl \\
+\text{Поверхностная плотность} & I = \int r^2  dm = \int_S \sigma(\vec{r}) r^2  dS,\quad dm = \sigma  dS \\
+\end{tblr}
+\caption{Общие формулы для вычисления момента инерции}
+\end{table}
+
+\begin{center}
+\begin{tblr}{
+  colspec = {XX},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  row{2} = {valign=m},
+  cells = {mode=math,c},
+  rowsep = 6pt
+}
+\text{Теорема Гюйгенса-Штейнера} & \text{Схема} \\
+I_{\text{new}} = I_{\text{ц.м.}} + md^2 
+&
+\begin{minipage}[c]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.0]
+    % Основные координаты
+    \coordinate (B) at (1.5,0.8); % Центр масс
+    \coordinate (A) at (3,1.5);   % Новая ось
+    
+    % Тело (произвольная фигура)
+    \draw[fill=black!10, draw=black, thick] (B) circle (0.8);
+    
+    % Центр масс
+    \filldraw[black] (B) circle (2pt) node[below right] {Ц.М.};
+    
+    % Новая ось
+    \filldraw[black] (A) circle (2pt) node[above right] {Новая ось};
+    
+    % Расстояние d
+    \draw[dashed, thick] (B) -- (A) node[midway, above] {$d$};
+    
+    % Обозначения моментов инерции
+    \node at (1.5,2.2) {$I_{\text{ц.м.}}$};
+    \node at (3.5,2.2) {$I_{\text{new}}$};
+    
+    % Стрелки к осям
+    \draw[->, thick] (1.8,2) to[out=0,in=90] (B);
+    \draw[->, thick] (3.2,2) to[out=180,in=90] (A);
+    
+    % Масса
+    \node at (1,1.8) {$m$};
+\end{tikzpicture}
+\end{minipage}
+\\
+\end{tblr}
+\end{center}
+
+\begin{table}[H]
+\centering
+\begin{tblr}{
+  colspec = {lcc},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries,mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c,m},
+  rowsep = 4pt
+}
+\text{Тело} & \text{Ось вращения} & \text{Момент инерции} \\
+\text{Стержень} & \text{Через центр} & \dfrac{1}{12}mL^2 \\
+\text{Стержень} & \text{Через конец} & \dfrac{1}{3}mL^2 \\
+\text{Кольцо} & \text{Через центр} & mR^2 \\
+\text{Диск} & \text{Через центр} & \dfrac{1}{2}mR^2 \\
+\text{Шар} & \text{Через центр} & \dfrac{2}{5}mR^2 \\
+\text{Сфера} & \text{Через центр} & \dfrac{2}{3}mR^2 \\
+\text{Цилиндр} & \text{Ось симметрии} & \dfrac{1}{2}mR^2 \\
+\text{Пластина } a\times b & \text{Через центр} & \dfrac{1}{12}m(a^2 + b^2) \\
+\end{tblr}
+\caption{Моменты инерции однородных тел}
+\end{table}
