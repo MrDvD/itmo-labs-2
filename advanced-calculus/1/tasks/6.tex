@@ -4,5 +4,68 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Наибольшее и наименьшее значение располагается в экстремумах и/или на границах рассматриваемой области \( D \).
+
+  По необходимому условию экстремума в точке \( M(x,y) \):
+  %
+  \[ \left(\dfrac{\partial z}{\partial x}(M)=0\right)\land\left(\dfrac{\partial z}{\partial y}(M)=0\right) \]
+  
+  Вычислим частные производные функции \( z(x,y) \):
+  %
+  \[ \dfrac{\partial z}{\partial x}=2x-2y-2\qquad\dfrac{\partial z}{\partial y}=-2x+5y \]
+  
+  Найдём стационарные точки функции \( z(x,y) \):
+  %
+  \[
+  \begin{cases*}
+    &2x-2y-2=0\\
+    &-2x+5y=0
+  \end{cases*}\implies
+  M_0\left(\frac{5}{3},\frac{2}{3}\right)\in D\text{ --- стационарная}
+  \]
+  
+  По достаточному условию экстремума в стационарной точке \( M_0 \):
+  %
+  \[ \Delta=
+  \begin{vmatrix}
+    \dfrac{\partial^2 z}{\partial x^2}(M_0) & \dfrac{\partial^2 z}{\partial x\partial y}(M_0) \\[2ex]
+    \dfrac{\partial^2 z}{\partial y\partial x}(M_0) & \dfrac{\partial^2 z}{\partial y^2}(M_0)
+  \end{vmatrix}\neq 0
+  \]
+  
+  Вычислим частные производные второго порядка функции \( z(x,y) \):
+  %
+  \[ \dfrac{\partial^2 z}{\partial x^2}=2\qquad\dfrac{\partial^2 z}{\partial x\partial y}=-2\qquad\dfrac{\partial^2 z}{\partial y\partial z}=-2\qquad\dfrac{\partial^2 z}{\partial y^2}=5 \]
+  
+  Полученные частные производные постоянны, значит, Гессиан функции \( z(x,y) \) не зависит от выбора стационарной точки и равен:
+  %
+  \[ \Delta=
+  \begin{vmatrix}
+    2 & -2\\
+    -2 & 5
+  \end{vmatrix}=2\cdot 5-(-2)\cdot(-2)=6>0\implies M_0\text{ --- локальный минимум}
+  \]
+  
+  Найдём значение функции \( z(x,y) \) в точке \( M_0 \):
+  %
+  \[ z\left(\dfrac{5}{3},\dfrac{2}{3}\right)=\left(\dfrac{5}{3}\right)^2-2\cdot\dfrac{5}{3}\cdot\dfrac{2}{3}+\dfrac{5}{2}\cdot\left(\dfrac{2}{3}\right)^2-2\cdot\dfrac{5}{3}=\dfrac{25-20+10-30}{9}=-\dfrac{5}{3} \]
+  
+  Значит, функция \( z(x,y) \) принимает своё \textbf{наименьшее значение} \( -\frac{5}{3} \) в точке \( M_0\in D \). Для поиска максимального значения рассмотрим поведение функции на границах области \( D \):
+  %
+  \begin{enumerate}
+    \item \( \measuredangle\, x=0\implies z(y)=\frac{5}{2}y^2 \) --- парабола с растянутыми ветвями вверх и вершиной в \( (0,0) \).
+    
+    Максимум достигается при \( y=2\implies z(2)=10 \).
+    \item \( \measuredangle\, x=2\implies z(y)=4-4y+\frac{5}{2}y^2-4=\frac{5}{2}y^2-4y=\frac{5}{2}\left(y-\frac{4}{5}\right)^2-\frac{8}{5} \) --- парабола с растянутыми ветвями вверх и вершиной в \( (\frac{4}{5},-\frac{8}{5}) \).
+    
+    Максимум достигается при \( y=2\implies z(2)=2 \).
+    \item \( \measuredangle\, y=0\implies z(x)=x^2-2x=(x-1)^2-1 \) --- парабола с ветвями вверх и вершиной в \( (1,-1) \).
+    
+    Максимум достигается при \( x=0 \) и \( x=2\implies z(0)=z(2)=0 \).
+    \item \( \measuredangle\, y=2\implies z(x)=x^2-4x+10-2x=(x-3)^2+1 \) --- парабола с ветвями вверх и вершиной в \( (3,1) \).
+    
+    Максимум достигается при \( x=0\implies z(0)=10 \).
+  \end{enumerate}
+  
+  Значит, функция \( z(x,y) \) принимает своё \textbf{наибольшее значение} \( 10 \) в точке \( (0,2)\in D \).
 \end{solution}
