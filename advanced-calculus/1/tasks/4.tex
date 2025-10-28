@@ -7,7 +7,7 @@
   По определению градиента функций \( u(x,y,z) \), \( v(x,y,z) \):
   %
   \[ \grad u=\left(\dfrac{\partial u}{\partial x},\dfrac{\partial u}{\partial y},\dfrac{\partial u}{\partial z}\right)\qquad\grad v=\left(\dfrac{\partial v}{\partial x},\dfrac{\partial v}{\partial y},\dfrac{\partial v}{\partial z}\right) \]
-  %
+  
   По определению скалярного произведения векторов:
   %
   \[
@@ -16,7 +16,7 @@
   \begin{equation}
   \cos\alpha = \dfrac{\grad u\cdot\grad v}{\abs{\grad u}\cdot\abs{\grad v}} \label{eq:cos_alpha}
   \end{equation}
-  %
+  
   Перепишем скалярное произведение векторов в координатной форме:
   %
   \begin{equation}
@@ -36,7 +36,7 @@
   + \frac{\partial u}{\partial z}\frac{\partial v}{\partial z}
   \label{eq:grad_dot_product}
   \end{equation}
-  %
+  
   Вычислим частные производные функций \( u(x,y,z) \), \( v(x,y,z) \):
   %
   \[
@@ -52,7 +52,7 @@
   \dfrac{\partial v}{\partial z} & = & 2\sqrt{2}z
   \end{array}
   \]
-  %
+  
   Подставим полученные частные производные в сумму \eqref{eq:grad_dot_product}:
   %
   \[
@@ -63,10 +63,10 @@
                       &= \left(-6\sqrt{2}+2\sqrt{2}+4\sqrt{2}\right)\cdot\dfrac{z^2}{x^2y^2} = 0
   \end{aligned}
   \]
-  %
+  
   Учитывая, что модули градиентов функций \( u(x,y,z) \), \( v(x,y,z) \) тождественно не равны нулю, из \eqref{eq:cos_alpha} получаем:
   %
   \[ \cos\alpha=0\implies\alpha=\dfrac{\pi}{2} \]
-  %
+  
   Таким образом, градиенты функций \( u(x,y,z) \), \( v(x,y,z) \) взаимно перпендикулярны независимо от выбора точки \( M_0 \).
 \end{solution}

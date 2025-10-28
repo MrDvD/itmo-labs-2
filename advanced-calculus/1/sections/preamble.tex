@@ -1,6 +1,6 @@
 \usepackage{fontspec}
 \usepackage[english, russian]{babel}
-\usepackage{amsmath, amsthm}
+\usepackage{amsmath, amsthm, amssymb}
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{tabularx, multirow}
@@ -21,3 +21,7 @@
 \newcommand{\diff}{\mathrm{d}}
 \newcommand{\grad}{\textrm{grad}\,}
 \newcommand{\abs}[1]{\left|#1\right|}
+
+\newenvironment{cases*}{
+\left\{\begin{aligned}
+}{\end{aligned}\right.}
