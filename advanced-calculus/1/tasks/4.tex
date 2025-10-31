@@ -1,0 +1,72 @@
+\begin{problem}
+Найдите угол между градиентами функций \( u(x,y,z) \), \( v(x,y,z) \) в точке \( M_0 \):
+\[ v = \frac{3x^2}{\sqrt{2}} - \frac{y^2}{\sqrt{2}} + \sqrt{2}z^{2}, \quad u = \frac{z^2}{x^2y^2}, \quad M_0\left(\frac{2}{3};2;\sqrt{\frac{2}{3}}\right) \]
+\end{problem}
+
+\begin{solution}
+  По определению градиента функций \( u(x,y,z) \), \( v(x,y,z) \):
+  %
+  \[ \grad u=\left(\dfrac{\partial u}{\partial x},\dfrac{\partial u}{\partial y},\dfrac{\partial u}{\partial z}\right)\qquad\grad v=\left(\dfrac{\partial v}{\partial x},\dfrac{\partial v}{\partial y},\dfrac{\partial v}{\partial z}\right) \]
+  
+  По определению скалярного произведения векторов:
+  %
+  \[
+  \grad u\cdot\grad v = \abs{\grad u}\cdot\abs{\grad v}\cdot\cos\alpha, \quad \alpha = \angle(\grad u, \grad v)
+  \]
+  \begin{equation}
+  \cos\alpha = \dfrac{\grad u\cdot\grad v}{\abs{\grad u}\cdot\abs{\grad v}} \label{eq:cos_alpha}
+  \end{equation}
+  
+  Перепишем скалярное произведение векторов в координатной форме:
+  %
+  \begin{equation}
+  \grad u\cdot\grad v =
+  \begin{pmatrix}
+  \dfrac{\partial u}{\partial x} & \dfrac{\partial u}{\partial y} & \dfrac{\partial u}{\partial z}
+  \end{pmatrix}
+  \cdot
+  \begin{pmatrix}
+  \dfrac{\partial v}{\partial x} \\[2ex]
+  \dfrac{\partial v}{\partial y} \\[2ex]
+  \dfrac{\partial v}{\partial z}
+  \end{pmatrix}
+  =
+  \frac{\partial u}{\partial x}\frac{\partial v}{\partial x}
+  + \frac{\partial u}{\partial y}\frac{\partial v}{\partial y}
+  + \frac{\partial u}{\partial z}\frac{\partial v}{\partial z}
+  \label{eq:grad_dot_product}
+  \end{equation}
+  
+  Вычислим частные производные функций \( u(x,y,z) \), \( v(x,y,z) \):
+  %
+  \[
+  \begin{array}{rcl}
+  \dfrac{\partial u}{\partial x} & = & -\dfrac{2z^2}{x^3y^2} \\[2ex]
+  \dfrac{\partial u}{\partial y} & = & -\dfrac{2z^2}{x^2y^3} \\[2ex]
+  \dfrac{\partial u}{\partial z} & = & \dfrac{2z}{x^2y^2}
+  \end{array}
+  \quad\quad
+  \begin{array}{rcl}
+  \dfrac{\partial v}{\partial x} & = & 3\sqrt{2}x \\[2ex]
+  \dfrac{\partial v}{\partial y} & = & -\sqrt{2}y \\[2ex]
+  \dfrac{\partial v}{\partial z} & = & 2\sqrt{2}z
+  \end{array}
+  \]
+  
+  Подставим полученные частные производные в сумму \eqref{eq:grad_dot_product}:
+  %
+  \[
+  \begin{aligned}
+  \grad u\cdot\grad v &= -\dfrac{2z^2}{x^3y^2}\cdot 3\sqrt{2}x
+                        -\dfrac{2z^2}{x^2y^3}\cdot(-\sqrt{2}y)
+                        +\dfrac{2z}{x^2y^2}\cdot 2\sqrt{2}z \\
+                      &= \left(-6\sqrt{2}+2\sqrt{2}+4\sqrt{2}\right)\cdot\dfrac{z^2}{x^2y^2} = 0
+  \end{aligned}
+  \]
+  
+  Учитывая, что модули градиентов функций \( u(x,y,z) \), \( v(x,y,z) \) тождественно не равны нулю, из \eqref{eq:cos_alpha} получаем:
+  %
+  \[ \cos\alpha=0\implies\alpha=\dfrac{\pi}{2} \]
+  
+  Таким образом, градиенты функций \( u(x,y,z) \), \( v(x,y,z) \) взаимно перпендикулярны независимо от выбора точки \( M_0 \).
+\end{solution}
