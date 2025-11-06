@@ -5,8 +5,8 @@ import scala.util.{Try, Success, Failure}
 
 class DotResultCachingRepository
     extends CachingRepository[DotResult, DotResult]:
-  protected var genericRepository
-      : GenericRepository[DotResult, DotResult] = null
+  protected var genericRepository: GenericRepository[DotResult, DotResult] =
+    null
   private var cache: Array[DotResult] = Array()
 
   protected def init: Unit =

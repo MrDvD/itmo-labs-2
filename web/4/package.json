@@ -16,5 +16,8 @@
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
   }
 }
