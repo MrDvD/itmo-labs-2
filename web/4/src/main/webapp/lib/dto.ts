@@ -1,23 +1,44 @@
-export type DotParams = {
-  X: number;
-  Y: number;
-  R: number;
+import * as zod from "zod";
+
+export type ValidationError = {
+  name: string;
+  message: string;
 }
+
+export const ValidationMessage = {
+  TooLowNumber: function(has: number) {
+    return `Введите число, не меньше ${has}`;
+  },
+  TooHighNumber: function(has: number) {
+    return `Введите число, не больше ${has}`;
+  },
+}
+
+export const DotParamsSchema = zod.object({
+  X: zod
+      .number({
+        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+      })
+      .gte(-3, ValidationMessage.TooLowNumber(-3))
+      .lte(3, ValidationMessage.TooHighNumber(3)),
+  Y: zod
+      .number({
+        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+      })
+      .gte(-3, ValidationMessage.TooLowNumber(-3))
+      .lte(3, ValidationMessage.TooHighNumber(3)),
+  R: zod
+      .number({
+        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+      })
+      .gte(-3, ValidationMessage.TooLowNumber(-3))
+      .lte(3, ValidationMessage.TooHighNumber(3)),
+});
+
+export type DotParams = zod.infer<typeof DotParamsSchema>;
 
 export type DotStatus = {
   entry: DotParams;
   hit: boolean;
   date: string;
 };
-
-export function isDotParams(object: unknown): object is DotParams {
-  return object instanceof Object &&
-    'X' in object && typeof object['X'] === 'number' &&
-    'Y' in object && typeof object['Y'] === 'number' &&
-    'R' in object && typeof object['R'] === 'number';
-}
-
-export function isDotStatus(object: unknown): object is DotStatus {
-  return object instanceof Object &&
-    'entry' in object && isDotParams(object['entry']);
-}
