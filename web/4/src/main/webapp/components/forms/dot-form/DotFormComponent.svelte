@@ -6,10 +6,16 @@
   import { AppServices } from 'lib/services.js';
   import { main as generic_main, handleSubmit } from '../script.js';
   import { handleClean } from './script.js';
+  import { DefaultErrorHandler } from 'lib/errors/handler.js';
+  import { onMount } from 'svelte';
 
+  let form: HTMLFormElement;
+  let dotsRepository;
+  onMount(() => {
+    AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
+    dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
+  });
   generic_main();
-
-  const dotsRepository = AppServices.DOTS_REPOSITORY.get();
 
   function myHandleSubmit(event: Event) {
     handleSubmit(event, dotsRepository);
@@ -20,7 +26,7 @@
   }
 </script>
 
-<form class='lab-form' on:submit|preventDefault={myHandleSubmit}>
+<form class='lab-form' bind:this={form} on:submit|preventDefault={myHandleSubmit}>
   <p>Проверка точки</p>
   <div class="form-field">
     <p><b>X</b></p>

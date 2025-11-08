@@ -1,6 +1,6 @@
 export function fillCoords(form: HTMLFormElement, event: MouseEvent) {
   const canvas = event.target as unknown as HTMLElement;
-  const scale = canvas.offsetWidth * 3 / 8
+  const scale = canvas.offsetWidth * 3 / 8;
   const R = getR(form);
   if (R == null || isNaN(R)) {
     console.error("wawaw!!!");
