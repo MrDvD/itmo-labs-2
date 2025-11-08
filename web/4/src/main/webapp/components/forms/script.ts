@@ -42,7 +42,7 @@ export function packDotForm(form: HTMLFormElement): DotParams | null {
   const parseResult = DotParamsSchema.safeParse(dotParams)
   if (!parseResult.success) {
     for (const err of parseResult.error.issues) {
-      document.dispatchEvent(new CustomEvent<ValidationError>("validation-error", {
+      form.dispatchEvent(new CustomEvent<ValidationError>("validation-error", {
         detail: {
           name: String(err.path[0]),
           message: err.message,
@@ -67,7 +67,7 @@ export function main() {
         return;
       }
       const input = field.querySelector("input") as HTMLInputElement;
-      document.addEventListener("validation-error", (event) => {
+      form.addEventListener("validation-error", (event) => {
         if (event.detail.name == input.name) {
           errorMessage.innerHTML = event.detail.message;
         }

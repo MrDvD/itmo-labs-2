@@ -1,9 +1,12 @@
 import type { ValidationError } from "lib/dto.js";
 import { ServerErrorSchema, type ServerErrorMap } from "./dto.js";
+import { createContext } from "svelte";
 
 export interface ServerErrorHandler {
   handle(response: Promise<any>): Promise<void>;
 }
+
+export const [ getServerErrorHandler, setServerErrorHandler ] = createContext<ServerErrorHandler>();
 
 export class CustomErrorHandler implements ServerErrorHandler {
   constructor(private handlerMap: {
@@ -42,11 +45,11 @@ export class CustomErrorHandler implements ServerErrorHandler {
 }
 
 export class DefaultErrorHandler extends CustomErrorHandler {
-  constructor() {
+  constructor(element: Element) {
     super({
       "validation-errors": (errors) => {
         for (const error of errors) {
-          window.dispatchEvent(new CustomEvent<ValidationError>("validation-error", { detail: error }));
+          element.dispatchEvent(new CustomEvent<ValidationError>("validation-error", { detail: error }));
         }
       }
     });

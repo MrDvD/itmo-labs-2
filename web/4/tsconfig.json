@@ -28,5 +28,6 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "sourceMap": true,
   }
 }
