@@ -1,4 +1,4 @@
-import DotsPage from '/components/pages/dots/DotsPage.svelte';
+import DotsPage from '../components/pages/dots/DotsPage.svelte';
 
 window.initialData = {
   currentPageComponent: DotsPage,
