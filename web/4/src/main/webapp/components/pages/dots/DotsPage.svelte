@@ -11,7 +11,7 @@
   import { DefaultDotsRepository } from 'lib/repository/dots.js';
   import { AppServices } from 'lib/services.js';
 
-  AppServices.DOTS_REPOSITORY.set(DefaultDotsRepository());
+  AppServices.DOTS_REPOSITORY.set(DefaultDotsRepository("generic"));
 </script>
 
 <div class="lab-body">
