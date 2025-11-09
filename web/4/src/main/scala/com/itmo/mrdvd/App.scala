@@ -10,10 +10,10 @@ object App extends ZIOAppDefault:
     Method.GET / "hello" -> Handler.text("hi there")
   )
   val staticRoutes = Routes(
-    Method.GET / Root -> Handler.fromFile(File("dist/index.html")).orDie
+    Method.GET / trailing -> Handler.fromFile(File("dist/index.html")).orDie
   )
   val app =
-    apiRoutes ++ staticRoutes ++ Routes.empty @@ Middleware.serveDirectory(
+    staticRoutes ++ apiRoutes ++ Routes.empty @@ Middleware.serveDirectory(
       Path.empty / "assets",
       File("dist/assets")
     )

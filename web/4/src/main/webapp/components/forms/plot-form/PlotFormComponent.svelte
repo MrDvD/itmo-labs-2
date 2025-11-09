@@ -11,6 +11,7 @@
   import { onMount } from 'svelte';
   import type { ItemRepository } from '@lib/repository/dots.js';
   import type { DotParams, DotStatus } from '@lib/dto.js';
+  import plotImage from '@resources/png/plot.png';
 
   let form: HTMLFormElement;
   let dotsRepository: ItemRepository<DotStatus, DotParams>;
@@ -31,7 +32,7 @@
 </script>
 
 <form class="lab-form" bind:this={form} on:submit|preventDefault={myHandleSubmit}>
-  <img src="resources/png/plot.png" on:click={myFillCoords} alt="Dot plot" draggable="false" />
+  <img src="{plotImage}" on:click={myFillCoords} alt="Dot plot" draggable="false" />
   <div id="dots"></div>
   <input type="hidden" name="X" />
   <input type="hidden" name="Y" />
