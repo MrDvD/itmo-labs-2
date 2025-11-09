@@ -31,7 +31,7 @@
 </script>
 
 <form class="lab-form" bind:this={form} on:submit|preventDefault={myHandleSubmit}>
-  <img src="/resources/png/plot.png" on:click={myFillCoords} alt="Dot plot" draggable="false" />
+  <img src="resources/png/plot.png" on:click={myFillCoords} alt="Dot plot" draggable="false" />
   <div id="dots"></div>
   <input type="hidden" name="X" />
   <input type="hidden" name="Y" />

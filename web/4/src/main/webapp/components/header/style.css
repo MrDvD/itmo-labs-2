@@ -1,4 +1,4 @@
-@import url("/styles/colors.css");
+@import url("@styles/colors.css");
 
 .lab-header {
   height: 50px;
