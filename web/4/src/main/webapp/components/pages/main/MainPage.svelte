@@ -1,6 +1,6 @@
 <style>
-  @import url('/styles/lab-body.css');
-  @import url('/styles/groups.css');
+  @import url('@styles/lab-body.css');
+  @import url('@styles/groups.css');
 </style>
 
 <script>
