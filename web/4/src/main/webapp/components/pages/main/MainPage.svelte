@@ -4,8 +4,8 @@
 </style>
 
 <script>
-  import HeaderComponent from '/components/header/HeaderComponent.svelte';
-  import LoginFormComponent from '/components/forms/login-form/LoginFormComponent.svelte';
+  import HeaderComponent from '@components/header/HeaderComponent.svelte';
+  import LoginFormComponent from '@components/forms/login-form/LoginFormComponent.svelte';
 </script>
 
 <div class="lab-body">

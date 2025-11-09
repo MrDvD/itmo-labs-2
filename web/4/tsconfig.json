@@ -4,10 +4,13 @@
     "rootDir": "src/main/webapp",
     "outDir": "./public",
     "baseUrl": "src/main/webapp",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+    },
 
     "module": "nodenext",
     "target": "esnext",
-    "types": [],
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -29,5 +32,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "sourceMap": true,
-  }
+  },
+  "exclude": [
+    "node_modules",
+  ],
 }

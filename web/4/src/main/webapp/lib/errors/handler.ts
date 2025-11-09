@@ -1,5 +1,5 @@
-import type { ValidationError } from "lib/dto.js";
-import { ServerErrorSchema, type ServerErrorMap } from "./dto.js";
+import type { ValidationError } from "@lib/dto.js";
+import { ServerErrorSchema, type ServerErrorMap } from "@lib/errors/dto.js";
 import { createContext } from "svelte";
 
 export interface ServerErrorHandler {

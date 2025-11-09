@@ -1,5 +1,5 @@
-import type { DotParams, DotStatus } from "lib/dto.js";
-import { AppServices } from "lib/services.js";
+import type { DotParams, DotStatus } from "@lib/dto.js";
+import { AppServices } from "@lib/services.js";
 import { createContext } from "svelte";
 
 export type ItemRepository<Item, Params> = {

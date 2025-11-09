@@ -9,6 +9,7 @@ services:
     volumes:
       - ./src/main/resources/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgresql:/var/lib/postgresql/18/data
+      - ./dist:/app
     networks:
       - backend
     healthcheck:

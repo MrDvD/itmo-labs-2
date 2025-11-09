@@ -5,7 +5,7 @@ if (!app) {
   throw new Error('App root element was not found');
 }
 
-const { currentPageComponent } = (window as any).initialData || {};
+const { currentPageComponent } = window.initialData || {};
 const svelteApp = mount(currentPageComponent, {
   target: app,
 });
