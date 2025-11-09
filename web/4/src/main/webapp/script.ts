@@ -24,7 +24,7 @@ function main() {
   if (currentPath in routes) {
     currentPageComponent = routes[currentPath as keyof typeof routes];
   } else {
-    window.alert("Unknown page! Please check URL for typos");
+    window.location.replace("/");
   }
 
   if (currentPageComponent === undefined) {

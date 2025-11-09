@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, 'src', 'main', 'webapp');
@@ -11,9 +11,8 @@ export default {
     outDir: resolve(__dirname, 'dist'),
     emptyOutDir: true,
   },
-  plugins: [svelte({
-    preprocess: vitePreprocess({ typescript: true }),
-  })],
+  assetsInclude: ['**/*.png'],
+  plugins: [svelte()],
   resolve: {
     alias: {
       '@lib': resolve(root, 'lib'),
