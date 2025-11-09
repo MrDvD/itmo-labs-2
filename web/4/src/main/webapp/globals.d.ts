@@ -1,4 +1,4 @@
-import type { DotStatus, ValidationError } from "lib/dto.ts";
+import type { DotStatus, ValidationError } from "@lib/dto.ts";
 
 export {};
 

@@ -1,5 +1,5 @@
-import { getServerErrorHandler, setServerErrorHandler } from "./errors/handler.js";
-import { getItemContext, setItemContext } from "./repository/dots.js";
+import { getServerErrorHandler, setServerErrorHandler } from "@lib/errors/handler.js";
+import { getItemContext, setItemContext } from "@lib/repository/dots.js";
 
 export const AppServices = {
   DOTS_REPOSITORY: {
