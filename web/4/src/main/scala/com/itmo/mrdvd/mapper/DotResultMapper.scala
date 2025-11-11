@@ -13,8 +13,10 @@ class DotResultMapper extends Mapper[Dot, DotResult]:
       dot.Y,
       2
     ) <= Math.pow(dot.R / 2, 2)
-    val inRectangle = -dot.R / 2 <= dot.X && dot.X <= 0 && 0 <= dot.Y && dot.Y <= dot.R
-    val inTriangle = 0 <= dot.X && dot.X <= dot.R && 0 <= dot.Y && dot.Y <= dot.R / 2 && dot.Y <= -dot.X / 2 + dot.R / 2
+    val inRectangle =
+      -dot.R / 2 <= dot.X && dot.X <= 0 && 0 <= dot.Y && dot.Y <= dot.R
+    val inTriangle =
+      0 <= dot.X && dot.X <= dot.R && 0 <= dot.Y && dot.Y <= dot.R / 2 && dot.Y <= -dot.X / 2 + dot.R / 2
     roundDotMapper(dot) match
       case Left(value) =>
         Left(
