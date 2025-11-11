@@ -5,8 +5,8 @@ import java.lang.Double
 
 class PointAvailableRange extends CoordsRange, Serializable:
   private val minMaxValues = Map(
-    "X" -> Array(-3.0, 5.0, 0.1),
-    "Y" -> Array(-2.0, 2.0, 0.1),
+    "X" -> Array(-3.0, 3.0, 0.1),
+    "Y" -> Array(-2.0, 3.0, 0.1),
     "R" -> Array(1.0, 3.0, 0.5)
   )
   override def getMin: java.util.Map[String, Double] =
