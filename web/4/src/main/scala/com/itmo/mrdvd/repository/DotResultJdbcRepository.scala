@@ -10,9 +10,9 @@ import scala.annotation.tailrec
 class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
   protected var rsMapper: ResultSetMapper = null
   private val sqlCreate =
-    "insert into DOTS_HISTORY (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
-  private val sqlGetAll = "select x, y, r, hit, date from DOTS_HISTORY"
-  private val sqlClearAll = "truncate DOTS_HISTORY cascade"
+    "insert into DOTS (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
+  private val sqlGetAll = "select x, y, r, hit, date from DOTS"
+  private val sqlClearAll = "truncate DOTS cascade"
 
   @tailrec
   private def readDots(
