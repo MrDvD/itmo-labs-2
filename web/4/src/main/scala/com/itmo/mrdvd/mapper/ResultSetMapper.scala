@@ -4,8 +4,8 @@ import java.sql.ResultSet
 import com.itmo.mrdvd.dto.{Dot, DotResult}
 
 class ResultSetMapper extends Mapper[ResultSet, DotResult]:
-  override def apply(rs: ResultSet): Either[DotResult, Error] =
-    Left(
+  override def apply(rs: ResultSet): Either[Error, DotResult] =
+    Right(
       DotResult(
         Dot(rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("r")),
         rs.getBoolean("hit"),
