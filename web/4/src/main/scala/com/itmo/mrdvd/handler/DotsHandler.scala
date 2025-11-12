@@ -23,8 +23,8 @@ class DotsHandler(
     ZIO.succeed(
       Response.json(dotsRepository.getAll.toJson)
     )
-  def post(req: Request): ZIO[Any, Nothing, Response] =
-    val program = for
+  def post(req: Request): ZIO[RequestContext, Nothing, Response] =
+    for
       ctx <- ZIO.service[RequestContext]
       body <- req.body.asString.orDie
     yield Dot.jsonCodec.decodeJson(body) match
@@ -40,12 +40,6 @@ class DotsHandler(
             Response.internalServerError
       case Left(err) =>
         Response.badRequest
-
-    val requestLayer = ZLayer.succeed(req) >>> RequestContext.layer
-    
-    program.provideLayer(requestLayer).catchAll ( error =>
-      ZIO.succeed(Response.unauthorized)
-    )
   def delete(req: Request): ZIO[Any, Nothing, Response] =
     dotsRepository.clearAll
     ZIO.succeed(
