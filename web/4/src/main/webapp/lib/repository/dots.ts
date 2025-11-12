@@ -2,62 +2,65 @@ import type { DotParams, DotStatus } from "@lib/dto.js";
 import { AppServices } from "@lib/services.js";
 import { createContext } from "svelte";
 
-export type ItemRepository<Item, Params> = {
-  get: () => Promise<Item[]>;
-  post: (data: Params) => Promise<Item>;
-  delete: () => Promise<void>;
+export interface ItemRepository<Item, Params> {
+  get(): Promise<Item[]>;
+  post(data: Params): Promise<Item>;
+  delete(): Promise<void>;
 };
 
 export interface ItemRepositoryBuilder<Item, Params> {
   build(): ItemRepository<Item, Params>
 }
 
+export interface DotsRepositoryUrl {
+  get: string;
+  post: string;
+  delete: string;
+}
+
 export const [ getItemContext, setItemContext ] = createContext<ItemRepositoryBuilder<DotStatus, DotParams>>();
 
-const url = {
-  getDots: "/dots",
-  postDot: "/dots",
-  deleteDots: "/dots",
-};
+export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
+  private errorHandler = AppServices.SERVER_ERROR_HANDLER.get();
 
-export const DotsRepository = (): ItemRepository<DotStatus, DotParams> => {
-  const errorHandler = AppServices.SERVER_ERROR_HANDLER.get();
-  return {
-    get: async (): Promise<DotStatus[]> => {
-      const response = await fetch(url.getDots, {
-        method: "GET",
-      });
-      if (!response.ok) {
-        errorHandler.handle(response.json());
-      }
-      return await response.json();
-    },
-    post: async (data: DotParams): Promise<DotStatus> => {
-      const response = await fetch(url.postDot, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        errorHandler.handle(response.json());
-      }
-      return await response.json();
-    },
-    delete: async (): Promise<void> => {
-      const response = await fetch(url.deleteDots, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        errorHandler.handle(response.json());
-      }
+  constructor(private url: DotsRepositoryUrl) {}
+
+  public async get(): Promise<DotStatus[]> {
+    const response = await fetch(this.url.get, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      this.errorHandler.handle(response.json());
+    }
+    return await response.json();
+  }
+  public async post(data: DotParams): Promise<DotStatus> {
+    const response = await fetch(this.url.post, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      this.errorHandler.handle(response.json());
+    }
+    return await response.json();
+  }
+  public async delete(): Promise<void> {
+    const response = await fetch(this.url.delete, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      this.errorHandler.handle(response.json());
     }
   }
-};
+}
 
 export class DotsRepositoryFactory {
+  constructor(private url: DotsRepositoryUrl) {}
+
   public build(): ItemRepository<DotStatus, DotParams> {
-    return DotsRepository();
+    return new DotsRepository(this.url);
   }
 }

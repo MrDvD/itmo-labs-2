@@ -5,8 +5,7 @@ import zio.http._
 import zio.http.template._
 import java.io.File
 import com.itmo.mrdvd.handler.DotsHandler
-import com.itmo.mrdvd.mapper.DotResultMapper
-import com.itmo.mrdvd.mapper.RoundDotMapper
+import com.itmo.mrdvd.mapper._
 
 object App extends ZIOAppDefault:
   val dotsHandler = DotsHandler(DotResultMapper(RoundDotMapper()))

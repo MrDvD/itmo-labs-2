@@ -6,8 +6,6 @@ import java.time.{ZoneId, ZonedDateTime}
 
 class DotResultMapper(roundDotMapper: Mapper[Dot, Dot])
     extends Mapper[Dot, DotResult]:
-  val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-  val zone = ZoneId.of("Europe/Moscow")
   override def apply(dot: Dot): Either[Error, DotResult] =
     val inCircle = dot.X <= 0 && dot.Y <= 0 && Math.pow(dot.X, 2) + Math.pow(
       dot.Y,
@@ -23,7 +21,13 @@ class DotResultMapper(roundDotMapper: Mapper[Dot, Dot])
           DotResult(
             value,
             inCircle || inRectangle || inTriangle,
-            ZonedDateTime.now(zone).format(formatter)
+            ZonedDateTime
+              .now(DotResultMapper.zone)
+              .format(DotResultMapper.formatter)
           )
         )
       case Left(value) => Left(value)
+
+object DotResultMapper:
+  val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+  val zone = ZoneId.of("Europe/Moscow")
