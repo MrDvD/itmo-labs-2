@@ -29,5 +29,5 @@ create table USERS (
 
 create table USERS_TO_DOTS (
   user_id integer references USERS(id) on delete cascade,
-  dot_id integer references DOTS_HISTORY(id) on delete cascade
+  dot_id integer references DOTS(id) on delete cascade
 );
