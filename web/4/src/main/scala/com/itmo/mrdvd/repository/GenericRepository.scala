@@ -2,7 +2,7 @@ package com.itmo.mrdvd.repository
 
 import scala.util.Try
 
-trait GenericRepository[T, U]:
-  def create(item: T): Try[U]
-  def getAll: Array[U]
-  def clearAll: Unit
+trait GenericRepository[In, Out, Id]:
+  def create(obj: In): Try[Out]
+  def get(id: Id): Try[Out]
+  def remove(id: Id): Unit

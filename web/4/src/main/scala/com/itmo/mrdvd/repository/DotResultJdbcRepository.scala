@@ -1,19 +1,13 @@
 package com.itmo.mrdvd.repository
 
 import com.itmo.mrdvd.dto.DotResult
-import java.sql.{Connection, DriverManager}
 import scala.util.{Try, Using, Success, Failure}
-import com.itmo.mrdvd.mapper.ResultSetMapper
 import java.sql.ResultSet
 import scala.annotation.tailrec
+import com.itmo.mrdvd.mapper.Mapper
 
-class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
-  protected var rsMapper: ResultSetMapper = null
-  private val sqlCreate =
-    "insert into DOTS (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
-  private val sqlGetAll = "select x, y, r, hit, date from DOTS"
-  private val sqlClearAll = "truncate DOTS cascade"
-
+class DotResultJdbcRepository(private val rsMapper: Mapper[ResultSet, DotResult])
+    extends GroupedRepository[DotResult, DotResult, Int]:
   @tailrec
   private def readDots(
       rs: ResultSet,
@@ -28,7 +22,7 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
   override def create(dot: DotResult): Try[DotResult] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
-      val stmt = use(conn.prepareStatement(sqlCreate))
+      val stmt = use(conn.prepareStatement(DotResultJdbcRepository.sqlCreate))
       stmt.setDouble(1, dot.dot.X)
       stmt.setDouble(2, dot.dot.Y)
       stmt.setDouble(3, dot.dot.R)
@@ -42,7 +36,7 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
         val stmt = use(conn.createStatement())
-        val rs = use(stmt.executeQuery(sqlGetAll))
+        val rs = use(stmt.executeQuery(DotResultJdbcRepository.sqlGetAll))
         readDots(rs, Array[DotResult]())
       )
       .get
@@ -50,21 +44,12 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
       val stmt = use(conn.createStatement())
-      stmt.executeUpdate(sqlClearAll)
+      stmt.executeUpdate(DotResultJdbcRepository.sqlClearAll)
     )
 
-object JdbcConnector:
-  val getEnv = (envVar: String) =>
-    () =>
-      val rawVar = sys.env.get(envVar)
-      if rawVar.isEmpty then
-        throw Error(s"Environment variable ${envVar} is not found.")
-      rawVar.get
-  val dbHost = getEnv("POSTGRES_HOST")
-  val dbName = getEnv("POSTGRES_DB")
-  val jdbcUrl = s"jdbc:postgresql://${dbHost()}:5432/${dbName()}"
-  val dbUsername = getEnv("POSTGRES_USER")
-  val dbPassword = getEnv("POSTGRES_PASSWORD")
-
-  def getConnection: Connection =
-    DriverManager.getConnection(jdbcUrl, dbUsername(), dbPassword())
+object DotResultJdbcRepository:
+  val sqlCreate =
+    "insert into DOTS (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
+  val sqlCreateNext = "insert into USERS_TO_DOTS (user_id, dot_id) values (?, ?)"
+  val sqlGetAll = "select x, y, r, hit, date from DOTS"
+  val sqlClearAll = "truncate DOTS cascade"

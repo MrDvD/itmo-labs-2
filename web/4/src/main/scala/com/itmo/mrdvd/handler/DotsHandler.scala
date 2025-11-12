@@ -9,20 +9,45 @@ import com.itmo.mrdvd.dto.Dot
 import com.itmo.mrdvd.mapper.RoundDotMapper
 import com.itmo.mrdvd.mapper.Mapper
 import com.itmo.mrdvd.dto.DotResult
+import scala.util.Success
+import scala.util.Failure
+import com.itmo.mrdvd.repository.CachingGroupRepository
+import com.itmo.mrdvd.middleware.RequestContext
+import zio.ZLayer
 
-class DotsHandler(processDotMapper: Mapper[Dot, DotResult]):
+class DotsHandler(
+    processDotMapper: Mapper[Dot, DotResult],
+    dotsRepository: CachingGroupRepository[DotResult, DotResult, Int]
+):
   def get(req: Request): ZIO[Any, Nothing, Response] =
-    ZIO.succeed(Response.json("get wip"))
+    ZIO.succeed(
+      Response.json(dotsRepository.getAll.toJson)
+    )
   def post(req: Request): ZIO[Any, Nothing, Response] =
-    for body <- req.body.asString.orDie
+    val program = for
+      ctx <- ZIO.service[RequestContext]
+      body <- req.body.asString.orDie
     yield Dot.jsonCodec.decodeJson(body) match
       case Right(dot) =>
         processDotMapper(dot) match
           case Right(result) =>
-            Response.json(result.toJson)
+            dotsRepository.create(ctx.userId, result) match
+              case Success(value) =>
+                Response.json(result.toJson)
+              case Failure(exception) =>
+                Response.internalServerError
           case Left(err) =>
             Response.internalServerError
       case Left(err) =>
         Response.badRequest
+
+    val requestLayer = ZLayer.succeed(req) >>> RequestContext.layer
+    
+    program.provideLayer(requestLayer).catchAll ( error =>
+      ZIO.succeed(Response.unauthorized)
+    )
   def delete(req: Request): ZIO[Any, Nothing, Response] =
-    ZIO.succeed(Response.json("delete wip"))
+    dotsRepository.clearAll
+    ZIO.succeed(
+      Response.status(Status.NoContent)
+    )

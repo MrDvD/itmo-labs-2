@@ -3,7 +3,7 @@ package com.itmo.mrdvd.mapper
 import java.sql.ResultSet
 import com.itmo.mrdvd.dto.{Dot, DotResult}
 
-class ResultSetMapper extends Mapper[ResultSet, DotResult]:
+class DotResultSetMapper extends Mapper[ResultSet, DotResult]:
   override def apply(rs: ResultSet): Either[Error, DotResult] =
     Right(
       DotResult(
