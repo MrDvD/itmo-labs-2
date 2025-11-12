@@ -1,7 +1,6 @@
 package com.itmo.mrdvd.middleware
 
-import zio.ZLayer
-import zio.ZIO
+import zio._
 import zio.http.Request
 import scala.util.Try
 

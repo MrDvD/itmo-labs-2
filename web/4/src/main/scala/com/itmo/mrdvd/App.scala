@@ -5,16 +5,14 @@ import zio.http._
 import zio.http.template._
 import java.io.File
 import com.itmo.mrdvd.handler.DotsHandler
-import com.itmo.mrdvd.middleware.RequestContext
+import com.itmo.mrdvd.middleware._
 import com.itmo.mrdvd.mapper._
-import com.itmo.mrdvd.repository.DotResultCachingRepository
-import com.itmo.mrdvd.repository.DotResultJdbcRepository
-import com.itmo.mrdvd.middleware.AuthMiddleware
+import com.itmo.mrdvd.repository.dot._
 
 object App extends ZIOAppDefault:
   val dotsHandler = DotsHandler(
     DotResultMapper(RoundDotMapper()),
-    DotResultCachingRepository(DotResultJdbcRepository(DotResultSetMapper()))
+    DotResultCachingRepository(DotResultJdbcRepository(UserDotMapper()))
   )
   val dotsRoutes = Routes(
     Method.GET / "api" / AppParams.apiVersion / "dots" -> handler(
