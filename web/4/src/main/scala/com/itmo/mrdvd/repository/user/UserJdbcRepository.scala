@@ -1,8 +1,10 @@
-package com.itmo.mrdvd.repository
+package com.itmo.mrdvd.repository.user
 
 import com.itmo.mrdvd.dto._
 import scala.util.Try
 import scala.util.Using
+import com.itmo.mrdvd.repository.JdbcConnector
+import com.itmo.mrdvd.repository.GenericRepository
 
 class UserJdbcRepository extends GenericRepository[NewUser, StoredUser, Int]:
   override def create(obj: NewUser): Try[StoredUser] =
@@ -11,8 +13,7 @@ class UserJdbcRepository extends GenericRepository[NewUser, StoredUser, Int]:
       val stmt = use(conn.prepareStatement(UserJdbcRepository.sqlCreate))
       stmt.setString(1, obj.login)
       stmt.setString(2, obj.password)
-      if stmt.executeUpdate() > 0 then
-        StoredUser(0, obj.login, obj.password)
+      if stmt.executeUpdate() > 0 then StoredUser(0, obj.login, obj.password)
       else throw Error("Database insertion error")
     )
   override def get(id: Int): Try[StoredUser] = ???
