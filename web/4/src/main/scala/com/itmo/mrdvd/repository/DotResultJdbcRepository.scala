@@ -22,8 +22,8 @@ class DotResultJdbcRepository extends GenericRepository[DotResult, DotResult]:
     if !rs.next() then dotArray
     else
       rsMapper(rs) match
-        case Left(value)  => readDots(rs, value +: dotArray)
-        case Right(value) =>
+        case Right(value) => readDots(rs, value +: dotArray)
+        case Left(value)  =>
           throw Error("Database selection error")
   override def create(dot: DotResult): Try[DotResult] =
     Using.Manager(use =>
