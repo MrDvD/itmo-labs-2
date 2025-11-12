@@ -19,6 +19,7 @@ export default {
       "@components": resolve(root, "components"),
       '@styles': resolve(root, 'styles'),
       '@resources': resolve(root, 'resources'),
+      '@scripts': resolve(root, 'scripts'),
     },
   },
 };
