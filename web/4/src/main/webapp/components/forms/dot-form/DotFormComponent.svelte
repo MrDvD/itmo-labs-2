@@ -3,13 +3,13 @@
 </style>
 
 <script lang="ts">
-  import { AppServices } from '@lib/services.js';
+  import { AppServices } from '@lib/services';
   import { main as generic_main, handleSubmit } from '../script.js';
   import { handleClean } from './script.js';
-  import { DefaultErrorHandler } from '@lib/errors/handler.js';
+  import { DefaultErrorHandler } from '@lib/errors/handler';
   import { onMount } from 'svelte';
-  import type { ItemRepository } from '@lib/repository/dots.js';
-  import type { DotParams, DotStatus } from '@lib/dto.js';
+  import type { ItemRepository } from '@lib/repository/dot';
+  import type { DotParams, DotStatus } from '@lib/dto';
 
   let form: HTMLFormElement;
   let dotsRepository: ItemRepository<DotStatus, DotParams>;

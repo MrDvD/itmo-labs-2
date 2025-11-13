@@ -16,5 +16,5 @@ class JwtContextMapper extends Mapper[String, RequestContext]:
         case Success(value) =>
           RequestContext.jsonCodec.decodeJson(value.content)
         case Failure(err) =>
-          Left(Error("Illegal JWT token")) 
+          Left(Error("Illegal JWT token"))
     Left(Error("Unknown authorization protocol"))

@@ -1,5 +1,5 @@
 import { DotParamsSchema, type DotParams, type DotStatus, type ValidationError } from "@lib/dto.js";
-import { type ItemRepository } from "@lib/repository/dots.js";
+import { type ItemRepository } from "@lib/repository/dot.js";
 
 export function handleSubmit(event: Event, dotsRepository: ItemRepository<DotStatus, DotParams>): void {
   event.preventDefault();

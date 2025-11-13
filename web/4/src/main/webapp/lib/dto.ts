@@ -42,3 +42,21 @@ export type DotStatus = {
   hit: boolean;
   date: string;
 };
+
+export const NewUserSchema = zod.object({
+  login: zod
+      .string({
+        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+      }),
+  password: zod
+      .string({
+        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+      }),
+});
+
+export type NewUser = zod.infer<typeof NewUserSchema>
+
+export type UserContext = {
+  id: number;
+  login: string;
+};
