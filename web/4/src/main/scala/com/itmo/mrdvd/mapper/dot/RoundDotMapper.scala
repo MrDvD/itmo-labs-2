@@ -1,7 +1,8 @@
-package com.itmo.mrdvd.mapper
+package com.itmo.mrdvd.mapper.dot
 
 import com.itmo.mrdvd.dto.Dot
 import scala.math.BigDecimal.RoundingMode
+import com.itmo.mrdvd.mapper.Mapper
 
 class RoundDotMapper extends Mapper[Dot, Dot]:
   override def apply(dot: Dot): Either[Error, Dot] =

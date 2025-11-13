@@ -1,8 +1,9 @@
-package com.itmo.mrdvd.mapper
+package com.itmo.mrdvd.mapper.dot
 
 import com.itmo.mrdvd.dto.{Dot, DotResult}
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
+import com.itmo.mrdvd.mapper.Mapper
 
 class DotResultMapper(roundDotMapper: Mapper[Dot, Dot])
     extends Mapper[Dot, DotResult]:

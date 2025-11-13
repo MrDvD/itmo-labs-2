@@ -8,7 +8,7 @@ import com.itmo.mrdvd.mapper._
 import scala.util.Success
 import scala.util.Failure
 import com.itmo.mrdvd.repository.CachingGroupRepository
-import com.itmo.mrdvd.middleware.RequestContext
+import com.itmo.mrdvd.dto.RequestContext
 
 class DotsHandler(
     processDotMapper: Mapper[Dot, DotResult],
