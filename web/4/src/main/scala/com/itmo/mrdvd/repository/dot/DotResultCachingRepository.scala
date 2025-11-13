@@ -10,10 +10,9 @@ class DotResultCachingRepository(
 ) extends CachingGroupRepository[DotResult, DotResult, Int]:
   private var cache: Map[Int, Array[DotResult]] = Map()
 
-  protected def init: Unit =
-    Try(groupedRepository.getAll) match
-      case Success(newCache)  => setCache(newCache)
-      case Failure(exception) =>
+  Try(groupedRepository.getAll) match
+    case Success(newCache)  => setCache(newCache)
+    case Failure(exception) =>
   override def getAll: Map[Int, Array[DotResult]] = cache
   override def create(id: Int, item: DotResult): Try[DotResult] =
     groupedRepository.create(id, item) match
@@ -29,9 +28,6 @@ class DotResultCachingRepository(
         Failure(exception)
   override def setCache(newCache: Map[Int, Array[DotResult]]): Unit = cache =
     newCache
-  override def clearAll: Unit =
-    groupedRepository.clearAll
-    cache = Map()
   override def clearGroup(id: Int): Unit =
     groupedRepository.clearGroup(id)
     cache += (id -> Array())

@@ -3,10 +3,8 @@ package com.itmo.mrdvd.handler
 import zio.http._
 import zio._
 import zio.json._
-import scala.annotation.switch
-import com.itmo.mrdvd.dto.Dot
+import com.itmo.mrdvd.dto._
 import com.itmo.mrdvd.mapper._
-import com.itmo.mrdvd.dto.DotResult
 import scala.util.Success
 import scala.util.Failure
 import com.itmo.mrdvd.repository.CachingGroupRepository
@@ -16,10 +14,11 @@ class DotsHandler(
     processDotMapper: Mapper[Dot, DotResult],
     dotsRepository: CachingGroupRepository[DotResult, DotResult, Int]
 ):
-  def get(req: Request): ZIO[Any, Nothing, Response] =
-    ZIO.succeed(
-      Response.json(dotsRepository.getAll.toJson)
-    )
+  def get(req: Request): ZIO[RequestContext, Nothing, Response] =
+    for ctx <- ZIO.service[RequestContext]
+    yield dotsRepository.getGroup(ctx.userId) match
+      case Success(value) => Response.json(value.toJson)
+      case Failure(err)   => Response.internalServerError(err.toString())
   def post(req: Request): ZIO[RequestContext, Nothing, Response] =
     for
       ctx <- ZIO.service[RequestContext]
@@ -37,8 +36,8 @@ class DotsHandler(
             Response.internalServerError(err.toString())
       case Left(err) =>
         Response.badRequest
-  def delete(req: Request): ZIO[Any, Nothing, Response] =
-    dotsRepository.clearAll
-    ZIO.succeed(
+  def delete(req: Request): ZIO[RequestContext, Nothing, Response] =
+    for ctx <- ZIO.service[RequestContext]
+    yield
+      dotsRepository.clearGroup(ctx.userId)
       Response.status(Status.NoContent)
-    )

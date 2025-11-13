@@ -79,12 +79,6 @@ class DotResultJdbcRepository(
         readDotsMap(rs, Map())
       )
       .get
-  override def clearAll: Unit =
-    Using.Manager(use =>
-      val conn = use(JdbcConnector.getConnection)
-      val stmt = use(conn.createStatement())
-      stmt.executeUpdate(DotResultJdbcRepository.sqlClearAll)
-    )
   override def getGroup(id: Int): Try[Array[DotResult]] =
     Using
       .Manager(use =>
@@ -111,7 +105,6 @@ object DotResultJdbcRepository:
   val sqlCreateNext =
     "insert into USERS_TO_DOTS (user_id, dot_id) values (?, ?)"
   val sqlGetAll = "select x, y, r, hit, date from DOTS"
-  val sqlClearAll = "truncate DOTS cascade"
   val sqlGetGroup =
     "select x, y, r, hit, date from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id where u.user_id = ?"
   val sqlClearGroup =
