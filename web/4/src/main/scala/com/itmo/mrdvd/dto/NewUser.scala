@@ -1,7 +1,7 @@
 package com.itmo.mrdvd.dto
 
 import zio.schema._
-import zio.json.JsonCodec
+import zio.json._
 
 final case class NewUser(login: String, password: String)
 

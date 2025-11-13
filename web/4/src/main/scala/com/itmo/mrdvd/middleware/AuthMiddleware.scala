@@ -3,10 +3,10 @@ package com.itmo.mrdvd.middleware
 import zio.http._
 import zio.ZIO
 import com.itmo.mrdvd.dto._
-import com.itmo.mrdvd.service.token.TokenService
+import com.itmo.mrdvd.mapper.Mapper
 
-object AuthMiddleware:
-  def parseAuthSession: HandlerAspect[TokenService[StoredUser], RequestContext] =
+class AuthMiddleware(contextMapper: Mapper[String, RequestContext]):
+  def parseAuthSession: HandlerAspect[Any, RequestContext] =
     Middleware.interceptIncomingHandler(
       Handler.fromFunctionZIO[Request]((req: Request) =>
         fillCtx(req)
@@ -15,11 +15,12 @@ object AuthMiddleware:
       )
     )
 
-  private def fillCtx(req: Request): ZIO[TokenService[StoredUser], Throwable, RequestContext] =
-    for
-      tokenService <- ZIO.service[TokenService[StoredUser]]
-      rawUserId <- ZIO
+  private def fillCtx(
+      req: Request
+  ): ZIO[Any, Throwable, RequestContext] =
+    for authorization <- ZIO
         .fromOption(req.headers.get("Authorization"))
         .orElseFail(Error("Found no authorization token"))
-      userId <- ZIO.attempt(rawUserId.toInt)
-    yield RequestContext(userId, "? - wip - ?")
+    yield contextMapper(authorization) match
+      case Right(value) => value
+      case Left(err)    => throw err

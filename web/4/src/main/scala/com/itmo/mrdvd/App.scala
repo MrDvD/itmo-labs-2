@@ -13,15 +13,21 @@ import com.itmo.mrdvd.handler.AuthHandler
 import com.itmo.mrdvd.repository.user.UserCachingRepository
 import com.itmo.mrdvd.repository.user.UserJdbcRepository
 import com.itmo.mrdvd.mapper.user.UserResultMapper
-import com.itmo.mrdvd.service.token.JwtTokenService
-import com.itmo.mrdvd.service.crypto.Argon2CryptoService
+import com.itmo.mrdvd.mapper.user.JwtUserMapper
+import com.itmo.mrdvd.mapper.user.JwtContextMapper
+import com.itmo.mrdvd.mapper.user.Argon2StringMapper
 
 object App extends ZIOAppDefault:
   val dotsHandler = DotsHandler(
     DotResultMapper(RoundDotMapper()),
     DotResultCachingRepository(DotResultJdbcRepository(UserDotMapper()))
   )
-  val authHandler = AuthHandler(UserCachingRepository(UserJdbcRepository(UserResultMapper())))
+  val authHandler = AuthHandler(
+    UserCachingRepository(UserJdbcRepository(UserResultMapper())),
+    JwtUserMapper(),
+    Argon2StringMapper()
+  )
+  val authMiddleware = AuthMiddleware(JwtContextMapper())
   val dotsRoutes = Routes(
     Method.GET / "api" / AppParams.apiVersion / "dots" -> handler(
       dotsHandler.get
@@ -39,18 +45,20 @@ object App extends ZIOAppDefault:
     ),
     Method.POST / "api" / AppParams.apiVersion / "register" -> handler(
       authHandler.register
-    ),
+    )
   )
   val staticRoutes = Routes(
     Method.GET / trailing -> Handler.fromFile(File(AppParams.index)).orDie
   )
   val app =
-    staticRoutes ++ dotsRoutes @@ AuthMiddleware.parseAuthSession ++ authRoutes ++ Routes.empty @@
+    staticRoutes ++ dotsRoutes @@ authMiddleware.parseAuthSession ++ authRoutes ++ Routes.empty @@
       Middleware.serveDirectory(
         Path.empty / "assets",
         File(AppParams.assets)
       )
-  def run = Server.serve(app).provide(Server.default, JwtTokenService.live, Argon2CryptoService.live)
+  def run = Server
+    .serve(app)
+    .provide(Server.default)
 
 object AppParams:
   val index = "dist/index.html"
