@@ -2,7 +2,30 @@
   @import '../style.css';
 </style>
 
-<form class="lab-form">
+<script lang="ts">
+  import type { NewUser } from "@lib/dto";
+  import { DefaultErrorHandler } from "@lib/errors/handler";
+  import type { AuthRepository } from "@lib/repository/user";
+  import { AppServices } from "@lib/services";
+  import { onMount } from "svelte";
+  import { handleSubmit } from "./script";
+  import { main } from "../script";
+
+  let form: HTMLFormElement;
+  let usersRepository: AuthRepository<void, NewUser>;
+  onMount(() => {
+    AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
+    usersRepository = AppServices.USERS_REPOSITORY.get().build();
+  });
+
+  main();
+
+  function myHandleSubmit(event: Event) {
+    handleSubmit(event, usersRepository);
+  }
+</script>
+
+<form bind:this={form} on:submit={myHandleSubmit} class="lab-form">
   <p>Форма входа</p>
   <div class="form-field">
     <p><b>Логин</b></p>

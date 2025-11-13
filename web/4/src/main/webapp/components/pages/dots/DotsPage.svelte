@@ -8,12 +8,15 @@
   import DotFormComponent from '@components/forms/dot-form/DotFormComponent.svelte';
   import PlotFormComponent from '@components/forms/plot-form/PlotFormComponent.svelte';
   import DotHistoryComponent from '@components/dot-history/DotHistoryComponent.svelte';
-  import { DotsRepositoryFactory } from '@lib/repository/dots';
+  import { DotsRepositoryFactory } from '@lib/repository/dot';
   import { AppServices } from '@lib/services';
-  import { DOTS_URLS } from '@scripts/app';
+  import { AUTH_URLS, DOTS_URLS } from '@scripts/app';
+  import { UsersRepositoryFactory } from '@lib/repository/user';
+  import { DefaultErrorHandler } from '@lib/errors/handler';
 
-  // AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(Document));
+  AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(Document));
   AppServices.DOTS_REPOSITORY.set(new DotsRepositoryFactory(DOTS_URLS));
+  AppServices.USERS_REPOSITORY.set(new UsersRepositoryFactory(AUTH_URLS));
 </script>
 
 <div class="lab-body">

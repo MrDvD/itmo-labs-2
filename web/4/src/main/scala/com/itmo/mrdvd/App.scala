@@ -4,18 +4,13 @@ import zio._
 import zio.http._
 import zio.http.template._
 import java.io.File
-import com.itmo.mrdvd.handler.DotsHandler
+import com.itmo.mrdvd.handler._
 import com.itmo.mrdvd.middleware._
 import com.itmo.mrdvd.mapper._
 import com.itmo.mrdvd.mapper.dot._
 import com.itmo.mrdvd.repository.dot._
-import com.itmo.mrdvd.handler.AuthHandler
-import com.itmo.mrdvd.repository.user.UserCachingRepository
-import com.itmo.mrdvd.repository.user.UserJdbcRepository
-import com.itmo.mrdvd.mapper.user.UserResultMapper
-import com.itmo.mrdvd.mapper.user.JwtUserMapper
-import com.itmo.mrdvd.mapper.user.JwtContextMapper
-import com.itmo.mrdvd.mapper.user.Argon2StringMapper
+import com.itmo.mrdvd.repository.user._
+import com.itmo.mrdvd.mapper.user._
 
 object App extends ZIOAppDefault:
   val dotsHandler = DotsHandler(
@@ -45,6 +40,9 @@ object App extends ZIOAppDefault:
     ),
     Method.POST / "api" / AppParams.apiVersion / "register" -> handler(
       authHandler.register
+    ),
+    Method.GET / "api" / AppParams.apiVersion / "exit" -> handler(
+      authHandler.exit
     )
   )
   val staticRoutes = Routes(

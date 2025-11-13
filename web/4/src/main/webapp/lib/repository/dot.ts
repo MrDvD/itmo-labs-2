@@ -1,16 +1,13 @@
 import type { DotParams, DotStatus } from "@lib/dto.js";
 import { AppServices } from "@lib/services.js";
 import { createContext } from "svelte";
+import type { Repository, RepositoryBuilder } from "./util.js";
 
-export interface ItemRepository<Item, Params> {
+export interface ItemRepository<Item, Params> extends Repository<Item, Params> {
   get(): Promise<Item[]>;
   post(data: Params): Promise<Item>;
   delete(): Promise<void>;
 };
-
-export interface ItemRepositoryBuilder<Item, Params> {
-  build(): ItemRepository<Item, Params>
-}
 
 export interface DotsRepositoryUrl {
   get: string;
@@ -18,7 +15,7 @@ export interface DotsRepositoryUrl {
   delete: string;
 }
 
-export const [ getItemContext, setItemContext ] = createContext<ItemRepositoryBuilder<DotStatus, DotParams>>();
+export const [ getItemContext, setItemContext ] = createContext<RepositoryBuilder<DotStatus, DotParams, ItemRepository<DotStatus, DotParams>>>();
 
 export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
   private errorHandler = AppServices.SERVER_ERROR_HANDLER.get();
@@ -57,7 +54,7 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
   }
 }
 
-export class DotsRepositoryFactory {
+export class DotsRepositoryFactory implements RepositoryBuilder<DotStatus, DotParams, ItemRepository<DotStatus, DotParams>> {
   constructor(private url: DotsRepositoryUrl) {}
 
   public build(): ItemRepository<DotStatus, DotParams> {

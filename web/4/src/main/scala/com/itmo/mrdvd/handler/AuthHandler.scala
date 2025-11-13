@@ -16,8 +16,7 @@ class AuthHandler(
   def login(
       req: Request
   ): ZIO[Any, Nothing, Response] =
-    for
-      body <- req.body.asString.orDie
+    for body <- req.body.asString.orDie
     yield NewUser.jsonCodec.decodeJson(body) match
       case Right(user) =>
         userRepository.get(user.login) match
@@ -27,14 +26,15 @@ class AuthHandler(
                 if hash == storedUser.passwordHash then
                   tokenProducer(storedUser) match
                     case Right(value) => Response.json(value)
-                    case Left(err) => Response.internalServerError(err.toString())
+                    case Left(err)    =>
+                      Response.internalServerError(err.getMessage())
                 else Response.unauthorized
               case Left(err) =>
-                Response.internalServerError(err.toString())
+                Response.internalServerError(err.getMessage())
           case Failure(err) =>
-            Response.internalServerError(err.toString())
+            Response.unauthorized(err.getMessage())
       case Left(err) =>
-        Response.badRequest(err.toString())
+        Response.badRequest(err)
 
   def register(req: Request): ZIO[Any, Nothing, Response] =
     for body <- req.body.asString.orDie
@@ -44,8 +44,10 @@ class AuthHandler(
           case Success(storedUser) =>
             tokenProducer(storedUser) match
               case Right(value) => Response.json(value)
-              case Left(err)    => Response.internalServerError(err.toString())
+              case Left(err) => Response.internalServerError(err.getMessage())
           case Failure(err) =>
-            Response.internalServerError(err.toString())
+            Response.internalServerError(err.getMessage())
       case Left(err) =>
-        Response.badRequest(err.toString())
+        Response.badRequest(err)
+
+  def exit(req: Request): ZIO[Any, Nothing, Response] = ???

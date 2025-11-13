@@ -18,7 +18,7 @@ class DotsHandler(
     for ctx <- ZIO.service[RequestContext]
     yield dotsRepository.getGroup(ctx.userId) match
       case Success(value) => Response.json(value.toJson)
-      case Failure(err)   => Response.internalServerError(err.toString())
+      case Failure(err)   => Response.internalServerError(err.getMessage())
   def post(req: Request): ZIO[RequestContext, Nothing, Response] =
     for
       ctx <- ZIO.service[RequestContext]
@@ -31,11 +31,11 @@ class DotsHandler(
               case Success(value) =>
                 Response.json(result.toJson)
               case Failure(err) =>
-                Response.internalServerError(err.toString())
+                Response.internalServerError(err.getMessage())
           case Left(err) =>
-            Response.internalServerError(err.toString())
+            Response.internalServerError(err.getMessage())
       case Left(err) =>
-        Response.badRequest
+        Response.badRequest(err)
   def delete(req: Request): ZIO[RequestContext, Nothing, Response] =
     for ctx <- ZIO.service[RequestContext]
     yield
