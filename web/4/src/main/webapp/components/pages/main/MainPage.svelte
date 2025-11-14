@@ -15,7 +15,6 @@
 
 <div class="lab-body">
   <HeaderComponent />
-  <a href="/dots/">Redirect</a>
   <div class="form-wrap">
     <LoginFormComponent />
   </div>

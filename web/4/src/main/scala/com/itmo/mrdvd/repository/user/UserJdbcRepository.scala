@@ -7,6 +7,7 @@ import com.itmo.mrdvd.repository._
 import com.itmo.mrdvd.mapper.Mapper
 import java.sql.ResultSet
 import scala.annotation.tailrec
+import zio.ZIO
 
 class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
     extends GenericRepository[NewUser, StoredUser, String]:
@@ -36,7 +37,7 @@ class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
       stmt.setString(1, obj.login)
       stmt.setString(2, obj.password)
       if stmt.executeUpdate() > 0 then StoredUser(0, obj.login, obj.password)
-      throw Error("Database insertion error")
+      else throw Error("Database insertion error")
     )
   override def get(login: String): Try[StoredUser] =
     Using.Manager(use =>
@@ -44,8 +45,11 @@ class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
       val stmt = use(conn.prepareStatement(UserJdbcRepository.sqlGet))
       stmt.setString(1, login)
       val rs = use(stmt.executeQuery())
-      if rs.next() then rsMapper(rs)
-      throw Error("Did not find a user with this login")
+      if rs.next() then
+        rsMapper(rs) match
+          case Right(value) => value
+          case Left(err)    => throw err
+      else throw Error("Did not find a user with this login")
     )
   override def remove(login: String): Unit =
     Using.Manager(use =>
@@ -59,5 +63,5 @@ object UserJdbcRepository:
   val sqlCreate =
     "insert into USERS (login, password_hash) values (?, ?)"
   val sqlGet = "select id, login, password_hash from USERS where login = ?"
-  val sqlGetAll = "select id, login, password from USERS"
+  val sqlGetAll = "select id, login, password_hash from USERS"
   val sqlRemove = "delete from USERS where login = ?"

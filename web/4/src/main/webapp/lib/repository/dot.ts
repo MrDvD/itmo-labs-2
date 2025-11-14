@@ -25,15 +25,18 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
   public async get(): Promise<DotStatus[]> {
     const response = await fetch(this.url.get, {
       method: "GET",
+      credentials: "include",
     });
     if (!response.ok) {
       this.errorHandler.handle(response.json());
+      return Promise.reject();
     }
     return await response.json();
   }
   public async post(data: DotParams): Promise<DotStatus> {
     const response = await fetch(this.url.post, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -41,15 +44,18 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
     });
     if (!response.ok) {
       this.errorHandler.handle(response.json());
+      return Promise.reject();
     }
     return await response.json();
   }
   public async delete(): Promise<void> {
     const response = await fetch(this.url.delete, {
       method: "DELETE",
+      credentials: "include",
     });
     if (!response.ok) {
       this.errorHandler.handle(response.json());
+      return Promise.reject();
     }
   }
 }

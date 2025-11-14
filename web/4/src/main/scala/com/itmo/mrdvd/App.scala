@@ -11,6 +11,7 @@ import com.itmo.mrdvd.mapper.dot._
 import com.itmo.mrdvd.repository.dot._
 import com.itmo.mrdvd.repository.user._
 import com.itmo.mrdvd.mapper.user._
+import com.itmo.mrdvd.service.crypto.Argon2Service
 
 object App extends ZIOAppDefault:
   val dotsHandler = DotsHandler(
@@ -19,8 +20,7 @@ object App extends ZIOAppDefault:
   )
   val authHandler = AuthHandler(
     UserCachingRepository(UserJdbcRepository(UserResultMapper())),
-    JwtUserMapper(),
-    Argon2StringMapper()
+    JwtUserMapper()
   )
   val authMiddleware = AuthMiddleware(JwtContextMapper())
   val dotsRoutes = Routes(
@@ -56,7 +56,7 @@ object App extends ZIOAppDefault:
       )
   def run = Server
     .serve(app)
-    .provide(Server.default)
+    .provide(Server.default, Argon2Service.live)
 
 object AppParams:
   val index = "dist/index.html"

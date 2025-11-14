@@ -32,8 +32,8 @@ export class UsersRepository implements AuthRepository<void, NewUser> {
     });
     if (!response.ok) {
       this.errorHandler.handle(response.json());
+      return Promise.reject();
     }
-    return await response.json();
   }
   public async register(user: NewUser): Promise<void> {
     const response = await fetch(this.url.register, {
@@ -45,8 +45,8 @@ export class UsersRepository implements AuthRepository<void, NewUser> {
     });
     if (!response.ok) {
       this.errorHandler.handle(response.json());
+      return Promise.reject();
     }
-    return await response.json();
   }
   public async exit(): Promise<void> {
     const response = await fetch(this.url.exit, {
@@ -54,6 +54,7 @@ export class UsersRepository implements AuthRepository<void, NewUser> {
     });
     if (!response.ok) {
       this.errorHandler.handle(response.json());
+      return Promise.reject();
     }
   }
 }
