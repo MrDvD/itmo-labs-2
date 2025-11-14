@@ -23,13 +23,12 @@ class DotResultJdbcRepository(
     else
       rsMapper(rs) match
         case Right(value) =>
-          val rawDotArray = dotMap.get(value.userId)
-          var dotArray: Array[DotResult] = null
-          if dotArray.isEmpty then dotArray = Array()
-          else dotArray = rawDotArray.get
-          dotArray = value.dotResult +: dotArray
-          readDotsMap(rs, dotMap + (value.userId -> dotArray))
-        case Left(value) =>
+          val dotArray = dotMap.getOrElse(value.userId, Array.empty[DotResult])
+          readDotsMap(
+            rs,
+            dotMap.updated(value.userId, value.dotResult +: dotArray)
+          )
+        case Left(_) =>
           throw Error("Database selection error")
   @tailrec
   private def readDotsArray(
@@ -40,7 +39,7 @@ class DotResultJdbcRepository(
     else
       rsMapper(rs) match
         case Right(value) => readDotsArray(rs, value.dotResult +: dotArray)
-        case Left(value)  =>
+        case Left(_)      =>
           throw Error("Database selection error")
   override def create(id: Int, dot: DotResult): Try[DotResult] =
     Using.Manager(use =>
@@ -69,7 +68,7 @@ class DotResultJdbcRepository(
         use(conn.prepareStatement(DotResultJdbcRepository.sqlCreateNext))
       manyStmt.setInt(1, id)
       manyStmt.setInt(2, dotId)
-      if stmt.executeUpdate() <= 0 then
+      if manyStmt.executeUpdate() <= 0 then
         conn.rollback()
         throw Error("Insertion of related record failed")
       conn.commit()
@@ -81,7 +80,7 @@ class DotResultJdbcRepository(
         val conn = use(JdbcConnector.getConnection)
         val stmt = use(conn.createStatement())
         val rs = use(stmt.executeQuery(DotResultJdbcRepository.sqlGetAll))
-        readDotsMap(rs, Map())
+        readDotsMap(rs, Map.empty[Int, Array[DotResult]])
       )
       .get
   override def getGroup(id: Int): Try[Array[DotResult]] =
@@ -109,8 +108,9 @@ object DotResultJdbcRepository:
     "insert into DOTS (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
   val sqlCreateNext =
     "insert into USERS_TO_DOTS (user_id, dot_id) values (?, ?)"
-  val sqlGetAll = "select x, y, r, hit, date from DOTS"
+  val sqlGetAll =
+    "select d.x as x, d.y as y, d.r as r, d.hit as hit, d.date as date, u.user_id as user_id from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id"
   val sqlGetGroup =
-    "select x, y, r, hit, date from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id where u.user_id = ?"
+    "select d.x as x, d.y as y, d.r as r, d.hit as hit, d.date as date, u.user_id as user_id from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id where u.user_id = ?"
   val sqlClearGroup =
-    "delete from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id where u.user_id = ?"
+    "delete from DOTS d using USERS_TO_DOTS u where d.id = u.dot_id and u.user_id = ?"
