@@ -1,4 +1,4 @@
-import type { DotParams, DotStatus } from "@lib/dto.js";
+import { DotStatusSchema, type DotParams, type DotStatus } from "@lib/dto.js";
 import { AppServices } from "@lib/services.js";
 import { createContext } from "svelte";
 import type { Repository, RepositoryBuilder } from "./util.js";
@@ -31,7 +31,19 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
       this.errorHandler.handle(response.json());
       return Promise.reject();
     }
-    return await response.json();
+    const results: DotStatus[] = [];
+    const rawResult = await response.json();
+    if (rawResult && Array.isArray(rawResult)) {
+      const result = DotStatusSchema.safeParse(rawResult);
+      if (result.success) {
+        results.push(result.data);
+      } else {
+        return Promise.reject();
+      }
+    } else {
+      return Promise.reject();
+    }
+    return results;
   }
   public async post(data: DotParams): Promise<DotStatus> {
     const response = await fetch(this.url.post, {
@@ -46,7 +58,12 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
       this.errorHandler.handle(response.json());
       return Promise.reject();
     }
-    return await response.json();
+    const rawResult = await response.json();
+    const result = DotStatusSchema.safeParse(rawResult);
+    if (result.success) {
+      return result.data;
+    }
+    return Promise.reject();
   }
   public async delete(): Promise<void> {
     const response = await fetch(this.url.delete, {

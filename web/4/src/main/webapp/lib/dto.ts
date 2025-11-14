@@ -37,11 +37,13 @@ export const DotParamsSchema = zod.object({
 
 export type DotParams = zod.infer<typeof DotParamsSchema>;
 
-export type DotStatus = {
-  entry: DotParams;
-  hit: boolean;
-  date: string;
-};
+export const DotStatusSchema = zod.object({
+  entry: DotParamsSchema,
+  hit: zod.boolean(),
+  date: zod.string(),
+});
+
+export type DotStatus = zod.infer<typeof DotStatusSchema>;
 
 export const NewUserSchema = zod.object({
   login: zod
@@ -54,9 +56,15 @@ export const NewUserSchema = zod.object({
       }),
 });
 
-export type NewUser = zod.infer<typeof NewUserSchema>
+export type NewUser = zod.infer<typeof NewUserSchema>;
 
 export type UserContext = {
   id: number;
   login: string;
 };
+
+export const ClientStateSchema = zod.object({
+  isAuthorized: zod.boolean(),
+});
+
+export type ClientState = zod.infer<typeof ClientStateSchema>;

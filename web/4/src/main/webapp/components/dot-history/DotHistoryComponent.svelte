@@ -2,6 +2,8 @@
   @import 'style.css';
 </style>
 
+<script lang="ts"></script>
+
 <table class="query-history">
   <caption>
     <b>История запросов</b>

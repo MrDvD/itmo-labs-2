@@ -5,10 +5,13 @@ import com.itmo.mrdvd.mapper.Mapper
 import pdi.jwt._
 import zio.json.EncoderOps
 import java.time.Clock
+import com.itmo.mrdvd.AppUtils
+import com.itmo.mrdvd.AppParams
 
 class JwtUserMapper extends Mapper[StoredUser, String]:
   implicit val clock: Clock = Clock.systemUTC
+  val secret = AppUtils.getEnv(AppParams.secretEnv)
   override def apply(user: StoredUser): Either[Error, String] =
-    val context = RequestContext(user.id, user.login)
+    val context = PrivateRequestContext(user.id, user.login)
     val claim = JwtClaim(context.toJson)
-    Right(Jwt.encode(claim.expiresIn(43200)))
+    Right(Jwt.encode(claim.expiresIn(43200), secret(), JwtAlgorithm.HS384))

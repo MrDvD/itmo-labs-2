@@ -24,6 +24,7 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+      - APP_SECRET
     networks:
       - backend
     ports:

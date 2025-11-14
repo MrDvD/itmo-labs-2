@@ -3,7 +3,7 @@
 </style>
 
 <script lang="ts">
-  import type { NewUser } from "@lib/dto";
+  import type { ClientState, NewUser } from "@lib/dto";
   import { DefaultErrorHandler } from "@lib/errors/handler";
   import type { AuthRepository } from "@lib/repository/user";
   import { AppServices } from "@lib/services";
@@ -13,7 +13,7 @@
   import { APP_ROUTES } from "@scripts/app";
 
   let form: HTMLFormElement;
-  let usersRepository: AuthRepository<void, NewUser>;
+  let usersRepository: AuthRepository<ClientState, NewUser>;
   onMount(() => {
     AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
     usersRepository = AppServices.USERS_REPOSITORY.get().build();

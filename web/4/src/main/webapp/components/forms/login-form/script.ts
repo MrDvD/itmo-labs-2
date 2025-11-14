@@ -1,8 +1,9 @@
-import { NewUserSchema, type NewUser, type ValidationError } from "@lib/dto.js";
+import { NewUserSchema, type ClientState, type NewUser, type ValidationError } from "@lib/dto.js";
 import type { AuthRepository } from "@lib/repository/user.js";
 import { clearErrorFields } from "../script.js";
+import { CLIENT_STATE } from "@scripts/stores.js";
 
-export async function handleSubmit(event: Event, redirectPath: string, authRepository: AuthRepository<void, NewUser>): Promise<void> {
+export async function handleSubmit(event: Event, redirectPath: string, authRepository: AuthRepository<ClientState, NewUser>): Promise<void> {
   event.preventDefault();
   const form = event.target;
   if (!(form instanceof HTMLFormElement)) {
@@ -15,7 +16,9 @@ export async function handleSubmit(event: Event, redirectPath: string, authRepos
   }
   authRepository
     .login(newUser)
-    .then(() => {
+    .then((state) => {
+      console.log("im there!");
+      CLIENT_STATE.set(state);
       window.location.assign(redirectPath);
     })
     .catch((error: Error) => {
