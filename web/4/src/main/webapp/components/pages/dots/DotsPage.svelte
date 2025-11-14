@@ -3,7 +3,7 @@
   @import url('@styles/groups.css');
 </style>
 
-<script>
+<script lang="ts">
   import HeaderComponent from '@components/header/HeaderComponent.svelte';
   import DotFormComponent from '@components/forms/dot-form/DotFormComponent.svelte';
   import PlotFormComponent from '@components/forms/plot-form/PlotFormComponent.svelte';
@@ -13,16 +13,23 @@
   import { AUTH_URLS, DOTS_URLS } from '@scripts/app';
   import { UsersRepositoryFactory } from '@lib/repository/user';
   import { DefaultErrorHandler } from '@lib/errors/handler';
+  import { exitUser } from './script';
 
-  AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(Document));
+  AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(document.documentElement));
   AppServices.DOTS_REPOSITORY.set(new DotsRepositoryFactory(DOTS_URLS));
-  AppServices.USERS_REPOSITORY.set(new UsersRepositoryFactory(AUTH_URLS));
+  const usersRepositoryFactory = new UsersRepositoryFactory(AUTH_URLS)
+  const usersRepository = usersRepositoryFactory.build();
+  AppServices.USERS_REPOSITORY.set(usersRepositoryFactory);
+
+  function myExitUser() {
+    exitUser(usersRepository);
+  }
 </script>
 
 <div class="lab-body">
   <HeaderComponent />
 
-  <a href="/">Назад</a>
+  <button on:click={myExitUser}>Выйти</button>
 
   <div class="form-wrap">
     <div class="horizontal-group">

@@ -8,20 +8,20 @@ import com.itmo.mrdvd.mapper._
 import scala.util.Success
 import scala.util.Failure
 import com.itmo.mrdvd.repository.CachingGroupRepository
-import com.itmo.mrdvd.dto.RequestContext
+import com.itmo.mrdvd.dto.PrivateRequestContext
 
 class DotsHandler(
     processDotMapper: Mapper[Dot, DotResult],
     dotsRepository: CachingGroupRepository[DotResult, DotResult, Int]
 ):
-  def get(req: Request): ZIO[RequestContext, Nothing, Response] =
-    for ctx <- ZIO.service[RequestContext]
+  def get(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
+    for ctx <- ZIO.service[PrivateRequestContext]
     yield dotsRepository.getGroup(ctx.userId) match
       case Success(value) => Response.json(value.toJson)
       case Failure(err)   => Response.internalServerError(err.getMessage())
-  def post(req: Request): ZIO[RequestContext, Nothing, Response] =
+  def post(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
     for
-      ctx <- ZIO.service[RequestContext]
+      ctx <- ZIO.service[PrivateRequestContext]
       body <- req.body.asString.orDie
     yield Dot.jsonCodec.decodeJson(body) match
       case Right(dot) =>
@@ -36,8 +36,8 @@ class DotsHandler(
             Response.internalServerError(err.getMessage())
       case Left(err) =>
         Response.badRequest(err)
-  def delete(req: Request): ZIO[RequestContext, Nothing, Response] =
-    for ctx <- ZIO.service[RequestContext]
+  def delete(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
+    for ctx <- ZIO.service[PrivateRequestContext]
     yield
       dotsRepository.clearGroup(ctx.userId)
       Response.status(Status.NoContent)

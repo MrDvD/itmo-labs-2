@@ -2,6 +2,8 @@
   @import 'style.css';
 </style>
 
+<script lang="ts"></script>
+
 <header class="lab-header">
   <div>
     Лабин Макар Андреевич<br/>

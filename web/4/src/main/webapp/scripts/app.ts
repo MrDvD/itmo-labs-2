@@ -17,3 +17,7 @@ export const APP_ROUTES = {
   ROOT: "/",
   DOTS: "/dots/"
 }
+
+export const COOKIE = {
+  CLIENT_STATE: "client-state",
+}

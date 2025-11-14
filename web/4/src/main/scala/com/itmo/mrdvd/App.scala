@@ -41,7 +41,7 @@ object App extends ZIOAppDefault:
     Method.POST / "api" / AppParams.apiVersion / "register" -> handler(
       authHandler.register
     ),
-    Method.GET / "api" / AppParams.apiVersion / "exit" -> handler(
+    Method.HEAD / "api" / AppParams.apiVersion / "exit" -> handler(
       authHandler.exit
     )
   )
@@ -62,3 +62,13 @@ object AppParams:
   val index = "dist/index.html"
   val assets = "dist/assets"
   val apiVersion = "1"
+
+  val secretEnv = "APP_SECRET"
+
+object AppUtils:
+  def getEnv(envVar: String): () => String =
+    () =>
+      val rawVar = sys.env.get(envVar)
+      if rawVar.isEmpty then
+        throw Error(s"Environment variable ${envVar} is not found.")
+      rawVar.get
