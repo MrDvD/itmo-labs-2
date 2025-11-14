@@ -2,7 +2,25 @@
   @import 'style.css';
 </style>
 
-<script lang="ts"></script>
+<script lang="ts">
+  import type { DotStatus } from "@lib/dto";
+  import { AppServices } from "@lib/services";
+  import { onMount } from "svelte";
+
+  const dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
+
+  let dots: DotStatus[] = $state([]);
+
+  function onAddDot(event: CustomEvent<DotStatus>) {
+    dots.push(event.detail);
+  }
+
+  document.addEventListener("dot-add", onAddDot);
+
+  onMount(async () => {
+    dots.push(...await dotsRepository.get());
+  })
+</script>
 
 <table class="query-history">
   <caption>
@@ -12,8 +30,15 @@
     <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td></tr>
   </thead>
   <tbody class="query-history-body">
+    {#if dots.length === 0}
     <tr>
       <td colspan="100">Нет запросов!</td>
     </tr>
+    {/if}
+    {#each dots as dot}
+      <tr>
+        <td>{dot.dot.X}</td><td>{dot.dot.Y}</td><td>{dot.dot.R}</td><td>{dot.hit ? "да" : "нет"}</td><td>{dot.date}</td>
+      </tr>
+    {/each}
   </tbody>
 </table>

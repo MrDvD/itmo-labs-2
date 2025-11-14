@@ -9,7 +9,7 @@
   import { main, fillCoords } from './script.js';
   import { DefaultErrorHandler } from '@lib/errors/handler';
   import { onMount } from 'svelte';
-  import type { ItemRepository } from '@lib/repository/dot';
+  import type { ItemRepository } from '@lib/repository/dot.js';
   import type { DotParams, DotStatus } from '@lib/dto';
   import plotImage from '@resources/png/plot.png';
 

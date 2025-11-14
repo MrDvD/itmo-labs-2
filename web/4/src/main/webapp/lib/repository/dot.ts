@@ -34,11 +34,13 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
     const results: DotStatus[] = [];
     const rawResult = await response.json();
     if (rawResult && Array.isArray(rawResult)) {
-      const result = DotStatusSchema.safeParse(rawResult);
-      if (result.success) {
-        results.push(result.data);
-      } else {
-        return Promise.reject();
+      for (const item of rawResult) {
+        const result = DotStatusSchema.safeParse(item);
+        if (result.success) {
+          results.push(result.data);
+        } else {
+          return Promise.reject();
+        }
       }
     } else {
       return Promise.reject();

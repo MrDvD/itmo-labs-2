@@ -7,11 +7,8 @@ import com.itmo.mrdvd.repository._
 class DotResultCachingRepository(
     private val groupedRepository: GroupedRepository[DotResult, DotResult, Int]
 ) extends CachingGroupRepository[DotResult, DotResult, Int]:
-  private var cache = Map.empty[Int, Array[DotResult]]
+  private var cache = groupedRepository.getAll
 
-  Try(groupedRepository.getAll) match
-    case Success(newCache)  => setCache(newCache)
-    case Failure(exception) =>
   override def getAll: Map[Int, Array[DotResult]] = cache
   override def create(id: Int, item: DotResult): Try[DotResult] =
     groupedRepository
