@@ -4,6 +4,7 @@ import zio.http._
 import zio.ZIO
 import com.itmo.mrdvd.dto._
 import com.itmo.mrdvd.mapper.Mapper
+import com.itmo.mrdvd.handler.AuthHandler
 
 class AuthMiddleware(contextMapper: Mapper[String, RequestContext]):
   def parseAuthSession: HandlerAspect[Any, RequestContext] =
@@ -19,8 +20,8 @@ class AuthMiddleware(contextMapper: Mapper[String, RequestContext]):
       req: Request
   ): ZIO[Any, Throwable, RequestContext] =
     for authorization <- ZIO
-        .fromOption(req.headers.get("Authorization"))
+        .fromOption(req.cookie(AuthHandler.AuthKey))
         .orElseFail(Error("Found no authorization token"))
-    yield contextMapper(authorization) match
+    yield contextMapper(authorization.content) match
       case Right(value) => value
       case Left(err)    => throw err

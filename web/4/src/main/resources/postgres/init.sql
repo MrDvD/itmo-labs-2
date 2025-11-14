@@ -23,7 +23,7 @@ create table DOTS (
 
 create table USERS (
   id serial primary key,
-  login varchar(48) not null,
+  login varchar(48) not null unique,
   password_hash text not null
 );
 

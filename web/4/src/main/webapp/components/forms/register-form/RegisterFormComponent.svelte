@@ -27,7 +27,7 @@
 </script>
 
 <form bind:this={form} on:submit={myHandleSubmit} class="lab-form">
-  <p>Форма входа</p>
+  <p>Форма регистрации</p>
   <div class="form-field">
     <p><b>Логин</b></p>
     <input type="text" class="wide-input" name="login" placeholder="Введите логин" />
@@ -38,5 +38,10 @@
     <input type="password" class="wide-input" name="password" placeholder="Введите пароль" />
   </div>
   <p class="form-error"></p>
-  <button type="submit">Войти</button>
+  <div class="form-field">
+    <p><b>Пароль</b></p>
+    <input type="password" class="wide-input" name="password-again" placeholder="Введите пароль повторно" />
+  </div>
+  <p class="form-error"></p>
+  <button type="submit">Зарегистрироваться</button>
 </form>

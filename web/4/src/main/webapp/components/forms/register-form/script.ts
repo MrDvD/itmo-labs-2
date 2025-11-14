@@ -14,7 +14,7 @@ export async function handleSubmit(event: Event, redirectPath: string, authRepos
     return;
   }
   authRepository
-    .login(newUser)
+    .register(newUser)
     .then(() => {
       window.location.assign(redirectPath);
     })

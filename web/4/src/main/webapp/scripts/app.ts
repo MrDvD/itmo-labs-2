@@ -12,3 +12,8 @@ export const AUTH_URLS: UsersRepositoryUrl = {
   register: "/api/1/register/",
   exit: "/api/1/exit/",
 };
+
+export const APP_ROUTES = {
+  ROOT: "/",
+  DOTS: "/dots/"
+}

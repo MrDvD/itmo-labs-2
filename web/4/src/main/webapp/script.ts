@@ -1,6 +1,7 @@
 import { mount } from 'svelte'
 import MainPage from '@components/pages/main/MainPage.svelte';
 import DotsPage from '@components/pages/dots/DotsPage.svelte';
+import { APP_ROUTES } from '@scripts/app.js';
 
 function main() {
   const app = document.getElementById('app');
@@ -9,11 +10,11 @@ function main() {
   }
 
   const routes = {
-    '/': {
+    [APP_ROUTES.ROOT]: {
       title: "Start",
       page: MainPage,
     },
-    '/dots/': {
+    [APP_ROUTES.DOTS]: {
       title: "Main",
       page: DotsPage,
     }
