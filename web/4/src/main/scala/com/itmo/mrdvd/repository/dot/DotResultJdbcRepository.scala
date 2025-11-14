@@ -9,6 +9,7 @@ import java.sql.Statement
 import com.itmo.mrdvd.dto.UserDotBinding
 import com.itmo.mrdvd.repository.JdbcConnector
 import com.itmo.mrdvd.repository.GroupedRepository
+import zio.json.EncoderOps
 
 class DotResultJdbcRepository(
     private val rsMapper: Mapper[ResultSet, UserDotBinding]
@@ -56,19 +57,23 @@ class DotResultJdbcRepository(
       stmt.setDouble(3, dot.dot.R)
       stmt.setBoolean(4, dot.hit)
       stmt.setString(5, dot.date)
-      if stmt.execute() then
-        val generatedKeys = use(stmt.getGeneratedKeys())
-        if generatedKeys.next() then
-          val dotId = generatedKeys.getInt(1)
-          val manyStmt =
-            use(conn.prepareStatement(DotResultJdbcRepository.sqlCreateNext))
-          manyStmt.setInt(1, id)
-          manyStmt.setInt(2, dotId)
-          if stmt.execute() then
-            conn.commit()
-            Success(dot)
-      conn.rollback()
-      throw Error("Database insertion error")
+      if stmt.executeUpdate() <= 0 then
+        conn.rollback()
+        throw Error("Insertion of dot result failed")
+      val generatedKeys = use(stmt.getGeneratedKeys())
+      if !generatedKeys.next() then
+        conn.rollback()
+        throw Error("No ID generated")
+      val dotId = generatedKeys.getInt(1)
+      val manyStmt =
+        use(conn.prepareStatement(DotResultJdbcRepository.sqlCreateNext))
+      manyStmt.setInt(1, id)
+      manyStmt.setInt(2, dotId)
+      if stmt.executeUpdate() <= 0 then
+        conn.rollback()
+        throw Error("Insertion of related record failed")
+      conn.commit()
+      dot
     )
   override def getAll: Map[Int, Array[DotResult]] =
     Using
