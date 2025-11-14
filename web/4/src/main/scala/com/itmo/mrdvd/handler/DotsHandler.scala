@@ -31,7 +31,7 @@ class DotsHandler(
               case Success(value) =>
                 Response.json(result.toJson)
               case Failure(err) =>
-                Response.internalServerError(err.getMessage())
+                Response.internalServerError(err.getMessage() + err.getCause())
           case Left(err) =>
             Response.internalServerError(err.getMessage())
       case Left(err) =>

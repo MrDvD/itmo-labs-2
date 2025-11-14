@@ -38,7 +38,7 @@ export const DotParamsSchema = zod.object({
 export type DotParams = zod.infer<typeof DotParamsSchema>;
 
 export const DotStatusSchema = zod.object({
-  entry: DotParamsSchema,
+  dot: DotParamsSchema,
   hit: zod.boolean(),
   date: zod.string(),
 });

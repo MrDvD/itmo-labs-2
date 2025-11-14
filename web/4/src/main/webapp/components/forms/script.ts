@@ -20,7 +20,9 @@ export function handleSubmit(event: Event, dotsRepository: ItemRepository<DotSta
     }));
   })
   .catch((error: Error) => {
-    console.error("Error sending dot to server:", error);
+    if (error) {
+      console.error("Error sending dot to server:", error);
+    }
   });
 }
 
