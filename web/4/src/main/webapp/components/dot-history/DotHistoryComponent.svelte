@@ -5,21 +5,9 @@
 <script lang="ts">
   import type { DotStatus } from "@lib/dto";
   import { AppServices } from "@lib/services";
-  import { onMount } from "svelte";
 
   const dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
-
-  let dots: DotStatus[] = $state([]);
-
-  function onAddDot(event: CustomEvent<DotStatus>) {
-    dots.push(event.detail);
-  }
-
-  document.addEventListener("dot-add", onAddDot);
-
-  onMount(async () => {
-    dots.push(...await dotsRepository.get());
-  })
+  let dots: DotStatus[] = dotsRepository.getCache();
 </script>
 
 <table class="query-history">

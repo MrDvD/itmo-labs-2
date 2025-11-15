@@ -3,7 +3,6 @@ export function fillCoords(form: HTMLFormElement, event: MouseEvent) {
   const scale = canvas.offsetWidth * 3 / 8;
   const R = getR(form);
   if (R == null || isNaN(R)) {
-    console.error("wawaw!!!");
     return;
   }
   const inputX = form.querySelector("input[name=X]") as HTMLInputElement | null;
