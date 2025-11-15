@@ -1,0 +1,9 @@
+FROM ubuntu/jre:21-24.04_stable AS runtime
+
+WORKDIR /app
+
+COPY ./target/lab-4-1.0.jar .
+COPY dist ./dist
+
+ENTRYPOINT ["java", "-jar", "lab-4-1.0.jar"]
+CMD []
