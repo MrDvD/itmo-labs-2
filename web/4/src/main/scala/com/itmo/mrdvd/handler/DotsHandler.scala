@@ -18,7 +18,12 @@ class DotsHandler(
     for ctx <- ZIO.service[PrivateRequestContext]
     yield dotsRepository.getGroup(ctx.userId) match
       case Success(value) => Response.json(value.toJson)
-      case Failure(err)   => Response.internalServerError(err.getMessage())
+      case Failure(_)     =>
+        Response
+          .json(
+            ErrorBatch(query = Some(QueryError(AuthHandler.ServerError))).toJson
+          )
+          .status(Status.InternalServerError)
   def post(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
     for
       ctx <- ZIO.service[PrivateRequestContext]
@@ -30,14 +35,36 @@ class DotsHandler(
             dotsRepository.create(ctx.userId, result) match
               case Success(value) =>
                 Response.json(result.toJson)
-              case Failure(err) =>
-                Response.internalServerError(err.getMessage() + err.getCause())
-          case Left(err) =>
-            Response.internalServerError(err.getMessage())
-      case Left(err) =>
-        Response.badRequest(err)
+              case Failure(_) =>
+                Response
+                  .json(
+                    ErrorBatch(query =
+                      Some(QueryError(AuthHandler.ServerError))
+                    ).toJson
+                  )
+                  .status(Status.InternalServerError)
+          case Left(_) =>
+            Response
+              .json(
+                ErrorBatch(query =
+                  Some(QueryError(AuthHandler.ServerError))
+                ).toJson
+              )
+              .status(Status.InternalServerError)
+      case Left(_) =>
+        Response
+          .json(
+            ErrorBatch(query =
+              Some(QueryError(AuthHandler.UnknownBodyFormat))
+            ).toJson
+          )
+          .status(Status.BadRequest)
   def delete(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
     for ctx <- ZIO.service[PrivateRequestContext]
     yield
       dotsRepository.clearGroup(ctx.userId)
       Response.status(Status.NoContent)
+
+object DotsHandler:
+  val UnknownBodyFormat = "Нераспознанный формат запроса"
+  val ServerError = "Внутренняя ошибка сервера"

@@ -1,12 +1,15 @@
 import * as zod from "zod";
 
 export const ServerErrorSchema = zod.object({
-  "validation-errors": zod.array(
+  "validation": zod.array(
     zod.object({
       name: zod.string(),
       message: zod.string(),
     })
   ),
+  "query": zod.object({
+    message: zod.string(),
+  }),
 });
 
 export type ServerErrorMap = zod.infer<typeof ServerErrorSchema>;

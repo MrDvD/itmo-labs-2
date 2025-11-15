@@ -51,13 +51,8 @@ export function packDotForm(form: HTMLFormElement): DotParams | null {
   return parseResult.data;
 }
 
-export function main() {
+export function initValidation(form: Element) {
   document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector(".lab-form");
-    if (form == null) {
-      console.error("Form element not found");
-      return;
-    }
     form.querySelectorAll(".form-field").forEach((field) => {
       const errorMessage = field.nextElementSibling;
       if (errorMessage == null) {
@@ -65,10 +60,18 @@ export function main() {
       }
       const input = field.querySelector("input") as HTMLInputElement;
       form.addEventListener("validation-error", (event) => {
-        if (event.detail.name == input.name) {
+        if (event.detail.name == input.name && errorMessage.innerHTML.trim().length === 0) {
           errorMessage.innerHTML = event.detail.message;
         }
       });
+    });
+  });
+}
+
+export function initQueryStatus(form: Element, input: Element) {
+  document.addEventListener("DOMContentLoaded", function() {
+    form.addEventListener("query-error", (event) => {
+      input.innerHTML = event.detail.message;
     });
   });
 }

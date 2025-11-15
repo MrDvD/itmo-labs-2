@@ -1,9 +1,10 @@
-import type { DotStatus, ValidationError } from "@lib/dto.ts";
+import type { DotStatus, QueryError, ValidationError } from "@lib/dto.ts";
 
 export {};
 
 interface CustomEventMap {
   "validation-error": CustomEvent<ValidationError>;
+  "query-error": CustomEvent<QueryError>;
 }
 
 declare global {

@@ -5,6 +5,10 @@ export type ValidationError = {
   message: string;
 }
 
+export type QueryError = {
+  message: string;
+}
+
 export const ValidationMessage = {
   TooLowNumber: function(has: number) {
     return `Введите число, не меньше ${has}`;
@@ -12,24 +16,29 @@ export const ValidationMessage = {
   TooHighNumber: function(has: number) {
     return `Введите число, не больше ${has}`;
   },
+  Required: "Поле необходимо заполнить",
+  TrimSpaces: "Уберите лишние пробелы",
+  TooShortString: function(min: number) {
+    return `Введите значение, не меньше ${min} символов`;
+  }
 }
 
 export const DotParamsSchema = zod.object({
   X: zod
       .number({
-        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+        error: (iss) => iss.input === undefined ? ValidationMessage.Required : "Invalid input.",
       })
       .gte(-3, ValidationMessage.TooLowNumber(-3))
       .lte(3, ValidationMessage.TooHighNumber(3)),
   Y: zod
       .number({
-        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+        error: (iss) => iss.input === undefined ? ValidationMessage.Required : "Invalid input.",
       })
       .gte(-3, ValidationMessage.TooLowNumber(-3))
       .lte(3, ValidationMessage.TooHighNumber(3)),
   R: zod
       .number({
-        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
+        error: (iss) => iss.input === undefined ? ValidationMessage.Required : "Invalid input.",
       })
       .gte(-3, ValidationMessage.TooLowNumber(-3))
       .lte(3, ValidationMessage.TooHighNumber(3)),
@@ -48,12 +57,17 @@ export type DotStatus = zod.infer<typeof DotStatusSchema>;
 export const NewUserSchema = zod.object({
   login: zod
       .string({
-        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
-      }),
+        error: (iss) => iss.input === undefined ? ValidationMessage.Required : "Invalid input.",
+      })
+      .refine((val) => val.trim().length > 0, ValidationMessage.Required)
+      .refine((val) => val.trim() === val, ValidationMessage.TrimSpaces),
   password: zod
       .string({
-        error: (iss) => iss.input === undefined ? "Поле необходимо заполнить." : "Invalid input.",
-      }),
+        error: (iss) => iss.input === undefined ? ValidationMessage.Required : "Invalid input.",
+      })
+      .refine((val) => val.trim().length > 0, ValidationMessage.Required)
+      .refine((val) => val.trim() === val, ValidationMessage.TrimSpaces)
+      .refine((val) => val.length >= 8, ValidationMessage.TooShortString(8)),
 });
 
 export type NewUser = zod.infer<typeof NewUserSchema>;

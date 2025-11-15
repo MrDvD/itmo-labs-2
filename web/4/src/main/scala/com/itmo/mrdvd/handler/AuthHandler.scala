@@ -51,13 +51,38 @@ class AuthHandler(
                         path = Some(Path.root)
                       )
                     )
-                case Left(err) =>
-                  Response.internalServerError(err.getMessage())
-            else Response.unauthorized
-          case Failure(err) =>
-            Response.unauthorized(err.getMessage())
-      case Left(err) =>
-        Response.badRequest(err)
+                case Left(_) =>
+                  Response
+                    .json(
+                      ErrorBatch(query =
+                        Some(QueryError(AuthHandler.ServerError))
+                      ).toJson
+                    )
+                    .status(Status.InternalServerError)
+            else
+              Response
+                .json(
+                  ErrorBatch(query =
+                    Some(QueryError(AuthHandler.InvalidLoginAttempt))
+                  ).toJson
+                )
+                .status(Status.Unauthorized)
+          case Failure(_) =>
+            Response
+              .json(
+                ErrorBatch(query =
+                  Some(QueryError(AuthHandler.InvalidLoginAttempt))
+                ).toJson
+              )
+              .status(Status.Unauthorized)
+      case Left(_) =>
+        Response
+          .json(
+            ErrorBatch(query =
+              Some(QueryError(AuthHandler.UnknownBodyFormat))
+            ).toJson
+          )
+          .status(Status.BadRequest)
 
   def register(req: Request): ZIO[PasswordFactory, Nothing, Response] =
     for
@@ -93,12 +118,30 @@ class AuthHandler(
                       maxAge = Some(Duration(24, TimeUnit.HOURS))
                     )
                   )
-              case Left(err) =>
-                Response.internalServerError(err.getMessage())
-          case Failure(err) =>
-            Response.internalServerError(err.getMessage())
-      case Left(err) =>
-        Response.badRequest(err)
+              case Left(_) =>
+                Response
+                  .json(
+                    ErrorBatch(query =
+                      Some(QueryError(AuthHandler.ServerError))
+                    ).toJson
+                  )
+                  .status(Status.InternalServerError)
+          case Failure(_) =>
+            Response
+              .json(
+                ErrorBatch(query =
+                  Some(QueryError(AuthHandler.UserCreationFailure))
+                ).toJson
+              )
+              .status(Status.BadRequest)
+      case Left(_) =>
+        Response
+          .json(
+            ErrorBatch(query =
+              Some(QueryError(AuthHandler.UnknownBodyFormat))
+            ).toJson
+          )
+          .status(Status.BadRequest)
 
   def exit(req: Request): ZIO[Any, Nothing, Response] =
     ZIO.succeed(
@@ -127,3 +170,8 @@ class AuthHandler(
 object AuthHandler:
   val AuthKey = "token"
   val ClientState = "client-state"
+
+  val InvalidLoginAttempt = "Неудачная попытка аутентификации"
+  val UnknownBodyFormat = "Нераспознанный формат запроса"
+  val UserCreationFailure = "Не удалось зарегистрировать пользователя"
+  val ServerError = "Внутренняя ошибка сервера"
