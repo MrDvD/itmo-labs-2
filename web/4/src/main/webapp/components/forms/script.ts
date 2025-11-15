@@ -31,7 +31,7 @@ export function packDotForm(form: HTMLFormElement): DotParams | null {
   let dotParams: Partial<DotParams> = {};
   const t = DotParamsSchema.keyof().options;
   for (const [key, value] of (new FormData(form)).entries()) {
-    const numValue = parseInt(value.toString());
+    const numValue = parseFloat(value.toString());
     if (t.includes(key as any) && !isNaN(numValue)) {
       dotParams[key as keyof DotParams] = numValue;
     }
