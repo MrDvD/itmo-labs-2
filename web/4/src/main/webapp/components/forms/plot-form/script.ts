@@ -1,6 +1,6 @@
 export function fillCoords(form: HTMLFormElement, event: MouseEvent) {
   const canvas = event.target as unknown as HTMLElement;
-  const scale = canvas.offsetWidth * 3 / 8;
+  const scale = getScale(canvas);
   const R = getR(form);
   if (R == null || isNaN(R)) {
     return;
@@ -28,6 +28,10 @@ export function fillCoords(form: HTMLFormElement, event: MouseEvent) {
   inputX.value = String(X);
   inputY.value = String(Y);
   form.requestSubmit();
+}
+
+export function getScale(elem: HTMLElement): number {
+  return elem.offsetWidth * 3 / 8;
 }
 
 function getR(form: HTMLFormElement): number | null {
