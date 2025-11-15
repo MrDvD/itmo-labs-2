@@ -1,7 +1,6 @@
-export function fillCoords(form: HTMLFormElement, event: MouseEvent) {
+export function fillCoords(form: HTMLFormElement, event: MouseEvent, R: number) {
   const canvas = event.target as unknown as HTMLElement;
   const scale = getScale(canvas);
-  const R = getR(form);
   if (R == null || isNaN(R)) {
     return;
   }
@@ -32,34 +31,4 @@ export function fillCoords(form: HTMLFormElement, event: MouseEvent) {
 
 export function getScale(elem: HTMLElement): number {
   return elem.offsetWidth * 3 / 8;
-}
-
-function getR(form: HTMLFormElement): number | null {
-  const input = form.querySelector("input[name=R]") as HTMLInputElement | null;
-  if (input == null) {
-    return null;
-  }
-  return input.valueAsNumber;
-}
-
-export function main() {
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".dynamic-slider").forEach((slider) => {
-      const track = slider.querySelector("p:nth-of-type(2)");
-      if (track == null) {
-        return;
-      }
-      const sliderInput = slider.querySelector("input[type=range]") as HTMLInputElement | null;
-      if (sliderInput == null) {
-        return;
-      }
-      track.innerHTML = sliderInput.value;
-      sliderInput.addEventListener("input", (event) => {
-        const target = event.target;
-        if (target instanceof HTMLInputElement) {
-          track.innerHTML = target.value;
-        }
-      });
-    });
-  });
 }
