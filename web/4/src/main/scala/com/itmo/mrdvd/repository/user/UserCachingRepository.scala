@@ -20,7 +20,7 @@ class UserCachingRepository(
     user match
       case Success(value) =>
         cache = cache + (value.login -> value)
-      case Failure(err)   =>
+      case Failure(err) =>
     user
   override def getAll: Map[String, StoredUser] = cache
   override def setCache(map: Map[String, StoredUser]): Unit = cache = map
