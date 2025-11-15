@@ -5,7 +5,7 @@
 <script lang="ts">
   import { AppServices } from '@lib/services';
   import { handleSubmit, initQueryStatus, initValidation } from '../script.js';
-  import { handleClean } from './script.js';
+  import { handleClean, initTypeValidation } from './script.js';
   import { DefaultErrorHandler } from '@lib/errors/handler';
   import { onMount } from 'svelte';
   import type { ItemRepository } from '@lib/repository/dot.js';
@@ -19,6 +19,7 @@
     dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
     initValidation(form);
     initQueryStatus(form, queryError);
+    initTypeValidation(form);
   });
 
   function myHandleSubmit(event: Event) {
@@ -34,17 +35,17 @@
   <p>Проверка точки</p>
   <div class="form-field">
     <p><b>X</b></p>
-    <input type="text" class="wide-input" name="X" placeholder="Введите дробное число" />
+    <input type="text" class="wide-input double-input" name="X" placeholder="Введите дробное число" autocomplete="off" />
   </div>
   <p class="form-error"></p>
   <div class="form-field">
     <p><b>Y</b></p>
-    <input type="text" class="wide-input" name="Y" placeholder="Введите дробное число" />
+    <input type="text" class="wide-input double-input" name="Y" placeholder="Введите дробное число" autocomplete="off" />
   </div>
   <p class="form-error"></p>
   <div class="form-field">
     <p><b>R</b></p>
-    <input type="text" class="wide-input" name="R" placeholder="Введите дробное число" />
+    <input type="text" class="wide-input double-input" name="R" placeholder="Введите дробное число" autocomplete="off" />
   </div>
   <p class="form-error"></p>
   <button type="submit">Отправить</button>
