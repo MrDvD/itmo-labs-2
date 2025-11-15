@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { AppServices } from '@lib/services';
-  import { main as generic_main, handleSubmit } from '../script.js';
+  import { handleSubmit, initQueryStatus, initValidation } from '../script.js';
   import { handleClean } from './script.js';
   import { DefaultErrorHandler } from '@lib/errors/handler';
   import { onMount } from 'svelte';
@@ -13,11 +13,13 @@
 
   let form: HTMLFormElement;
   let dotsRepository: ItemRepository<DotStatus, DotParams>;
+  let queryError: Element;
   onMount(() => {
     AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
     dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
+    initValidation(form);
+    initQueryStatus(form, queryError);
   });
-  generic_main();
 
   function myHandleSubmit(event: Event) {
     handleSubmit(event, dotsRepository);
@@ -47,4 +49,5 @@
   <p class="form-error"></p>
   <button type="submit">Отправить</button>
   <button type="button" on:click={myHandleClean}>Очистить</button>
+  <p bind:this={queryError} class="form-error"></p>
 </form>

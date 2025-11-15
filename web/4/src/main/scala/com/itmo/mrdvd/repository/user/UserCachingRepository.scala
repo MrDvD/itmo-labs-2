@@ -18,7 +18,8 @@ class UserCachingRepository(
   override def create(obj: NewUser): Try[StoredUser] =
     val user = repo.create(obj)
     user match
-      case Success(value) => cache + (value.login -> value)
+      case Success(value) =>
+        cache = cache + (value.login -> value)
       case Failure(err)   =>
     user
   override def getAll: Map[String, StoredUser] = cache

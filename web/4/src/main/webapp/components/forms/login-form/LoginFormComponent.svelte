@@ -9,17 +9,18 @@
   import { AppServices } from "@lib/services";
   import { onMount } from "svelte";
   import { handleSubmit } from "./script";
-  import { main } from "../script";
   import { APP_ROUTES } from "@scripts/app";
+  import { initQueryStatus, initValidation } from "../script";
 
   let form: HTMLFormElement;
   let usersRepository: AuthRepository<ClientState, NewUser>;
+  let queryError: Element;
   onMount(() => {
     AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
     usersRepository = AppServices.USERS_REPOSITORY.get().build();
+    initValidation(form);
+    initQueryStatus(form, queryError);
   });
-
-  main();
 
   function myHandleSubmit(event: Event) {
     handleSubmit(event, APP_ROUTES.DOTS, usersRepository);
@@ -39,4 +40,5 @@
   </div>
   <p class="form-error"></p>
   <button type="submit">Войти</button>
+  <p bind:this={queryError} class="form-error"></p>
 </form>

@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { AppServices } from '@lib/services';
-  import { main as generic_main, handleSubmit } from '../script.js';
+  import { handleSubmit, initQueryStatus, initValidation } from '../script.js';
   import { main, fillCoords, getScale } from './script.js';
   import { DefaultErrorHandler } from '@lib/errors/handler';
   import { onMount } from 'svelte';
@@ -17,12 +17,14 @@
   let dotsRepository: ReactiveItemRepository<DotStatus, DotParams>;
   let dots: DotStatus[];
   let img: HTMLImageElement;
+  let queryError: Element;
   onMount(() => {
     AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
     dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
     dots = dotsRepository.getCache();
+    initValidation(form);
+    initQueryStatus(form, queryError);
   });
-  generic_main();
   main();
 
   function myHandleSubmit(event: Event) {
@@ -49,4 +51,5 @@
     <p>?</p>
   </div>
   <p class="form-error"></p>
+  <p bind:this={queryError} class="form-error"></p>
 </form>

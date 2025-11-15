@@ -17,7 +17,6 @@ export async function handleSubmit(event: Event, redirectPath: string, authRepos
   authRepository
     .login(newUser)
     .then((state) => {
-      console.log("im there!");
       CLIENT_STATE.set(state);
       window.location.assign(redirectPath);
     })
@@ -37,7 +36,7 @@ export function packNewUser(form: HTMLFormElement): NewUser | null {
       newUser[key as keyof NewUser] = numValue;
     }
   }
-  const parseResult = NewUserSchema.safeParse(newUser)
+  const parseResult = NewUserSchema.safeParse(newUser);
   if (!parseResult.success) {
     for (const err of parseResult.error.issues) {
       form.dispatchEvent(new CustomEvent<ValidationError>("validation-error", {
