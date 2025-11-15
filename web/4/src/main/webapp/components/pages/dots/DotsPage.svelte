@@ -14,9 +14,16 @@
   import { UsersRepositoryFactory } from '@lib/repository/user';
   import { DefaultErrorHandler } from '@lib/errors/handler';
   import { exitUser } from './script';
+  import type { DotStatus } from '@lib/dto';
 
   AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(document.documentElement));
-  AppServices.DOTS_REPOSITORY.set(new DotsRepositoryFactory(DOTS_URLS));
+
+  const dots = $state<DotStatus[]>([]);
+  const dotsRepositoryFactory = new DotsRepositoryFactory(DOTS_URLS, dots);
+  const dotsRepository = dotsRepositoryFactory.build();
+  dotsRepository.get();
+
+  AppServices.DOTS_REPOSITORY.set(dotsRepositoryFactory);
   const usersRepositoryFactory = new UsersRepositoryFactory(AUTH_URLS)
   const usersRepository = usersRepositoryFactory.build();
   AppServices.USERS_REPOSITORY.set(usersRepositoryFactory);
@@ -29,7 +36,7 @@
 <div class="lab-body">
   <HeaderComponent />
 
-  <button on:click={myExitUser}>Выйти</button>
+  <button onclick={myExitUser}>Выйти</button>
 
   <div class="form-wrap">
     <div class="horizontal-group">

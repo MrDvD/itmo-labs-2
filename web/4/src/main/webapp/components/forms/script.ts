@@ -14,11 +14,6 @@ export function handleSubmit(event: Event, dotsRepository: ItemRepository<DotSta
   }
   dotsRepository
   .post(dotParams)
-  .then((dotStatus: DotStatus) => {
-    document.dispatchEvent(new CustomEvent<DotStatus>('dot-add', {
-      detail: dotStatus,
-    }));
-  })
   .catch((error: Error) => {
     if (error) {
       console.error("Error sending dot to server:", error);

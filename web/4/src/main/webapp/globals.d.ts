@@ -4,7 +4,6 @@ export {};
 
 interface CustomEventMap {
   "validation-error": CustomEvent<ValidationError>;
-  "dot-add": CustomEvent<DotStatus>;
 }
 
 declare global {
