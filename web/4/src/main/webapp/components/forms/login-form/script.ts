@@ -1,4 +1,4 @@
-import { NewUserSchema, type ClientState, type NewUser, type ValidationError } from "@lib/dto.js";
+import { NewUserSchema, type ClientState, type NewUser, type QueryError, type ValidationError } from "@lib/dto.js";
 import type { AuthRepository } from "@lib/repository/user.js";
 import { clearErrorFields } from "../script.js";
 import { CLIENT_STATE } from "@scripts/stores.js";
@@ -22,6 +22,11 @@ export async function handleSubmit(event: Event, redirectPath: string, authRepos
     })
     .catch((error: Error) => {
       if (error) {
+        form.dispatchEvent(new CustomEvent<QueryError>("query-error", {
+          detail: {
+            message: error.message,
+          }
+        }));
         console.error("Error logging in:", error);
       }
     });
