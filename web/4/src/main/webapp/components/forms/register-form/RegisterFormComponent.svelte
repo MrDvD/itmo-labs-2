@@ -41,7 +41,7 @@
   <p class="form-error"></p>
   <div class="form-field">
     <p><b>Пароль</b></p>
-    <input type="password" class="wide-input" name="password-again" placeholder="Введите пароль повторно" />
+    <input type="password" class="wide-input" name="password_again" placeholder="Введите пароль повторно" />
   </div>
   <p class="form-error"></p>
   <button type="submit">Зарегистрироваться</button>

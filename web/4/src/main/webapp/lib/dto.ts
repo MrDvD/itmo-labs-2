@@ -18,6 +18,7 @@ export const ValidationMessage = {
   },
   Required: "Поле необходимо заполнить",
   TrimSpaces: "Уберите лишние пробелы",
+  PasswordMatch: "Пароли должны совпадать",
   TooShortString: function(min: number) {
     return `Введите значение, не меньше ${min} символов`;
   }
@@ -71,6 +72,15 @@ export const NewUserSchema = zod.object({
 });
 
 export type NewUser = zod.infer<typeof NewUserSchema>;
+
+export const PasswordMatchSchema = zod.object({
+  password: zod.string(),
+  password_again: zod.string(),
+})
+.refine((data) => data.password === data.password_again, {
+  message: ValidationMessage.PasswordMatch,
+  path: ["password_again"],
+});
 
 export type UserContext = {
   id: number;
