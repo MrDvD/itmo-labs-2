@@ -15,7 +15,7 @@
     <b>История запросов</b>
   </caption>
   <thead>
-    <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Результат</td><td>Дата</td></tr>
+    <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Итог</td><td>Дата</td></tr>
   </thead>
   <tbody class="query-history-body">
     {#if dots.length === 0}

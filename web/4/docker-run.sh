@@ -1,8 +1,8 @@
 npm i && \
-scalafmt && \
+# scalafmt && \
 npm run clean
 npm run build && \
-mvn clean package
+# mvn clean package
 cp ./docker/Dockerfile.dev ./Dockerfile && \
 sudo docker compose build && \
 sudo -E docker compose up
