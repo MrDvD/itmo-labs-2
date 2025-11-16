@@ -15,7 +15,7 @@ ssh -o ControlPath=$ssh_ctl vdska << EOF
 EOF
 WEB_4=$(ssh -o ControlPath=$ssh_ctl vdska 'source .bashrc; echo $WEB_4')
 scp -ro ControlPath=$ssh_ctl dist "vdska:$WEB_4" && \
-scp -ro ControlPath=$ssh_ctl target "vdska:$WEB_4"/app && \
+scp -ro ControlPath=$ssh_ctl target "vdska:$WEB_4" && \
 ssh -o ControlPath=$ssh_ctl vdska << EOF
   source .bashrc
   cd \$WEB_4

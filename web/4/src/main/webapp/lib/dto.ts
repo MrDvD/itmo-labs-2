@@ -13,6 +13,9 @@ export const ValidationMessage = {
   TooLowNumber: function(has: number) {
     return `Введите число, не меньше ${has}`;
   },
+  TooLowExclusiveNumber: function(has: number) {
+    return `Введите число, больше ${has}`;
+  },
   TooHighNumber: function(has: number) {
     return `Введите число, не больше ${has}`;
   },
@@ -21,7 +24,7 @@ export const ValidationMessage = {
   PasswordMatch: "Пароли должны совпадать",
   TooShortString: function(min: number) {
     return `Введите значение, не меньше ${min} символов`;
-  }
+  },
 }
 
 export const DotParamsSchema = zod.object({
@@ -41,7 +44,7 @@ export const DotParamsSchema = zod.object({
       .number({
         error: (iss) => iss.input === undefined ? ValidationMessage.Required : "Invalid input.",
       })
-      .gte(-3, ValidationMessage.TooLowNumber(-3))
+      .gt(0, ValidationMessage.TooLowExclusiveNumber(0))
       .lte(3, ValidationMessage.TooHighNumber(3)),
 });
 
