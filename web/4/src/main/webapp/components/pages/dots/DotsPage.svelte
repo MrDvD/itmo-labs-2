@@ -1,6 +1,8 @@
 <style>
-  @import url('@styles/lab-body.css');
-  @import url('@styles/groups.css');
+  @import url('@styles/lab-body.less');
+  @import url('@styles/groups.less');
+  @import url('@styles/pages.css');
+  @import url('./style.less');
 </style>
 
 <script lang="ts">
@@ -13,7 +15,6 @@
   import { AUTH_URLS, DOTS_URLS } from '@scripts/app';
   import { UsersRepositoryFactory } from '@lib/repository/user';
   import { DefaultErrorHandler } from '@lib/errors/handler';
-  import { exitUser } from './script';
   import type { DotStatus } from '@lib/dto';
 
   AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(document.documentElement));
@@ -24,25 +25,23 @@
   dotsRepository.get();
 
   AppServices.DOTS_REPOSITORY.set(dotsRepositoryFactory);
-  const usersRepositoryFactory = new UsersRepositoryFactory(AUTH_URLS)
-  const usersRepository = usersRepositoryFactory.build();
-  AppServices.USERS_REPOSITORY.set(usersRepositoryFactory);
-
-  function myExitUser() {
-    exitUser(usersRepository);
-  }
+  AppServices.USERS_REPOSITORY.set(new UsersRepositoryFactory(AUTH_URLS));
 </script>
 
 <div class="lab-body">
-  <HeaderComponent />
+  <div class="bar">
+    <HeaderComponent />
+  </div>
 
-  <button onclick={myExitUser}>Выйти</button>
-
-  <div class="form-wrap">
-    <div class="horizontal-group">
-      <DotFormComponent />
-      <PlotFormComponent />
+  <div class="desktop-horizontal-group body">
+    <div class="form-wrap desktop-margin">
+      <div class="tablet-horizontal-group">
+        <DotFormComponent />
+        <PlotFormComponent />
+      </div>
+    </div>
+    <div class="history-container">
+      <DotHistoryComponent />
     </div>
   </div>
-  <DotHistoryComponent />
 </div>

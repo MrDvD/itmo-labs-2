@@ -97,7 +97,7 @@ export class ReactiveDotsRepository implements ReactiveItemRepository<DotStatus,
 
   public async post(data: DotParams): Promise<DotStatus> {
     const response = await this.repository.post(data);
-    this.dots.push(response);
+    this.dots.unshift(response);
     return response;
   }
 
