@@ -9,9 +9,14 @@
     import { get } from 'svelte/store';
 
   const usersRepository = AppServices.USERS_REPOSITORY.get().build();
+  export let isLogin: boolean;
 
   function myExitUser() {
     exitUser(usersRepository);
+  }
+
+  function invert() {
+    isLogin = !isLogin;
   }
 </script>
 
@@ -24,6 +29,12 @@
     <p>Вариант №4466</p>
     {#if get(CLIENT_STATE).isAuthorized }
       <button onclick={myExitUser}>Выйти</button>
+    {:else}
+      {#if isLogin}
+        <button onclick={invert}>Регистрация</button>
+      {:else}
+        <button onclick={invert}>Вход</button>
+      {/if}
     {/if}
   </div>
 </header>

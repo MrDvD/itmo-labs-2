@@ -15,7 +15,7 @@ export const AUTH_URLS: UsersRepositoryUrl = {
 
 export const APP_ROUTES = {
   ROOT: "/",
-  DOTS: "/dots/"
+  DOTS: "/dots/",
 }
 
 export const COOKIE = {

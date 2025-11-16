@@ -57,26 +57,22 @@ export function packDotForm(form: HTMLFormElement): DotParams | null {
 }
 
 export function initValidation(form: Element) {
-  document.addEventListener("DOMContentLoaded", function() {
-    form.querySelectorAll(".form-field").forEach((field) => {
-      const errorMessage = field.nextElementSibling;
-      if (errorMessage == null) {
-        return;
+  form.querySelectorAll(".form-field").forEach((field) => {
+    const errorMessage = field.nextElementSibling;
+    if (errorMessage == null) {
+      return;
+    }
+    const input = field.querySelector("input") as HTMLInputElement;
+    form.addEventListener("validation-error", (event) => {
+      if (event.detail.name == input.name && errorMessage.innerHTML.trim().length === 0) {
+        errorMessage.innerHTML = event.detail.message;
       }
-      const input = field.querySelector("input") as HTMLInputElement;
-      form.addEventListener("validation-error", (event) => {
-        if (event.detail.name == input.name && errorMessage.innerHTML.trim().length === 0) {
-          errorMessage.innerHTML = event.detail.message;
-        }
-      });
     });
   });
 }
 
 export function initQueryStatus(form: Element, input: Element) {
-  document.addEventListener("DOMContentLoaded", function() {
-    form.addEventListener("query-error", (event) => {
-      input.innerHTML = event.detail.message;
-    });
+  form.addEventListener("query-error", (event) => {
+    input.innerHTML = event.detail.message;
   });
 }

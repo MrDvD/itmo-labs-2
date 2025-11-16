@@ -1,8 +1,9 @@
-import { NewUserSchema, type NewUser, type ValidationError } from "@lib/dto.js";
+import { NewUserSchema, type ClientState, type NewUser, type QueryError, type ValidationError } from "@lib/dto.js";
 import type { AuthRepository } from "@lib/repository/user.js";
 import { clearErrorFields } from "../script.js";
+import { CLIENT_STATE } from "@scripts/stores.js";
 
-export async function handleSubmit(event: Event, redirectPath: string, authRepository: AuthRepository<void, NewUser>): Promise<void> {
+export async function handleSubmit(event: Event, redirectPath: string, authRepository: AuthRepository<ClientState, NewUser>): Promise<void> {
   event.preventDefault();
   const form = event.target;
   if (!(form instanceof HTMLFormElement)) {
@@ -15,11 +16,18 @@ export async function handleSubmit(event: Event, redirectPath: string, authRepos
   }
   authRepository
     .register(newUser)
-    .then(() => {
+    .then((state) => {
+      CLIENT_STATE.set(state);
       window.location.assign(redirectPath);
+      console.log("redirecting...");
     })
     .catch((error: Error) => {
       if (error) {
+        form.dispatchEvent(new CustomEvent<QueryError>("query-error", {
+          detail: {
+            message: error.message,
+          }
+        }));
         console.error("Error logging in:", error);
       }
     });
@@ -34,7 +42,7 @@ export function packNewUser(form: HTMLFormElement): NewUser | null {
       newUser[key as keyof NewUser] = numValue;
     }
   }
-  const parseResult = NewUserSchema.safeParse(newUser)
+  const parseResult = NewUserSchema.safeParse(newUser);
   if (!parseResult.success) {
     for (const err of parseResult.error.issues) {
       form.dispatchEvent(new CustomEvent<ValidationError>("validation-error", {
