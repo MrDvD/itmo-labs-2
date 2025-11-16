@@ -19,7 +19,7 @@ class UserCachingRepository(
     val user = repo.create(obj)
     user match
       case Success(value) =>
-        cache = cache + (value.login -> value)
+        setCache(cache.updated(value.login, value))
       case Failure(err) =>
     user
   override def getAll: Map[String, StoredUser] = cache

@@ -8,6 +8,7 @@ import com.itmo.mrdvd.mapper.Mapper
 import java.sql.ResultSet
 import scala.annotation.tailrec
 import zio.ZIO
+import java.sql.Statement
 
 class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
     extends GenericRepository[NewUser, StoredUser, String]:
@@ -33,11 +34,25 @@ class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
   override def create(obj: NewUser): Try[StoredUser] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
-      val stmt = use(conn.prepareStatement(UserJdbcRepository.sqlCreate))
+      conn.setAutoCommit(false)
+      val stmt = use(
+        conn.prepareStatement(
+          UserJdbcRepository.sqlCreate,
+          Statement.RETURN_GENERATED_KEYS
+        )
+      )
       stmt.setString(1, obj.login)
       stmt.setString(2, obj.password)
-      if stmt.executeUpdate() > 0 then StoredUser(0, obj.login, obj.password)
-      else throw Error("Database insertion error")
+      if stmt.executeUpdate() <= 0 then
+        conn.rollback()
+        throw Error("User insertion failed")
+      val generatedKeys = use(stmt.getGeneratedKeys());
+      if !generatedKeys.next() then
+        conn.rollback()
+        throw Error("No ID generated")
+      val userId = generatedKeys.getInt(1)
+      conn.commit()
+      StoredUser(userId, obj.login, obj.password)
     )
   override def get(login: String): Try[StoredUser] =
     Using.Manager(use =>

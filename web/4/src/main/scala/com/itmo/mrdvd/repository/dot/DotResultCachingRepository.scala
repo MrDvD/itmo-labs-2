@@ -8,14 +8,13 @@ class DotResultCachingRepository(
     private val groupedRepository: GroupedRepository[DotResult, DotResult, Int]
 ) extends CachingGroupRepository[DotResult, DotResult, Int]:
   private var cache = groupedRepository.getAll
-
   override def getAll: Map[Int, Array[DotResult]] = cache
   override def create(id: Int, item: DotResult): Try[DotResult] =
     groupedRepository
       .create(id, item)
       .map(value =>
         val cachedGroup = cache.getOrElse(id, Array.empty[DotResult])
-        cache = cache.updated(id, value +: cachedGroup)
+        setCache(cache.updated(id, value +: cachedGroup))
         value
       )
   override def setCache(newCache: Map[Int, Array[DotResult]]): Unit = cache =
@@ -24,4 +23,4 @@ class DotResultCachingRepository(
     groupedRepository.clearGroup(id)
     cache += (id -> Array())
   override def getGroup(id: Int): Try[Array[DotResult]] =
-    Try(cache.get(id).get)
+    Try(cache.getOrElse(id, Array.empty[DotResult]))

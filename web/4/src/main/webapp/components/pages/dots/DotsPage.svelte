@@ -30,7 +30,7 @@
 
 <div class="lab-body">
   <div class="bar">
-    <HeaderComponent />
+    <HeaderComponent isLogin={false} />
   </div>
 
   <div class="desktop-horizontal-group body">
