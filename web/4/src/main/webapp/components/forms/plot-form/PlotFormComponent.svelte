@@ -20,6 +20,10 @@
   let img = writable<HTMLImageElement>();
   let queryError: Element;
   let R: number = $state(1);
+  let imageScale = $derived(() => {
+    if (!$img) return 1;
+    return getScale($img) / R;
+  });
   onMount(() => {
     AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
     dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
@@ -42,7 +46,7 @@
     <img src="{plotImage}" bind:this={$img} onclick={myFillCoords} alt="Dot plot" draggable="false" />
     {#each $dots as dot}
       {#if Math.max(Math.abs(dot.dot.X), Math.abs(dot.dot.Y)) <= R}
-        <div class={["dot", dot.hit ? 'correct' : 'wrong']} style:transform="translate({dot.dot.X * getScale($img) / R}px, {-dot.dot.Y * getScale($img) / R}px)"></div>
+        <div class={["dot", dot.hit ? 'correct' : 'wrong']} style:transform="translate({dot.dot.X * imageScale()}px, {-dot.dot.Y * imageScale()}px)"></div>
       {/if}
     {/each}
   </div>
