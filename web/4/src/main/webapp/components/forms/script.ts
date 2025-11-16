@@ -1,4 +1,4 @@
-import { DotParamsSchema, type DotParams, type DotStatus, type ValidationError } from "@lib/dto.js";
+import { DotParamsSchema, type DotParams, type DotStatus, type QueryError, type ValidationError } from "@lib/dto.js";
 import { type ItemRepository } from "@lib/repository/dot.js";
 
 export function handleSubmit(event: Event, dotsRepository: ItemRepository<DotStatus, DotParams>): void {
@@ -16,6 +16,11 @@ export function handleSubmit(event: Event, dotsRepository: ItemRepository<DotSta
   .post(dotParams)
   .catch((error: Error) => {
     if (error) {
+      form.dispatchEvent(new CustomEvent<QueryError>("query-error", {
+        detail: {
+          message: error.message,
+        }
+      }));
       console.error("Error sending dot to server:", error);
     }
   });
