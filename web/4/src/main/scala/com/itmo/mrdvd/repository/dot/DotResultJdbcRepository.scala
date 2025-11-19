@@ -6,92 +6,109 @@ import java.sql.ResultSet
 import scala.annotation.tailrec
 import com.itmo.mrdvd.mapper.Mapper
 import java.sql.Statement
-import com.itmo.mrdvd.dto.UserDotBinding
-import com.itmo.mrdvd.repository.JdbcConnector
-import com.itmo.mrdvd.repository.GroupedRepository
+import com.itmo.mrdvd.dto._
+import com.itmo.mrdvd.repository._
 import zio.json.EncoderOps
 
 class DotResultJdbcRepository(
-    private val rsMapper: Mapper[ResultSet, UserDotBinding]
-) extends GroupedRepository[DotResult, DotResult, Int]:
+    private val rsMapper: Mapper[ResultSet, Entry[Entry[Int, User], DotResult]]
+) extends GroupedRepository[DotResult, Entry[String, DotResult], Int]:
   @tailrec
   private def readDotsMap(
       rs: ResultSet,
-      dotMap: Map[Int, Array[DotResult]]
-  ): Map[Int, Array[DotResult]] =
+      dotMap: Map[Int, Array[Entry[String, DotResult]]] =
+        Map.empty[Int, Array[Entry[String, DotResult]]]
+  ): Map[Int, Array[Entry[String, DotResult]]] =
     if !rs.next() then dotMap
     else
       rsMapper(rs) match
-        case Right(value) =>
-          val dotArray = dotMap.getOrElse(value.userId, Array.empty[DotResult])
+        case Right(result) =>
+          val dotArray =
+            dotMap.getOrElse(
+              result.key.key,
+              Array.empty[Entry[String, DotResult]]
+            )
           readDotsMap(
             rs,
-            dotMap.updated(value.userId, value.dotResult +: dotArray)
+            dotMap.updated(
+              result.key.key,
+              Entry[String, DotResult](
+                result.key.value.login,
+                result.value
+              ) +: dotArray
+            )
           )
         case Left(_) =>
           throw Error("Database selection error")
   @tailrec
   private def readDotsArray(
       rs: ResultSet,
-      dotArray: Array[DotResult]
-  ): Array[DotResult] =
+      dotArray: Array[Entry[String, DotResult]] =
+        Array.empty[Entry[String, DotResult]]
+  ): Array[Entry[String, DotResult]] =
     if !rs.next() then dotArray
     else
       rsMapper(rs) match
-        case Right(value) => readDotsArray(rs, value.dotResult +: dotArray)
-        case Left(_)      =>
+        case Right(result) =>
+          readDotsArray(
+            rs,
+            Entry[String, DotResult](
+              result.key.value.login,
+              result.value
+            ) +: dotArray
+          )
+        case Left(_) =>
           throw Error("Database selection error")
-  override def create(id: Int, dot: DotResult): Try[DotResult] =
+  override def create(
+      user_id: Int,
+      dot: DotResult
+  ): Try[Entry[String, DotResult]] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
       conn.setAutoCommit(false)
-      val stmt = use(
-        conn.prepareStatement(
-          DotResultJdbcRepository.sqlCreate,
-          Statement.RETURN_GENERATED_KEYS
-        )
-      )
+      val stmt = use(conn.prepareStatement(DotResultJdbcRepository.sqlCreate))
       stmt.setDouble(1, dot.dot.X)
       stmt.setDouble(2, dot.dot.Y)
       stmt.setDouble(3, dot.dot.R)
       stmt.setBoolean(4, dot.hit)
       stmt.setString(5, dot.date)
-      if stmt.executeUpdate() <= 0 then
+      stmt.setInt(6, user_id)
+      if stmt.executeUpdate <= 0 then
         conn.rollback()
         throw Error("Insertion of dot result failed")
-      val generatedKeys = use(stmt.getGeneratedKeys())
-      if !generatedKeys.next() then
+      val otherStmt = use(
+        conn.prepareStatement(
+          DotResultJdbcRepository.sqlMapIdToLogin
+        )
+      )
+      otherStmt.setInt(1, user_id)
+      val rs = otherStmt.executeQuery()
+      if !rs.next then
         conn.rollback()
-        throw Error("No ID generated")
-      val dotId = generatedKeys.getInt(1)
-      val manyStmt =
-        use(conn.prepareStatement(DotResultJdbcRepository.sqlCreateNext))
-      manyStmt.setInt(1, id)
-      manyStmt.setInt(2, dotId)
-      if manyStmt.executeUpdate() <= 0 then
-        conn.rollback()
-        throw Error("Insertion of related record failed")
-      conn.commit()
-      dot
+        throw Error("Mapping of user login failed")
+      Entry(
+        rs.getString("login"),
+        dot
+      )
     )
-  override def getAll: Map[Int, Array[DotResult]] =
+  override def getAll: Map[Int, Array[Entry[String, DotResult]]] =
     Using
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
-        val stmt = use(conn.createStatement())
+        val stmt = use(conn.createStatement)
         val rs = use(stmt.executeQuery(DotResultJdbcRepository.sqlGetAll))
-        readDotsMap(rs, Map.empty[Int, Array[DotResult]])
+        readDotsMap(rs)
       )
       .get
-  override def getGroup(id: Int): Try[Array[DotResult]] =
+  override def getGroup(id: Int): Try[Array[Entry[String, DotResult]]] =
     Using
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
         val stmt =
           use(conn.prepareStatement(DotResultJdbcRepository.sqlGetGroup))
         stmt.setInt(1, id)
-        val rs = use(stmt.executeQuery())
-        readDotsArray(rs, Array())
+        val rs = use(stmt.executeQuery)
+        readDotsArray(rs, Array.empty[Entry[String, DotResult]])
       )
   override def clearGroup(id: Int): Unit =
     Using
@@ -105,12 +122,11 @@ class DotResultJdbcRepository(
 
 object DotResultJdbcRepository:
   val sqlCreate =
-    "insert into DOTS (x, y, r, hit, date) values (?, ?, ?, ?, ?)"
-  val sqlCreateNext =
-    "insert into USERS_TO_DOTS (user_id, dot_id) values (?, ?)"
+    "insert into DOTS (x, y, r, hit, date, creator_id) values (?, ?, ?, ?, ?, ?)"
   val sqlGetAll =
-    "select d.x as x, d.y as y, d.r as r, d.hit as hit, d.date as date, u.user_id as user_id from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id"
+    "select x, y, r, hit, date, creator_id, login, password_hash from DOTS join USERS u on creator_id = u.id"
+  val sqlMapIdToLogin = "select login from USERS where id = ?"
   val sqlGetGroup =
-    "select d.x as x, d.y as y, d.r as r, d.hit as hit, d.date as date, u.user_id as user_id from DOTS d join USERS_TO_DOTS u on d.id = u.dot_id where u.user_id = ?"
+    "select x, y, r, hit, date from DOTS where creator_id = ?"
   val sqlClearGroup =
-    "delete from DOTS d using USERS_TO_DOTS u where d.id = u.dot_id and u.user_id = ?"
+    "delete from DOTS where creator_id = ?"

@@ -1,15 +1,17 @@
 package com.itmo.mrdvd.mapper.user
 
 import java.sql.ResultSet
-import com.itmo.mrdvd.dto.StoredUser
+import com.itmo.mrdvd.dto._
 import com.itmo.mrdvd.mapper.Mapper
 
-class UserResultMapper extends Mapper[ResultSet, StoredUser]:
-  override def apply(rs: ResultSet): Either[Error, StoredUser] =
+class UserResultMapper extends Mapper[ResultSet, Entry[Int, User]]:
+  override def apply(rs: ResultSet): Either[Error, Entry[Int, User]] =
     Right(
-      StoredUser(
+      Entry[Int, User](
         rs.getInt("id"),
-        rs.getString("login"),
-        rs.getString("password_hash")
+        User(
+          rs.getString("login"),
+          rs.getString("password_hash")
+        )
       )
     )

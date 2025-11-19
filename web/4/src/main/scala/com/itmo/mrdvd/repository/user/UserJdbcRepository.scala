@@ -10,19 +10,19 @@ import scala.annotation.tailrec
 import zio.ZIO
 import java.sql.Statement
 
-class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
-    extends GenericRepository[NewUser, StoredUser, String]:
+class UserJdbcRepository(rsMapper: Mapper[ResultSet, Entry[Int, User]])
+    extends GenericRepository[User, Entry[Int, User], String]:
   @tailrec
   private def readUsers(
       rs: ResultSet,
-      users: Map[String, StoredUser]
-  ): Map[String, StoredUser] =
+      users: Map[String, Entry[Int, User]]
+  ): Map[String, Entry[Int, User]] =
     if !rs.next() then users
     else
       rsMapper(rs) match
-        case Right(value) => readUsers(rs, users + (value.login -> value))
+        case Right(value) => readUsers(rs, users + (value.value.login -> value))
         case Left(value)  => throw Error("Database selection error")
-  override def getAll: Map[String, StoredUser] =
+  override def getAll: Map[String, Entry[Int, User]] =
     Using
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
@@ -31,7 +31,7 @@ class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
         readUsers(rs, Map())
       )
       .getOrElse(Map.empty)
-  override def create(obj: NewUser): Try[StoredUser] =
+  override def create(obj: User): Try[Entry[Int, User]] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
       conn.setAutoCommit(false)
@@ -52,9 +52,9 @@ class UserJdbcRepository(rsMapper: Mapper[ResultSet, StoredUser])
         throw Error("No ID generated")
       val userId = generatedKeys.getInt(1)
       conn.commit()
-      StoredUser(userId, obj.login, obj.password)
+      Entry[Int, User](userId, obj)
     )
-  override def get(login: String): Try[StoredUser] =
+  override def get(login: String): Try[Entry[Int, User]] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
       val stmt = use(conn.prepareStatement(UserJdbcRepository.sqlGet))
