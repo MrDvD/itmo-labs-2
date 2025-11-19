@@ -1,8 +1,7 @@
 package com.itmo.mrdvd.repository.user
 
 import com.itmo.mrdvd.repository.CachingGroupRepository
-import com.itmo.mrdvd.dto.NewUser
-import com.itmo.mrdvd.dto.StoredUser
+import com.itmo.mrdvd.dto._
 import scala.util.Try
 import com.itmo.mrdvd.repository.CachingRepository
 import com.itmo.mrdvd.repository.GenericRepository
@@ -11,20 +10,20 @@ import scala.util.Failure
 import zio.ZIO
 
 class UserCachingRepository(
-    repo: GenericRepository[NewUser, StoredUser, String]
-) extends CachingRepository[NewUser, StoredUser, String]:
-  private var cache: Map[String, StoredUser] = repo.getAll
+    repo: GenericRepository[User, Entry[Int, User], String]
+) extends CachingRepository[User, Entry[Int, User], String]:
+  private var cache: Map[String, Entry[Int, User]] = repo.getAll
 
-  override def create(obj: NewUser): Try[StoredUser] =
+  override def create(obj: User): Try[Entry[Int, User]] =
     val user = repo.create(obj)
     user match
-      case Success(value) =>
-        setCache(cache.updated(value.login, value))
+      case Success(created) =>
+        setCache(cache.updated(created.value.login, created))
       case Failure(err) =>
     user
-  override def getAll: Map[String, StoredUser] = cache
-  override def setCache(map: Map[String, StoredUser]): Unit = cache = map
-  override def get(login: String): Try[StoredUser] =
+  override def getAll: Map[String, Entry[Int, User]] = cache
+  override def setCache(map: Map[String, Entry[Int, User]]): Unit = cache = map
+  override def get(login: String): Try[Entry[Int, User]] =
     Try(cache.get(login).get)
   override def remove(login: String): Unit =
     repo.remove(login)

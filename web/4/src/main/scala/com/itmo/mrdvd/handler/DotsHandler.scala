@@ -12,18 +12,15 @@ import com.itmo.mrdvd.dto.PrivateRequestContext
 
 class DotsHandler(
     processDotMapper: Mapper[Dot, DotResult],
-    dotsRepository: CachingGroupRepository[DotResult, DotResult, Int]
+    dotsRepository: CachingGroupRepository[
+      DotResult,
+      Entry[String, DotResult],
+      Int
+    ]
 ):
   def get(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
     for ctx <- ZIO.service[PrivateRequestContext]
-    yield dotsRepository.getGroup(ctx.userId) match
-      case Success(value) => Response.json(value.toJson)
-      case Failure(_)     =>
-        Response
-          .json(
-            ErrorBatch(query = Some(QueryError(AuthHandler.ServerError))).toJson
-          )
-          .status(Status.InternalServerError)
+    yield Response.json(dotsRepository.getAll.values.toArray.toJson)
   def post(req: Request): ZIO[PrivateRequestContext, Nothing, Response] =
     for
       ctx <- ZIO.service[PrivateRequestContext]
@@ -33,8 +30,8 @@ class DotsHandler(
         processDotMapper(dot) match
           case Right(result) =>
             dotsRepository.create(ctx.userId, result) match
-              case Success(value) =>
-                Response.json(result.toJson)
+              case Success(created) =>
+                Response.json(created.toJson)
               case Failure(_) =>
                 Response
                   .json(

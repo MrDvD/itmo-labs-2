@@ -3,14 +3,14 @@ package com.itmo.mrdvd.dto
 import zio.schema._
 import zio.json._
 
-final case class NewUser(login: String, password: String)
+final case class User(login: String, password: String)
 
-object NewUser:
-  implicit val schema: Schema[NewUser] =
+object User:
+  implicit val schema: Schema[User] =
     DeriveSchema
-      .gen[NewUser]
+      .gen[User]
       .transformOrFail(
-        (user: NewUser) =>
+        (user: User) =>
           if user.login.trim != user.login then
             Left("Trim leading and trailing spaces in login")
           if user.password.trim != user.password then
@@ -19,7 +19,7 @@ object NewUser:
             Left("Password is shorter than 8 characters")
           Right(user)
         ,
-        (user: NewUser) => Right(user)
+        (user: User) => Right(user)
       )
-  implicit val jsonCodec: JsonCodec[NewUser] =
+  implicit val jsonCodec: JsonCodec[User] =
     zio.schema.codec.JsonCodec.jsonCodec(schema)

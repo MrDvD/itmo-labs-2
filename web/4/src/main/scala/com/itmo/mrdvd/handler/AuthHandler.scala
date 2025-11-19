@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit
 import java.util.Base64
 
 class AuthHandler(
-    userRepository: CachingRepository[NewUser, StoredUser, String],
-    tokenProducer: Mapper[StoredUser, String]
+    userRepository: CachingRepository[User, Entry[Int, User], String],
+    tokenProducer: Mapper[Entry[Int, User], String]
 ):
   def login(
       req: Request
@@ -24,11 +24,12 @@ class AuthHandler(
     for
       cryptoService <- ZIO.service[PasswordFactory]
       body <- req.body.asString.orDie
-    yield NewUser.jsonCodec.decodeJson(body) match
+    yield User.jsonCodec.decodeJson(body) match
       case Right(user) =>
         userRepository.get(user.login) match
           case Success(storedUser) =>
-            if cryptoService.verify(user.password, storedUser.passwordHash) then
+            if cryptoService.verify(user.password, storedUser.value.password)
+            then
               tokenProducer(storedUser) match
                 case Right(token) =>
                   Response
@@ -88,7 +89,7 @@ class AuthHandler(
     for
       cryptoService <- ZIO.service[PasswordFactory]
       body <- req.body.asString.orDie
-    yield NewUser.jsonCodec.decodeJson(body) match
+    yield User.jsonCodec.decodeJson(body) match
       case Right(user) =>
         userRepository.create(
           user.copy(password = cryptoService.hash(user.password))
