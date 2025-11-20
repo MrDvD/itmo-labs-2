@@ -22,15 +22,15 @@ class UserJdbcRepository(rsMapper: Mapper[ResultSet, Entry[Int, User]])
       rsMapper(rs) match
         case Right(value) => readUsers(rs, users + (value.value.login -> value))
         case Left(value)  => throw Error("Database selection error")
-  override def getAll: Map[String, Entry[Int, User]] =
+  override def getAll: Iterator[Entry[Int, User]] =
     Using
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
         val stmt = use(conn.prepareStatement(UserJdbcRepository.sqlGetAll))
         val rs = use(stmt.executeQuery())
-        readUsers(rs, Map())
+        readUsers(rs, Map()).iterator.map((_, entry) => entry)
       )
-      .getOrElse(Map.empty)
+      .getOrElse(Iterator.empty)
   override def create(obj: User): Try[Entry[Int, User]] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)

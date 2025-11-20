@@ -16,7 +16,7 @@ import com.itmo.mrdvd.service.crypto.Argon2Service
 object App extends ZIOAppDefault:
   val dotsHandler = DotsHandler(
     DotResultMapper(RoundDotMapper()),
-    DotResultCachingRepository(DotResultJdbcRepository(UserDotMapper()))
+    PagedDotResultRepository(DotResultJdbcRepository(UserDotMapper()))
   )
   val authHandler = AuthHandler(
     UserCachingRepository(UserJdbcRepository(UserResultMapper())),

@@ -1,4 +1,4 @@
-import { DotStatusSchema, type DotParams, type DotStatus } from "@lib/dto.js";
+import { NodeDotSchema, type DotParams, type NodeDot } from "@lib/dto.js";
 import { AppServices } from "@lib/services.js";
 import { createContext } from "svelte";
 import type { ReactiveRepository, Repository, RepositoryBuilder } from "./util.js";
@@ -17,14 +17,14 @@ export interface DotsRepositoryUrl {
   delete: string;
 }
 
-export const [ getItemContext, setItemContext ] = createContext<RepositoryBuilder<DotStatus, DotParams, ReactiveItemRepository<DotStatus, DotParams>>>();
+export const [ getItemContext, setItemContext ] = createContext<RepositoryBuilder<NodeDot, DotParams, ReactiveItemRepository<NodeDot, DotParams>>>();
 
-export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
+export class DotsRepository implements ItemRepository<NodeDot, DotParams> {
   private errorHandler = AppServices.SERVER_ERROR_HANDLER.get();
 
   constructor(private url: DotsRepositoryUrl) {}
 
-  public async get(): Promise<DotStatus[]> {
+  public async get(): Promise<NodeDot[]> {
     const response = await fetch(this.url.get, {
       method: "GET",
       credentials: "include",
@@ -33,11 +33,11 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
       this.errorHandler.handle(response.json());
       return Promise.reject();
     }
-    const results: DotStatus[] = [];
+    const results: NodeDot[] = [];
     const rawResult = await response.json();
     if (rawResult && Array.isArray(rawResult)) {
       for (const item of rawResult) {
-        const result = DotStatusSchema.safeParse(item);
+        const result = NodeDotSchema.safeParse(item);
         if (result.success) {
           results.push(result.data);
         } else {
@@ -49,7 +49,7 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
     }
     return results;
   }
-  public async post(data: DotParams): Promise<DotStatus> {
+  public async post(data: DotParams): Promise<NodeDot> {
     const response = await fetch(this.url.post, {
       method: "POST",
       credentials: "include",
@@ -63,7 +63,7 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
       return Promise.reject();
     }
     const rawResult = await response.json();
-    const result = DotStatusSchema.safeParse(rawResult);
+    const result = NodeDotSchema.safeParse(rawResult);
     if (result.success) {
       return result.data;
     }
@@ -81,21 +81,21 @@ export class DotsRepository implements ItemRepository<DotStatus, DotParams> {
   }
 }
 
-export class ReactiveDotsRepository implements ReactiveItemRepository<DotStatus, DotParams> {
-  constructor(private repository: ItemRepository<DotStatus, DotParams>, private dots: DotStatus[]) {}
+export class ReactiveDotsRepository implements ReactiveItemRepository<NodeDot, DotParams> {
+  constructor(private repository: ItemRepository<NodeDot, DotParams>, private dots: NodeDot[]) {}
 
-  public getCache(): DotStatus[] {
+  public getCache(): NodeDot[] {
     return this.dots;
   }
 
-  public async get(): Promise<DotStatus[]> {
+  public async get(): Promise<NodeDot[]> {
     const response = await this.repository.get();
     this.dots.length = 0;
     this.dots.push(...response);
     return this.dots;
   }
 
-  public async post(data: DotParams): Promise<DotStatus> {
+  public async post(data: DotParams): Promise<NodeDot> {
     const response = await this.repository.post(data);
     this.dots.unshift(response);
     return response;
@@ -107,10 +107,10 @@ export class ReactiveDotsRepository implements ReactiveItemRepository<DotStatus,
   }
 }
 
-export class DotsRepositoryFactory implements RepositoryBuilder<DotStatus, DotParams, ReactiveItemRepository<DotStatus, DotParams>> {
-  constructor(private url: DotsRepositoryUrl, private dots: DotStatus[]) {}
+export class DotsRepositoryFactory implements RepositoryBuilder<NodeDot, DotParams, ReactiveItemRepository<NodeDot, DotParams>> {
+  constructor(private url: DotsRepositoryUrl, private dots: NodeDot[]) {}
 
-  public build(): ReactiveItemRepository<DotStatus, DotParams> {
+  public build(): ReactiveItemRepository<NodeDot, DotParams> {
     return new ReactiveDotsRepository(new DotsRepository(this.url), this.dots);
   }
 }

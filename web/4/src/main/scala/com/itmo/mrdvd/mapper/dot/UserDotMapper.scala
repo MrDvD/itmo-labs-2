@@ -5,18 +5,15 @@ import com.itmo.mrdvd.dto._
 import com.itmo.mrdvd.mapper.Mapper
 
 class UserDotMapper
-    extends Mapper[ResultSet, Entry[Entry[Int, User], DotResult]]:
+    extends Mapper[ResultSet, Entry[Entry[Int, String], DotResult]]:
   override def apply(
       rs: ResultSet
-  ): Either[Error, Entry[Entry[Int, User], DotResult]] =
+  ): Either[Error, Entry[Entry[Int, String], DotResult]] =
     Right(
-      Entry[Entry[Int, User], DotResult](
-        Entry[Int, User](
+      Entry[Entry[Int, String], DotResult](
+        Entry[Int, String](
           rs.getInt("creator_id"),
-          User(
-            rs.getString("login"),
-            rs.getString("password_hash")
-          )
+          rs.getString("login")
         ),
         DotResult(
           Dot(rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("r")),

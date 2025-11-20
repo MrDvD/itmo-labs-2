@@ -11,14 +11,21 @@ import com.itmo.mrdvd.repository._
 import zio.json.EncoderOps
 
 class DotResultJdbcRepository(
-    private val rsMapper: Mapper[ResultSet, Entry[Entry[Int, User], DotResult]]
-) extends GroupedRepository[DotResult, Entry[String, DotResult], Int]:
+    private val rsMapper: Mapper[
+      ResultSet,
+      Entry[Entry[Int, String], DotResult]
+    ]
+) extends GroupedRepository[
+      DotResult,
+      Entry[Entry[Int, String], DotResult],
+      Int
+    ]:
   @tailrec
   private def readDotsMap(
       rs: ResultSet,
-      dotMap: Map[Int, Array[Entry[String, DotResult]]] =
-        Map.empty[Int, Array[Entry[String, DotResult]]]
-  ): Map[Int, Array[Entry[String, DotResult]]] =
+      dotMap: Map[Int, Array[Entry[Entry[Int, String], DotResult]]] =
+        Map.empty[Int, Array[Entry[Entry[Int, String], DotResult]]]
+  ): Map[Int, Array[Entry[Entry[Int, String], DotResult]]] =
     if !rs.next() then dotMap
     else
       rsMapper(rs) match
@@ -26,16 +33,13 @@ class DotResultJdbcRepository(
           val dotArray =
             dotMap.getOrElse(
               result.key.key,
-              Array.empty[Entry[String, DotResult]]
+              Array.empty[Entry[Entry[Int, String], DotResult]]
             )
           readDotsMap(
             rs,
             dotMap.updated(
               result.key.key,
-              Entry[String, DotResult](
-                result.key.value.login,
-                result.value
-              ) +: dotArray
+              result +: dotArray
             )
           )
         case Left(_) =>
@@ -43,26 +47,23 @@ class DotResultJdbcRepository(
   @tailrec
   private def readDotsArray(
       rs: ResultSet,
-      dotArray: Array[Entry[String, DotResult]] =
-        Array.empty[Entry[String, DotResult]]
-  ): Array[Entry[String, DotResult]] =
+      dotArray: Array[Entry[Entry[Int, String], DotResult]] =
+        Array.empty[Entry[Entry[Int, String], DotResult]]
+  ): Array[Entry[Entry[Int, String], DotResult]] =
     if !rs.next() then dotArray
     else
       rsMapper(rs) match
         case Right(result) =>
           readDotsArray(
             rs,
-            Entry[String, DotResult](
-              result.key.value.login,
-              result.value
-            ) +: dotArray
+            result +: dotArray
           )
         case Left(_) =>
           throw Error("Database selection error")
   override def create(
       user_id: Int,
       dot: DotResult
-  ): Try[Entry[String, DotResult]] =
+  ): Try[Entry[Entry[Int, String], DotResult]] =
     Using.Manager(use =>
       val conn = use(JdbcConnector.getConnection)
       conn.setAutoCommit(false)
@@ -87,20 +88,25 @@ class DotResultJdbcRepository(
         conn.rollback()
         throw Error("Mapping of user login failed")
       Entry(
-        rs.getString("login"),
+        Entry(
+          user_id,
+          rs.getString("login")
+        ),
         dot
       )
     )
-  override def getAll: Map[Int, Array[Entry[String, DotResult]]] =
+  override def getAll: Iterator[Entry[Entry[Int, String], DotResult]] =
     Using
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
         val stmt = use(conn.createStatement)
         val rs = use(stmt.executeQuery(DotResultJdbcRepository.sqlGetAll))
-        readDotsMap(rs)
+        readDotsMap(rs).iterator.map((_, entry) => entry).flatten
       )
-      .get
-  override def getGroup(id: Int): Try[Array[Entry[String, DotResult]]] =
+      .getOrElse(Iterator.empty)
+  override def getGroup(
+      id: Int
+  ): Iterator[Try[Entry[Entry[Int, String], DotResult]]] =
     Using
       .Manager(use =>
         val conn = use(JdbcConnector.getConnection)
@@ -108,8 +114,13 @@ class DotResultJdbcRepository(
           use(conn.prepareStatement(DotResultJdbcRepository.sqlGetGroup))
         stmt.setInt(1, id)
         val rs = use(stmt.executeQuery)
-        readDotsArray(rs, Array.empty[Entry[String, DotResult]])
+        readDotsArray(
+          rs,
+          Array.empty[Entry[Entry[Int, String], DotResult]]
+        ).iterator
+          .map(Success(_))
       )
+      .getOrElse(Iterator.empty)
   override def clearGroup(id: Int): Unit =
     Using
       .Manager(use =>
@@ -127,6 +138,6 @@ object DotResultJdbcRepository:
     "select x, y, r, hit, date, creator_id, login, password_hash from DOTS join USERS u on creator_id = u.id"
   val sqlMapIdToLogin = "select login from USERS where id = ?"
   val sqlGetGroup =
-    "select x, y, r, hit, date from DOTS where creator_id = ?"
+    "select x, y, r, hit, date, creator_id from DOTS where creator_id = ?"
   val sqlClearGroup =
     "delete from DOTS where creator_id = ?"

@@ -10,13 +10,13 @@
   import { DefaultErrorHandler } from '@lib/errors/handler';
   import { onMount } from 'svelte';
   import type { ReactiveItemRepository } from '@lib/repository/dot.js';
-  import type { DotParams, DotStatus } from '@lib/dto';
+  import type { DotParams, NodeDot } from '@lib/dto';
   import plotImage from '@resources/png/plot.png';
   import { writable } from 'svelte/store';
 
   let form: HTMLFormElement;
-  let dotsRepository: ReactiveItemRepository<DotStatus, DotParams>;
-  let dots = writable<DotStatus[]>([]);
+  let dotsRepository: ReactiveItemRepository<NodeDot, DotParams>;
+  let dots = writable<NodeDot[]>([]);
   let img = writable<HTMLImageElement>();
   let queryError: Element;
   let R: number = $state(1);
@@ -44,9 +44,9 @@
 <form class="lab-form" bind:this={form} onsubmit={myHandleSubmit}>
   <div class="dots-container">
     <img src="{plotImage}" bind:this={$img} onclick={myFillCoords} alt="Dot plot" draggable="false" />
-    {#each $dots as dot}
-      {#if Math.max(Math.abs(dot.dot.X), Math.abs(dot.dot.Y)) <= R}
-        <div class={["dot", dot.hit ? 'correct' : 'wrong']} style:transform="translate({dot.dot.X * imageScale()}px, {-dot.dot.Y * imageScale()}px)"></div>
+    {#each $dots as node}
+      {#if Math.max(Math.abs(node.value.dot.X), Math.abs(node.value.dot.Y)) <= R}
+        <div class={["dot", node.value.hit ? 'correct' : 'wrong']} style:transform="translate({node.value.dot.X * imageScale()}px, {-node.value.dot.Y * imageScale()}px)"></div>
       {/if}
     {/each}
   </div>
