@@ -15,15 +15,19 @@
   import { AUTH_URLS, DOTS_URLS } from '@scripts/app';
   import { UsersRepositoryFactory } from '@lib/repository/user';
   import { DefaultErrorHandler } from '@lib/errors/handler';
-  import type { DotStatus } from '@lib/dto';
+  import type { Page } from '@lib/dto';
 
   AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(document.documentElement));
 
-  const dots = $state<DotStatus[]>([]);
-  const dotsRepositoryFactory = new DotsRepositoryFactory(DOTS_URLS, dots);
-  const dotsRepository = dotsRepositoryFactory.build();
-  dotsRepository.get();
-
+  const page = $state<Page>({
+    items: [],
+    pageNumber: 0,
+    pageSize: 0,
+    totalItems: 0,
+    totalPages: 0,
+  });
+  const dotsRepositoryFactory = new DotsRepositoryFactory(DOTS_URLS, page);
+  
   AppServices.DOTS_REPOSITORY.set(dotsRepositoryFactory);
   AppServices.USERS_REPOSITORY.set(new UsersRepositoryFactory(AUTH_URLS));
 </script>

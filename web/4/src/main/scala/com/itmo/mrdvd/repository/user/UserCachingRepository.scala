@@ -1,10 +1,8 @@
 package com.itmo.mrdvd.repository.user
 
-import com.itmo.mrdvd.repository.CachingGroupRepository
+import com.itmo.mrdvd.repository._
 import com.itmo.mrdvd.dto._
 import scala.util.Try
-import com.itmo.mrdvd.repository.CachingRepository
-import com.itmo.mrdvd.repository.GenericRepository
 import scala.util.Success
 import scala.util.Failure
 import zio.ZIO

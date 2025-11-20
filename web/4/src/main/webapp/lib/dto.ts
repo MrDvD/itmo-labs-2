@@ -65,6 +65,16 @@ export const NodeDotSchema = zod.object({
 
 export type NodeDot = zod.infer<typeof NodeDotSchema>;
 
+export const PageSchema = zod.object({
+  items: zod.array(NodeDotSchema),
+  pageNumber: zod.number(),
+  pageSize: zod.number(),
+  totalItems: zod.number(),
+  totalPages: zod.number(),
+});
+
+export type Page = zod.infer<typeof PageSchema>;
+
 export const NewUserSchema = zod.object({
   login: zod
       .string({
