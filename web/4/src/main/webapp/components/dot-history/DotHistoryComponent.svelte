@@ -3,11 +3,11 @@
 </style>
 
 <script lang="ts">
-  import type { DotStatus } from "@lib/dto";
+  import type { NodeDot } from "@lib/dto";
   import { AppServices } from "@lib/services";
 
   const dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
-  let dots: DotStatus[] = dotsRepository.getCache();
+  let dots: NodeDot[] = dotsRepository.getCache();
 </script>
 
 <table class="query-history">
@@ -15,7 +15,7 @@
     <b>История запросов</b>
   </caption>
   <thead>
-    <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Итог</td><td>Дата</td></tr>
+    <tr class="header-row"><td>X</td><td>Y</td><td>R</td><td>Итог</td><td>Дата</td><td>Пользователь</td></tr>
   </thead>
   <tbody class="query-history-body">
     {#if dots.length === 0}
@@ -23,9 +23,9 @@
       <td colspan="100">Нет запросов!</td>
     </tr>
     {/if}
-    {#each dots as dot}
+    {#each dots as node}
       <tr>
-        <td>{dot.dot.X}</td><td>{dot.dot.Y}</td><td>{dot.dot.R}</td><td>{dot.hit ? "да" : "нет"}</td><td>{dot.date}</td>
+        <td>{node.value.dot.X}</td><td>{node.value.dot.Y}</td><td>{node.value.dot.R}</td><td>{node.value.hit ? "да" : "нет"}</td><td>{node.value.date}</td><td>{node.key}</td>
       </tr>
     {/each}
   </tbody>

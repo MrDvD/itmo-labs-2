@@ -1,7 +1,7 @@
-import { DotParamsSchema, type DotParams, type DotStatus, type QueryError, type ValidationError } from "@lib/dto.js";
+import { DotParamsSchema, type DotParams, type NodeDot, type QueryError, type ValidationError } from "@lib/dto.js";
 import { type ItemRepository } from "@lib/repository/dot.js";
 
-export function handleSubmit(event: Event, dotsRepository: ItemRepository<DotStatus, DotParams>): void {
+export function handleSubmit(event: Event, dotsRepository: ItemRepository<NodeDot, DotParams>): void {
   event.preventDefault();
   const form = event.target;
   if (!(form instanceof HTMLFormElement)) {

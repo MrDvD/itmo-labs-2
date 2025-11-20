@@ -58,6 +58,13 @@ export const DotStatusSchema = zod.object({
 
 export type DotStatus = zod.infer<typeof DotStatusSchema>;
 
+export const NodeDotSchema = zod.object({
+  key: zod.string(),
+  value: DotStatusSchema,
+});
+
+export type NodeDot = zod.infer<typeof NodeDotSchema>;
+
 export const NewUserSchema = zod.object({
   login: zod
       .string({
