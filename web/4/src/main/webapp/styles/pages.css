@@ -1,0 +1,7 @@
+.bar {
+  grid-area: bar;
+}
+
+.body {
+  grid-area: body;
+}

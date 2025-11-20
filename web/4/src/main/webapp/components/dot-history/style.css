@@ -1,0 +1,27 @@
+.query-history {
+  border-collapse: collapse;
+
+  td {
+    padding: 0 10px;
+  }
+
+  .header-row {
+    background-color: lightgray;
+    border-bottom: 1px solid black;
+  }
+
+  .query-history-body {
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    tr:nth-child(even) {
+      background-color: gainsboro;
+    }
+  }
+}
+
+.pagination {
+  width: fit-content;
+  display: block;
+}
