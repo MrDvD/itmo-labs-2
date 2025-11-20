@@ -27,7 +27,7 @@
   onMount(() => {
     AppServices.SERVER_ERROR_HANDLER.set(new DefaultErrorHandler(form));
     dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
-    dots.set(dotsRepository.getCache());
+    dots.set(dotsRepository.getCache().items);
     initValidation(form);
     initQueryStatus(form, queryError);
   });

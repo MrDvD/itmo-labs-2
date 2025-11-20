@@ -10,9 +10,7 @@ final case class Page[T](
     pageSize: Int,
     totalItems: Long,
     totalPages: Int
-):
-  def hasNext: Boolean = pageNumber < totalPages - 1
-  def hasPrev: Boolean = pageNumber > 0
+)
 
 object Page:
   implicit def schema[T](implicit

@@ -1,15 +1,15 @@
-import { NodeDotSchema, type DotParams, type NodeDot } from "@lib/dto.js";
+import { NodeDotSchema, PageSchema, type DotParams, type NodeDot, type Page } from "@lib/dto.js";
 import { AppServices } from "@lib/services.js";
 import { createContext } from "svelte";
 import type { ReactiveRepository, Repository, RepositoryBuilder } from "./util.js";
 
 export interface ItemRepository<Item, Params> extends Repository<Item, Params> {
-  get(): Promise<Item[]>;
+  get(pageNumber: number): Promise<Page>;
   post(data: Params): Promise<Item>;
   delete(login: string): Promise<void>;
 };
 
-export interface ReactiveItemRepository<Item, Params> extends ItemRepository<Item, Params>, ReactiveRepository<Item, Params> {}
+export interface ReactiveItemRepository<Item, Params> extends ItemRepository<Item, Params>, ReactiveRepository<Item, Params, Page> {}
 
 export interface DotsRepositoryUrl {
   get: string;
@@ -24,30 +24,21 @@ export class DotsRepository implements ItemRepository<NodeDot, DotParams> {
 
   constructor(private url: DotsRepositoryUrl) {}
 
-  public async get(): Promise<NodeDot[]> {
-    const response = await fetch(this.url.get, {
+  public async get(pageNumber: number): Promise<Page> {
+    const response = await fetch(this.url.get + `?page=${pageNumber}`, {
       method: "GET",
       credentials: "include",
     });
     if (!response.ok) {
-      this.errorHandler.handle(response.json());
+      this.errorHandler.handle(await response.json());
       return Promise.reject();
     }
-    const results: NodeDot[] = [];
-    const rawResult = await response.json();
-    if (rawResult && Array.isArray(rawResult)) {
-      for (const item of rawResult) {
-        const result = NodeDotSchema.safeParse(item);
-        if (result.success) {
-          results.push(result.data);
-        } else {
-          return Promise.reject();
-        }
-      }
+    const result = PageSchema.safeParse(await response.json());
+    if (result.success) {
+      return result.data;
     } else {
       return Promise.reject();
     }
-    return results;
   }
   public async post(data: DotParams): Promise<NodeDot> {
     const response = await fetch(this.url.post, {
@@ -59,11 +50,10 @@ export class DotsRepository implements ItemRepository<NodeDot, DotParams> {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      this.errorHandler.handle(response.json());
+      this.errorHandler.handle(await response.json());
       return Promise.reject();
     }
-    const rawResult = await response.json();
-    const result = NodeDotSchema.safeParse(rawResult);
+    const result = NodeDotSchema.safeParse(await response.json());
     if (result.success) {
       return result.data;
     }
@@ -75,41 +65,40 @@ export class DotsRepository implements ItemRepository<NodeDot, DotParams> {
       credentials: "include",
     });
     if (!response.ok) {
-      this.errorHandler.handle(response.json());
+      this.errorHandler.handle(await response.json());
       return Promise.reject();
     }
   }
 }
 
 export class ReactiveDotsRepository implements ReactiveItemRepository<NodeDot, DotParams> {
-  constructor(private repository: ItemRepository<NodeDot, DotParams>, private dots: NodeDot[]) {}
+  constructor(private repository: ItemRepository<NodeDot, DotParams>, private page: Page) {}
 
-  public getCache(): NodeDot[] {
-    return this.dots;
+  public getCache(): Page {
+    return this.page;
   }
 
-  public async get(): Promise<NodeDot[]> {
-    const response = await this.repository.get();
-    this.dots.length = 0;
-    this.dots.push(...response);
-    return this.dots;
+  public async get(pageNumber: number): Promise<Page> {
+    const response = await this.repository.get(pageNumber);
+    this.page.items.length = 0
+    this.page.items.push(...response.items);
+    this.page.pageNumber = response.pageNumber;
+    this.page.pageSize = response.pageSize;
+    this.page.totalItems = response.totalItems;
+    this.page.totalPages = response.totalPages;
+    return this.page;
   }
 
   public async post(data: DotParams): Promise<NodeDot> {
     const response = await this.repository.post(data);
-    this.dots.unshift(response);
+    await this.get(this.page.pageNumber);
     return response;
   }
 
   public async delete(login: string): Promise<void> {
     try {
       await this.repository.delete(login);
-      for (let i = this.dots.length - 1; i >= 0; i--) {
-        const node = this.dots[i];
-        if (node && node.key === login) {
-          this.dots.splice(i, 1);
-        }
-      }
+      await this.get(0);
     } catch (err) {
       console.error("Can't delete dots:", err);
     }
@@ -117,9 +106,9 @@ export class ReactiveDotsRepository implements ReactiveItemRepository<NodeDot, D
 }
 
 export class DotsRepositoryFactory implements RepositoryBuilder<NodeDot, DotParams, ReactiveItemRepository<NodeDot, DotParams>> {
-  constructor(private url: DotsRepositoryUrl, private dots: NodeDot[]) {}
+  constructor(private url: DotsRepositoryUrl, private page: Page) {}
 
   public build(): ReactiveItemRepository<NodeDot, DotParams> {
-    return new ReactiveDotsRepository(new DotsRepository(this.url), this.dots);
+    return new ReactiveDotsRepository(new DotsRepository(this.url), this.page);
   }
 }
