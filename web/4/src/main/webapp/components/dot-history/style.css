@@ -20,3 +20,8 @@
     }
   }
 }
+
+.pagination {
+  width: fit-content;
+  display: block;
+}

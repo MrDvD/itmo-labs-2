@@ -3,7 +3,7 @@
 </style>
 
 <script lang="ts">
-    import type { Page } from "@lib/dto";
+  import type { Page } from "@lib/dto";
   import { AppServices } from "@lib/services";
 
   const dotsRepository = AppServices.DOTS_REPOSITORY.get().build();
@@ -44,6 +44,6 @@
 
 <div class="pagination">
   <button disabled={dotsPage.pageNumber === 0} onclick={() => dotsPage.pageNumber--}>Назад</button>
-  <span>Страница {dotsPage.pageNumber + 1} из {dotsPage.totalPages}</span>
+  <span>Стр. {dotsPage.pageNumber + 1} из {dotsPage.totalPages}</span>
   <button disabled={dotsPage.pageNumber >= dotsPage.totalPages - 1} onclick={() => dotsPage.pageNumber++}>Вперед</button>
 </div>

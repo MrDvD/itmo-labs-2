@@ -15,7 +15,8 @@ ssh -o ControlPath=$ssh_ctl vdska << EOF
 EOF
 WEB_4=$(ssh -o ControlPath=$ssh_ctl vdska 'source .bashrc; echo $WEB_4')
 scp -ro ControlPath=$ssh_ctl dist "vdska:$WEB_4" && \
-scp -ro ControlPath=$ssh_ctl target "vdska:$WEB_4" && \
+ssh -o ControlPath=$ssh_ctl vdska "mkdir -p $WEB_4/target" && \
+scp -o ControlPath=$ssh_ctl target/lab-4-1.0.jar "vdska:$WEB_4/target/" && \
 ssh -o ControlPath=$ssh_ctl vdska << EOF
   source .bashrc
   cd \$WEB_4
