@@ -1,7 +1,10 @@
 import type { ClientState } from "@lib/dto.js";
 import { writable } from "svelte/store";
 
-export const CLIENT_STATE = writable<ClientState>({ isAuthorized: false });
+export const CLIENT_STATE = writable<ClientState>({
+  isAuthorized: false,
+  login: "",
+});
 
 export function getCookie(name: string): string | null {
 	const nameLenPlus = (name.length + 1);

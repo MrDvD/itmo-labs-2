@@ -33,7 +33,7 @@ class AuthHandler(
               tokenProducer(storedUser) match
                 case Right(token) =>
                   Response
-                    .json(ClientState(true).toJson)
+                    .json(ClientState(true, user.login).toJson)
                     .addCookie(
                       Cookie
                         .Response(
@@ -47,7 +47,7 @@ class AuthHandler(
                       Cookie.Response(
                         AuthHandler.ClientState,
                         Base64.getEncoder.encodeToString(
-                          ClientState(true).toJson.getBytes
+                          ClientState(true, user.login).toJson.getBytes
                         ),
                         path = Some(Path.root)
                       )
@@ -98,7 +98,7 @@ class AuthHandler(
             tokenProducer(storedUser) match
               case Right(token) =>
                 Response
-                  .json(ClientState(true).toJson)
+                  .json(ClientState(true, user.login).toJson)
                   .addCookie(
                     Cookie
                       .Response(
@@ -113,7 +113,7 @@ class AuthHandler(
                     Cookie.Response(
                       AuthHandler.ClientState,
                       Base64.getEncoder.encodeToString(
-                        ClientState(true).toJson.getBytes
+                        ClientState(true, user.login).toJson.getBytes
                       ),
                       path = Some(Path.root),
                       maxAge = Some(Duration(24, TimeUnit.HOURS))
@@ -161,7 +161,7 @@ class AuthHandler(
           Cookie.Response(
             AuthHandler.ClientState,
             Base64.getEncoder
-              .encodeToString(ClientState(true).toJson.getBytes),
+              .encodeToString(ClientState(false, "").toJson.getBytes),
             path = Some(Path.root),
             maxAge = Some(Duration(0, TimeUnit.SECONDS))
           )

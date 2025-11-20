@@ -99,6 +99,7 @@ export type UserContext = {
 
 export const ClientStateSchema = zod.object({
   isAuthorized: zod.boolean(),
+  login: zod.string(),
 });
 
 export type ClientState = zod.infer<typeof ClientStateSchema>;

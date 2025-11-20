@@ -3,7 +3,7 @@ package com.itmo.mrdvd.dto
 import zio.schema._
 import zio.json._
 
-final case class ClientState(isAuthorized: Boolean)
+final case class ClientState(isAuthorized: Boolean, login: String)
 
 object ClientState:
   implicit val schema: Schema[ClientState] = DeriveSchema.gen

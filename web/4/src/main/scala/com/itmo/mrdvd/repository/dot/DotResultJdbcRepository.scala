@@ -87,6 +87,7 @@ class DotResultJdbcRepository(
       if !rs.next then
         conn.rollback()
         throw Error("Mapping of user login failed")
+      conn.commit()
       Entry(
         Entry(
           user_id,

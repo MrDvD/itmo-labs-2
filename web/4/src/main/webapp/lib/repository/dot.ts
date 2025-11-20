@@ -6,7 +6,7 @@ import type { ReactiveRepository, Repository, RepositoryBuilder } from "./util.j
 export interface ItemRepository<Item, Params> extends Repository<Item, Params> {
   get(): Promise<Item[]>;
   post(data: Params): Promise<Item>;
-  delete(): Promise<void>;
+  delete(login: string): Promise<void>;
 };
 
 export interface ReactiveItemRepository<Item, Params> extends ItemRepository<Item, Params>, ReactiveRepository<Item, Params> {}
@@ -69,7 +69,7 @@ export class DotsRepository implements ItemRepository<NodeDot, DotParams> {
     }
     return Promise.reject();
   }
-  public async delete(): Promise<void> {
+  public async delete(_: string): Promise<void> {
     const response = await fetch(this.url.delete, {
       method: "DELETE",
       credentials: "include",
@@ -101,9 +101,18 @@ export class ReactiveDotsRepository implements ReactiveItemRepository<NodeDot, D
     return response;
   }
 
-  public async delete(): Promise<void> {
-    await this.repository.delete();
-    this.dots.length = 0;
+  public async delete(login: string): Promise<void> {
+    try {
+      await this.repository.delete(login);
+      for (let i = this.dots.length - 1; i >= 0; i--) {
+        const node = this.dots[i];
+        if (node && node.key === login) {
+          this.dots.splice(i, 1);
+        }
+      }
+    } catch (err) {
+      console.error("Can't delete dots:", err);
+    }
   }
 }
 

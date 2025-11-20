@@ -1,9 +1,11 @@
 import type { DotParams, DotStatus } from "@lib/dto.js";
 import type { ItemRepository } from "@lib/repository/dot.js";
+import { CLIENT_STATE } from "@scripts/stores.js";
+import { get } from "svelte/store";
 
 export async function handleClean(event: Event, dotsRepository: ItemRepository<DotStatus, DotParams>): Promise<void> {
   event.preventDefault();
-  await dotsRepository.delete();
+  await dotsRepository.delete(get(CLIENT_STATE).login);
 }
 
 export function initTypeValidation(form: HTMLFormElement): void {

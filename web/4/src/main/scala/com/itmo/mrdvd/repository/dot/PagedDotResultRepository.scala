@@ -26,7 +26,7 @@ class PagedDotResultRepository(
     genericRepository
       .create(item.key, item.value)
       .map(value =>
-        cache :+ value
+        cache = value +: cache
         value
       )
   override def setCache(
@@ -51,3 +51,4 @@ class PagedDotResultRepository(
     )
   override def remove(userId: Int): Unit =
     genericRepository.clearGroup(userId)
+    cache = cache.filter(entry => entry.key.key != userId)
