@@ -1,0 +1,34 @@
+@import url('@styles/lab-body.less');
+
+.desktop-history() {
+  margin: auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.tablet-history() {
+  margin: 0 auto;
+}
+
+.history-container {
+  height: 700px;
+  overflow-y: auto;
+}
+
+@media (min-width: @desktop) {
+  .history-container {
+    .desktop-history();
+  }
+}
+
+@media (min-width: @mobile) and (max-width: (@desktop - 1)) {
+  .history-container {
+    .tablet-history();
+  }
+}
+
+@media (max-width: (@mobile - 1)) {
+  .history-container {
+    .tablet-history();
+  }
+}

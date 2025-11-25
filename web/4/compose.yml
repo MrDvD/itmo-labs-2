@@ -1,0 +1,37 @@
+services:
+  database:
+    image: "postgres:18.0-alpine3.22"
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    volumes:
+      - ./src/main/resources/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql:/var/lib/postgresql/18/data
+      - ./dist:/app
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app:
+    build: .
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - APP_SECRET
+    networks:
+      - backend
+    ports:
+      - "8529:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+
+networks:
+  backend: {}
