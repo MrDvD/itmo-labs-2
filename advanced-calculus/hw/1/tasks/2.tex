@@ -16,16 +16,6 @@
   %
   \[ \iiint_{\Omega}\diff x\diff y\diff z=\int_0^c\diff z\int_{\phi_1(z)}^{\phi_2(z)}\diff y\int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x \]
 
-  Найдём нижние и верхние границы \( y=\phi_1(z) \), \( y=\phi_2(z) \):
-  %
-  \[
-    z=\dfrac{y^2}{b^2}\implies y=\pm\abs{b}\sqrt{z}\implies
-    \begin{cases*}
-      &\phi_1(z)=-\abs{b}\sqrt{z}\\
-      &\phi_2(z)=\abs{b}\sqrt{z}
-    \end{cases*}
-  \]
-
   Найдём нижние и верхние границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \):
   %
   \[
@@ -42,6 +32,16 @@
     \int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x=x\left|_{-\abs{a}\sqrt{z-\frac{y^2}{b^2}}}^{\abs{a}\sqrt{z-\frac{y^2}{b^2}}}\right.=2\abs{a}\sqrt{z-\dfrac{y^2}{b^2}}
   \]
 
+  Найдём нижние и верхние границы \( y=\phi_1(z) \), \( y=\phi_2(z) \):
+  %
+  \[
+    z=\dfrac{y^2}{b^2}\implies y=\pm\abs{b}\sqrt{z}\implies
+    \begin{cases*}
+      &\phi_1(z)=-\abs{b}\sqrt{z}\\
+      &\phi_2(z)=\abs{b}\sqrt{z}
+    \end{cases*}
+  \]
+
   Подставим границы \( y=\phi_1(z) \), \( y=\phi_2(z) \) и посчитаем интеграл:
   %
   \[
@@ -55,8 +55,8 @@
           \end{aligned}
           & 
           \begin{aligned}
-            \abs{b}\sqrt{z} &= \abs{b}\sqrt{z}\sin\alpha\implies\alpha=\pi\slash 2 \\
-            -\abs{b}\sqrt{z} &= \abs{b}\sqrt{z}\sin\alpha\implies\alpha=-\pi\slash 2
+            \abs{b}\sqrt{z} &= \abs{b}\sqrt{z}\sin\alpha_2\implies\alpha_2=\pi\slash 2 \\
+            -\abs{b}\sqrt{z} &= \abs{b}\sqrt{z}\sin\alpha_1\implies\alpha_1=-\pi\slash 2
           \end{aligned}
         \end{array}
       \right] =\\

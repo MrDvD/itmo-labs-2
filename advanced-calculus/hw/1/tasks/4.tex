@@ -6,5 +6,138 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Вычислим объём тела \( \Omega \) при помощи интеграла Римана по области:
+  %
+  \[ V_{\text{тел.}}=\iiint_{\Omega}\diff x\diff y\diff z \]
+  
+  Тело \( \Omega \) ограничено верхней полусферой радиуса \( 8 \) с центром в начале координат, бесконечным круговым цилиндром радиуса \( \sqrt{60} \) и плоскостью, параллельной \( xOy \) и расположенной на высоте \( 1 \).
+
+  Определим высоту пересечения полусферы и кругового цилиндра:
+  %
+  \[
+    \begin{cases*}
+      &z=\sqrt{64-x^2-y^2}\\
+      &x^2+y^2=60
+    \end{cases*}\implies
+    z=2
+  \]
+
+  По теореме Фубини и линейности интеграла Римана:
+  %
+  \begin{equation}
+    \iiint_{\Omega}\diff x\diff y\diff z=\int_1^2\diff z\int_{\phi_1(z)}^{\phi_2(z)}\diff y\int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x+\int_2^8\diff z\int_{\tilde{\phi}_1(z)}^{\tilde{\phi}_2(z)}\diff y\int_{\tilde{\psi}_1(z,y)}^{\tilde{\psi}_2(z,y)}\diff x
+    \label{eq:linear}
+  \end{equation}
+
+  Найдём нижние и верхние границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \):
+  %
+  \[
+    x^2+y^2=60\implies x=\pm\sqrt{60-y^2}\implies
+    \begin{cases*}
+      &\psi_1(z,y)=-\sqrt{60-y^2}\\
+      &\psi_2(z,y)=\sqrt{60-y^2}
+    \end{cases*}
+  \]
+
+  Подставим границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \) и посчитаем интеграл:
+  %
+  \[
+    \int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x=x\left|_{-\sqrt{60-y^2}}^{\sqrt{60-y^2}}\right.=2\sqrt{60-y^2}
+  \]
+
+  Найдём нижние и верхние границы \( y=\phi_1(z) \), \( y=\phi_2(z) \):
+  %
+  \[
+    y^2=60\implies y=\pm \sqrt{60}\implies
+    \begin{cases*}
+      &\phi_1(z)=-\sqrt{60}\\
+      &\phi_2(z)=\sqrt{60}
+    \end{cases*}
+  \]
+
+  Подставим границы \( y=\phi_1(z) \), \( y=\phi_2(z) \) и посчитаем интеграл:
+  %
+  \[
+    \begin{gathered}
+      \int_{\phi_1(z)}^{\phi_2(z)}2\sqrt{60-y^2}\diff y=2\int_{\phi_1(z)}^{\phi_2(z)}\sqrt{60-y^2}\diff y=\\
+      = \left[
+        \begin{array}{c|c}
+          \begin{aligned}
+            y &= \sqrt{60}\sin\alpha \\
+            \diff y &= \sqrt{60}\cos\alpha\diff\alpha
+          \end{aligned}
+          & 
+          \begin{aligned}
+            \sqrt{60} &= \sqrt{60}\sin\alpha_2\implies\alpha_2=\pi\slash 2 \\
+            -\sqrt{60} &= \sqrt{60}\sin\alpha_1\implies\alpha_1=-\pi\slash 2
+          \end{aligned}
+        \end{array}
+      \right] =\\
+      = 120\int_{-\frac{\pi}{2}}^{\frac{\pi}{2}}\cos\alpha\abs{\cos\alpha}\diff\alpha\footnotemark=60\pi
+    \end{gathered}
+  \]
+
+  \footnotetext{Такой интеграл был посчитан в задании №2.}
+
+  Досчитаем первый интеграл в \eqref{eq:linear}:
+  %
+  \[ \int_1^2 60\pi\diff z=60\pi\int_1^2\diff z=60\pi z\left|_1^2\right.=60\pi \]
+
+  Найдём нижние и верхние границы \( x=\tilde{\psi}_1(z,y) \), \( x=\tilde{\psi}_2(z,y) \):
+  %
+  \[
+    z=\sqrt{64-x^2-y^2}\implies x=\pm\sqrt{64-z^2-y^2}\implies
+    \begin{cases*}
+      &\psi_1(z,y)=-\sqrt{64-z^2-y^2}\\
+      &\psi_2(z,y)=\sqrt{64-z^2-y^2}
+    \end{cases*}
+  \]
+
+  Подставим границы \( x=\tilde{\psi}_1(z,y) \), \( x=\tilde{\psi}_2(z,y) \) и посчитаем интеграл:
+  %
+  \[
+    \int_{\tilde{\psi}_1(z,y)}^{\tilde{\psi}_2(z,y)}\diff x=x\left|_{-\sqrt{64-z^2-y^2}}^{\sqrt{64-z^2-y^2}}\right.=2\sqrt{64-z^2-y^2}
+  \]
+
+  Найдём нижние и верхние границы \( y=\tilde{\phi}_1(z) \), \( y=\tilde{\phi}_2(z) \):
+  %
+  \[
+    z=\sqrt{64-y^2}\implies y=\pm\sqrt{64-z^2}\implies
+    \begin{cases*}
+      &\tilde{\phi}_1(z)=-\sqrt{64-z^2}\\
+      &\tilde{\phi}_2(z)=\sqrt{64-z^2}
+    \end{cases*}
+  \]
+
+  Подставим границы \( y=\tilde{\phi}_1(z) \), \( y=\tilde{\phi}_2(z) \) и посчитаем интеграл:
+  %
+  \[
+    \begin{gathered}
+      \int_{\tilde{\phi}_1(z)}^{\tilde{\phi}_2(z)}2\sqrt{64-z^2-y^2}\diff y=2\int_{\tilde{\phi}_1(z)}^{\tilde{\phi}_2(z)}\sqrt{64-z^2-y^2}\diff y=\\
+      = \left[
+        \begin{array}{c|c}
+          \begin{aligned}
+            y &= \sqrt{64-z^2}\sin\alpha \\
+            \diff y &= \sqrt{64-z^2}\cos\alpha\diff\alpha
+          \end{aligned}
+          & 
+          \begin{aligned}
+            \sqrt{64-z^2} &= \sqrt{64-z^2}\sin\alpha_2\implies\alpha_2=\pi\slash 2 \\
+            -\sqrt{64-z^2} &= \sqrt{64-z^2}\sin\alpha_1\implies\alpha_1=-\pi\slash 2
+          \end{aligned}
+        \end{array}
+      \right] =\\
+      = 2(64-z^2)\int_{-\frac{\pi}{2}}^{\frac{\pi}{2}}\cos\alpha\abs{\cos\alpha}\diff\alpha\footnotemark=\pi(64-z^2)
+    \end{gathered}
+  \]
+
+  \footnotetext{Аналогично, такой интеграл был посчитан в задании №2.}
+
+  Досчитаем второй интеграл в \eqref{eq:linear}:
+  %
+  \[ \int_2^8 \pi(64-z^2)\diff z=\pi\int_2^8(64-z^2)\diff z=\pi\left(64z-\dfrac{z^3}{3}\middle)\right|_2^8=\pi(64\cdot(8-2)-\dfrac{512-8}{3})=216\pi \]
+
+  Итого:
+  %
+  \[ \boxed{V_{\text{тел.}}=60\pi+216\pi=276\pi} \]
 \end{solution}
