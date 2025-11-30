@@ -6,5 +6,79 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Применим преобразование \( \mathcal{A} \) для перехода в полярную систему координат:
+  %
+  \begin{equation}
+    \mathcal{A}\colon
+    \begin{cases*}
+      &x = \rho \cos \varphi \\
+      &y = \rho \sin \varphi
+    \end{cases*} \label{eq:polar}
+  \end{equation}
+
+  Упростим аналитическое представление заданной кривой:
+  %
+  \[
+    \begin{aligned}
+      \rho^4&=a(\rho^3\cos^3\varphi-3\rho^3\cos\varphi\sin^2\varphi)\\
+      \rho&=a\cos\varphi(\cos^2\varphi-3\sin^2\varphi)\\
+      \rho&=a(4\cos^3\varphi-3\cos\varphi)\\
+      \rho&=a\cos 3\varphi,\quad a>0
+    \end{aligned}
+  \]
+
+  В таком виде можно догадаться, что кривая образует график \textit{полярной розы} с тремя лепестками и поворотом на \( \frac{\pi}{6} \) радиан по часовой стрелке:
+  %
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{polaraxis}[%
+        width=6cm, height=6cm,
+        ymax=4.5,
+        ytick={0,4},
+        mypolarplot,
+      ]
+        \addplot[thick, blue] {4*cos(3*x)};
+      \end{polaraxis}
+    \end{tikzpicture}
+  \end{center}
+
+  Заметим, что углы, определяющие каждый лепесток, соответствуют промежуткам неотрицательности \( \cos 3\varphi \) \textit{(с учётом периода)}:
+  %
+  \[ \varphi\in\left[-\dfrac{\pi}{6};\dfrac{\pi}{6}\right]\cup\left[\dfrac{\pi}{2};\dfrac{5\pi}{6}\right]\cup\left[\dfrac{7\pi}{6};\dfrac{3\pi}{2}\right] \]
+
+  В силу симметрии каждый лепесток имеет одинаковую площадь, поэтому:
+  %
+  \[ S_{\text{фиг.}}=3S_{\text{леп.}} \]
+
+  Вычислим площадь лепестка \( \Omega \) на \( \varphi\in\left[-\frac{\pi}{6};\frac{\pi}{6}\right] \) при помощи интеграла Римана по области:
+  %
+  \[ S_{\text{леп.}}=\iint_{\Omega}\diff x\diff y \]
+
+  Учитывая \eqref{eq:polar}, сделаем поправку на якобиан \( \mathcal{A} \):
+  %
+  \[ \mu(\mathcal{A}(\Omega))=\mathcal{J}(\mathcal{A})(r,\varphi)\cdot\mu(\Omega)=
+  \begin{vmatrix} 
+    \cos\varphi & -\rho\sin\varphi \\ 
+    \sin\varphi & \rho\cos\varphi 
+  \end{vmatrix}\cdot\mu(\Omega)=\rho\cdot\mu(\Omega)
+  \]
+
+  Имеем:
+  %
+  \[ S_{\text{леп.}}=\iint_{\Omega}\rho\diff\rho\diff\varphi \]
+
+  По теореме Фубини:
+  %
+  \[
+    \begin{gathered}
+      \iint_\Omega\rho\diff\rho\diff\varphi=\int_{-\frac{\pi}{6}}^{\frac{\pi}{6}}\diff\varphi\int_{0}^{a\cos 3\varphi}\rho\diff\rho=\dfrac{1}{2}\int_{-\frac{\pi}{6}}^{\frac{\pi}{6}}\rho^2\rvert_{0}^{a\cos 3\varphi}\diff\varphi=\\
+      =\dfrac{a^2}{2}\int_{-\frac{\pi}{6}}^{\frac{\pi}{6}}\cos^2 3\varphi\diff\varphi=\dfrac{a^2}{4}\int_{-\frac{\pi}{6}}^{\frac{\pi}{6}}(1+\cos 6\varphi)\diff\varphi=\dfrac{a^2}{4}\left(\varphi+\dfrac{\sin 6\varphi}{6}\middle)\right\rvert_{-\frac{\pi}{6}}^{\frac{\pi}{6}}=\dfrac{\pi a^2}{12}
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{S_{\text{фиг.}} = 3 \cdot \dfrac{\pi a^2}{12} = \dfrac{\pi a^2}{4}} \label{eq:framed}
+  \]
 \end{solution}

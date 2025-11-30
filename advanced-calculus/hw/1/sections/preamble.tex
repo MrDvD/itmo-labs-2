@@ -5,7 +5,8 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{pgfplots}
-\pgfplotsset{compat=1.17}
+  \pgfplotsset{compat=1.17}
+  \usepgfplotslibrary{polar}
 \usepackage{tabularx, multirow}
 \usepackage[a4paper,
             left=3cm,
@@ -28,3 +29,25 @@
 \newenvironment{cases*}{
 \left\{\begin{aligned}
 }{\end{aligned}\right.}
+
+\pgfplotsset{mypolarplot/.style={%
+  clip=false,
+  domain=0:360,
+  samples=180,
+  grid=both,
+  major grid style={gray}, 
+  minor x tick num=1,
+  minor y tick num=1,
+  xtick={0,45,...,359},
+  xticklabels={%
+    $0$,
+    $\frac{ \pi}{4}$,
+    $\frac{ \pi}{2}$,
+    $\frac{3\pi}{4}$,
+    $\pi$,
+    $\frac{5\pi}{4}$,
+    $\frac{3\pi}{2}$,
+    $\frac{7\pi}{4}$
+  },
+  yticklabel style={anchor=north},
+}}
