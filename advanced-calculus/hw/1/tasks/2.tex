@@ -6,5 +6,72 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Тело задано площадью поперечного сечения, параллельного плоскости \( xOy \) на интервале \( [0;c] \).
+
+  Вычислим объём тела \( \Omega \) при помощи интеграла Римана по области:
+  %
+  \[ V_{\text{тел.}}=\iiint_{\Omega}\diff x\diff y\diff z \]
+
+  По теореме Фубини:
+  %
+  \[ \iiint_{\Omega}\diff x\diff y\diff z=\int_0^c\diff z\int_{\phi_1(z)}^{\phi_2(z)}\diff y\int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x \]
+
+  Найдём нижние и верхние границы \( y=\phi_1(z) \), \( y=\phi_2(z) \):
+  %
+  \[
+    z=\dfrac{y^2}{b^2}\implies y=\pm\abs{b}\sqrt{z}\implies
+    \begin{cases*}
+      &\phi_1(z)=-\abs{b}\sqrt{z}\\
+      &\phi_2(z)=\abs{b}\sqrt{z}
+    \end{cases*}
+  \]
+
+  Найдём нижние и верхние границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \):
+  %
+  \[
+    z = \dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}\implies y=\pm\abs{a}\sqrt{z-\dfrac{y^2}{b^2}}\implies
+    \begin{cases*}
+      &\psi_1(z,y)=-\abs{a}\sqrt{z-\dfrac{y^2}{b^2}}\\
+      &\psi_2(z,y)=\abs{a}\sqrt{z-\dfrac{y^2}{b^2}}
+    \end{cases*}
+  \]
+
+  Подставим границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \) и посчитаем интеграл:
+  %
+  \[
+    \int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x=x\left|_{-\abs{a}\sqrt{z-\frac{y^2}{b^2}}}^{\abs{a}\sqrt{z-\frac{y^2}{b^2}}}\right.=2\abs{a}\sqrt{z-\dfrac{y^2}{b^2}}
+  \]
+
+  Подставим границы \( y=\phi_1(z) \), \( y=\phi_2(z) \) и посчитаем интеграл:
+  %
+  \[
+    \begin{gathered}
+      \int_{\phi_1(z)}^{\phi_2(z)}2\abs{a}\sqrt{z-\dfrac{y^2}{b^2}}\diff y=2\abs{a}\int_{\phi_1(z)}^{\phi_2(z)}\sqrt{z-\dfrac{y^2}{b^2}}\diff y=\\
+      = \left[
+        \begin{array}{c|c}
+          \begin{aligned}
+            y &= \abs{b}\sqrt{z}\sin\alpha \\
+            \diff y &= \abs{b}\sqrt{z}\cos\alpha\diff\alpha
+          \end{aligned}
+          & 
+          \begin{aligned}
+            \abs{b}\sqrt{z} &= \abs{b}\sqrt{z}\sin\alpha\implies\alpha=\pi\slash 2 \\
+            -\abs{b}\sqrt{z} &= \abs{b}\sqrt{z}\sin\alpha\implies\alpha=-\pi\slash 2
+          \end{aligned}
+        \end{array}
+      \right] =\\
+      =2\abs{a}\abs{b}z\int_{-\frac{\pi}{2}}^{\frac{\pi}{2}}\cos\alpha\abs{\cos\alpha}\diff\alpha=4\abs{a}\abs{b}z\int_0^{\frac{\pi}{2}}\cos^2\alpha\diff\alpha=\\
+      =2\abs{a}\abs{b}z\int_0^{\frac{\pi}{2}}(1+\cos 2\alpha)\diff\alpha=2\abs{a}\abs{b}z\left(\alpha+\dfrac{\sin 2\alpha}{2}\middle)\right|_{0}^{\frac{\pi}{2}}=\pi\abs{a}\abs{b}z
+    \end{gathered}
+  \]
+
+  Наконец, посчитаем последний интеграл:
+  %
+  \[
+    \int_0^c \abs{a}\abs{b}\pi z\diff z=\abs{a}\abs{b}\pi\int_0^c z\diff z=\pi\abs{a}\abs{b} \dfrac{z^2}{2}\left|_0^c\right.=\pi\abs{a}\abs{b}\dfrac{c^2}{2}
+  \]
+
+  Итого:
+  %
+  \[ \boxed{V_{\text{тел.}}=\pi\abs{a}\abs{b}\dfrac{c^2}{2}} \]
 \end{solution}
