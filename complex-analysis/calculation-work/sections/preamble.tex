@@ -4,6 +4,7 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{tikz}
+  \usetikzlibrary{patterns}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \usepackage{tabularx, multirow}
@@ -27,4 +28,8 @@
 
 \newenvironment{cases*}{
 \left\{\begin{aligned}
+}{\end{aligned}\right.}
+
+\newenvironment{sqcases*}{
+\left[\begin{aligned}
 }{\end{aligned}\right.}

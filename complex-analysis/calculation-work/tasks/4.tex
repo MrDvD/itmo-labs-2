@@ -5,5 +5,20 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Параметризуем кривую \( C \):
+  %
+  \[ \gamma(t)=1+e^{it},\quad t\in[0,\pi] \]
+
+  Вычислим интеграл вдоль пути \( \gamma \):
+  %
+  \[
+    \begin{gathered}
+      \int_{\gamma}\Im\gamma(t)\diff\gamma=\int_0^\pi\Im(1+e^{it})ie^{it}\diff t=i\int_0^\pi \sin te^{it}\diff t=i\int_0^\pi\dfrac{e^{it}-e^{-it}}{2i}e^{it}\diff t=\\
+      =\dfrac{1}{2}\int_0^\pi(e^{2it}-1)\diff t=\dfrac{1}{2}\left(\dfrac{e^{2it}}{2i}-t\middle)\right|_0^\pi=-\dfrac{\pi}{2}
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[ \boxed{\int_C\Im z\diff z=-\dfrac{\pi}{2}} \]
 \end{solution}
