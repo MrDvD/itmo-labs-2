@@ -5,5 +5,27 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  По определению ряда Тейлора в окрестности точки \( z_0=1 \):
+  %
+  \[
+    f(z)=\sum_{n=0}^{\infty}\dfrac{f^{(n)}(1)}{n!}(z-1)^n
+  \]
+
+  По формуле Лейбница:
+  %
+  \[
+    \begin{gathered}
+      f^{(n)}=\sum_{k=0}^n\binom{n}{k}(z^2)^{(k)}(e^z)^{(n-k)}=\left(\binom{n}{0}z^2+\binom{n}{1}2z+\binom{n}{2}2\right)\cdot e^z=\\
+      =(z^2+2nz+n(n-1))\cdot e^z\implies\\
+      \implies f^{(n)}(1)=(1+2n+n^2-n)e=e(n^2+n+1)
+    \end{gathered}
+  \]
+
+  Функция \( f(z) \) получена как произведение аналитичных функций на \( \mathbb{C} \), поэтому \( f(z) \) тоже аналитична на \( \mathbb{C} \):
+  %
+  \[
+    \boxed{
+      f(z)=e\sum_{n=0}^{\infty}\dfrac{n^2+n+1}{n!}(z-1)^n,\quad z\in\mathbb{C}
+    }
+  \]
 \end{solution}
