@@ -42,36 +42,85 @@
   \[
     \begin{gathered}
       \int_0^\pi e^{-aR\sin t}\diff t=2\int_0^{\frac{\pi}{2}}e^{-aR\sin t}\diff t\leq 2\int_0^{\frac{\pi}{2}}e^{-\frac{2aR}{\pi}t}\diff t=2\left.\dfrac{e^{-\frac{2aR}{\pi}t}}{-\frac{2aR}{\pi}}\right|_0^{\frac{\pi}{2}}=\\
-      =-\dfrac{\pi}{aR}(e^{-aR}-1)
+      =-\dfrac{\pi}{aR}(e^{-aR}-1)\leq\dfrac{\pi}{aR}
     \end{gathered}
   \]
 
   Получаем:
   %
   \[
-    \abs{\int_{\gamma_1}f(z)e^{iaz}\diff z}\leq-\dfrac{R}{R^2-4R-8}\cdot\dfrac{\pi}{a}(e^{-aR}-1)\underset{R\to\infty}{\longrightarrow}0
+    \abs{\int_{\gamma_1}f(z)e^{iaz}\diff z}\leq\dfrac{R}{R^2-4R-8}\cdot\dfrac{\pi}{a}\underset{R\to\infty}{\longrightarrow}0
   \]
 
   Аналогично оценим второй интеграл по контуру \( \gamma \):
   %
   \[
-    \abs{\int_\gamma f(z)e^{iaz}\diff z}\leq\dots=\dfrac{R^2}{R^2-4R-8}\int_{t_0}^{t_1}e^{aR\sin t}\diff t
+    \abs{\int_\gamma f(z)e^{-iaz}\diff z}\leq\dots=\dfrac{R^2}{R^2-4R-8}\int_{t_0}^{t_1}e^{aR\sin t}\diff t
   \]
 
   Если взять промежуток \( t\in[-\pi,0] \) \textit{(обозначим такой контур \( \gamma_2 \))}, то:
   %
   \[
     \begin{gathered}
-      \int_{-\pi}^0 e^{aR\sin t}\diff t=2\int_{-\frac{\pi}{2}}^0 e^{aR\sin t}\diff t\leq 2\int_{-\frac{\pi}{2}}^0 e^{aRt}\diff t=2\left.\dfrac{e^{aRt}}{aR}\right|_{-\frac{\pi}{2}}^0=\\
-      =-\dfrac{2}{aR}(1-e^{-\frac{aR\pi}{2}})
+      \int_{-\pi}^0 e^{aR\sin t}\diff t=2\int_{-\frac{\pi}{2}}^0 e^{aR\sin t}\diff t\leq 2\int_{-\frac{\pi}{2}}^0 e^{\frac{2aRt}{\pi}}\diff t=2\left.\dfrac{e^{\frac{2aRt}{\pi}}}{\frac{2aR}{\pi}}\right|_{-\frac{\pi}{2}}^0=\\
+      =-\dfrac{\pi}{aR}(1-e^{-aR})\leq\dfrac{\pi}{aR}
     \end{gathered}
   \]
 
   Получаем:
   %
   \[
-    \abs{\int_{\gamma_2}f(z)e^{-iaz}\diff z}\leq-\dfrac{R}{R^2-4R-8}\cdot\dfrac{2}{a}(1-e^{-\frac{aR\pi}{2}})\underset{R\to\infty}{\longrightarrow}0
+    \abs{\int_{\gamma_2}f(z)e^{-iaz}\diff z}\leq\dfrac{R}{R^2-4R-8}\cdot\dfrac{\pi}{a}\underset{R\to\infty}{\longrightarrow}0
   \]
+
+  Для наглядности изобразим полученные контуры:
+  %
+  \begin{center}
+\begin{tikzpicture}[>=stealth]
+
+    \draw[->, thin] (-3.5,0) -- (3.5,0) node[below] {$\Re(z)$};
+    \draw[->, thin] (0,-3.5) -- (0,3.5) node[left] {$\Im(z)$};
+    \node at (0,0) [below left] {$O$};
+
+    \draw[gray, very thin, dashed] (-3,-3) grid (3,3);
+
+    \coordinate (p1) at (-1, 1);
+    \coordinate (p2) at (-1, -1);
+    
+    \draw[line width=.8pt, dashed] (p1) circle (0.4);
+    \draw[line width=.8pt, dashed] (p2) circle (0.4);
+    
+    \begin{scope}
+        \clip (-3,0) rectangle (3,3);
+        \clip (3,0) arc (0:180:3) -- cycle;
+        \fill[pattern=dots, even odd rule] 
+            (-3,-3) rectangle (3,3)
+            (p1) circle (0.4)
+            (p2) circle (0.4);
+    \end{scope}
+    
+    \begin{scope}
+        \clip (-3,-3) rectangle (3,0);
+        \clip (3,0) arc (0:-180:3) -- cycle;
+        \fill[pattern=vertical lines, even odd rule] 
+            (-3,-3) rectangle (3,3)
+            (p1) circle (0.4)
+            (p2) circle (0.4);
+    \end{scope}
+
+    \draw[fill=white, line width=.8pt] (p1) circle (2pt) node[above left] {$-2+2i$};
+    \draw[fill=white, line width=.8pt] (p2) circle (2pt) node[below left] {$-2-2i$};
+
+    \draw[very thick, ->] (-3,0.02) node[below] {$-R$} -- (3,0.02) node[below] {$R$};
+    \draw[very thick, ->] (3,0) arc (0:180:3);
+    \node at (2.2, 2.2) {$\gamma_1$};
+
+    \draw[very thick, ->, gray] (3,-0.02) -- (-3,-0.02);
+    \draw[very thick, ->, gray] (-3,0) arc (180:360:3);
+    \node at (2.2, -2.2) {$\gamma_2$};
+\end{tikzpicture}
+
+  \end{center}
 
   По аддитивности интегралов:
   %
