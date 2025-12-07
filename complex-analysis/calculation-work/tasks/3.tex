@@ -1,0 +1,49 @@
+\begin{problem}
+  Найти аналитическую функцию по известной её действительной части:
+  %
+  \[ u(x,y)=\sh(2x)\cos(2y)+x^2-y^2+4y-4 \]
+\end{problem}
+
+\begin{solution}
+  Пусть \( x=x+iy \), \( f(z)=u(x,y)+iv(x,y) \).
+  
+  Зная об аналитичности \( f(z) \), воспользуемся первым уравнением из условия Коши-Римана:
+  %
+  \[
+    \begin{gathered}
+      \dfrac{\partial}{\partial x}\left(\sh(2x)\cos(2y)+x^2-y^2+4y-4\right)=\dfrac{\partial v}{\partial y}(x,y)\implies\\
+      \implies\dfrac{\cos(2y)}{2}\cdot\dfrac{\partial}{\partial x}(e^{2x}-e^{-2x})+2x=\dfrac{\partial v}{\partial y}(x,y)\implies\dfrac{\partial v}{\partial y}(x,y)=(e^{2x}+e^{-2x})\cos(2y)+2x\implies\\
+      \implies v(x,y)=(e^{2x}+e^{-2x})\int\cos(2y)\diff y+2x\int\diff y=\ch(2x)\sin(2y)+2xy+C(x)
+    \end{gathered}
+  \]
+
+  Воспользуемся вторым уравнением из условия Коши-Римана:
+  %
+  \[
+    \begin{gathered}
+      \dfrac{\partial}{\partial y}\left(\sh(2x)\cos(2y)+x^2-y^2+4y-4\right)=-\dfrac{\partial}{\partial x}\left(\ch(2x)\sin(2y)+2xy+C(x)\right)\implies\\
+      \implies -2\sin(2y)\sh(2x)-2y+4=-\left(2\sh(2x)\sin(2y)+2y+C'(x)\right)\implies\\
+      \implies C'(x)=-4\implies C(x)=-4x+C,\ C\in\mathbb{R}\\
+    \end{gathered}
+  \]
+
+  Выразим функцию \( f(z) \) через \( z \):
+  %
+  \[
+    \begin{gathered}
+      f(z)=\sh(2x)\cos(2y)+x^2-y^2+4y-4+i(\ch(2x)\sin(2y)+2xy-4x+C)=\\
+      =-i\sin(i2x)\cos(2y)+i\cos(i2x)\sin(2y)+(x+iy)^2-4i(x+iy)-4+iC=\\
+      =i(\sin(2y)\cos(i2x)-\cos(2y)\sin(i2x))+z^2-4iz-4+iC=\\
+      =i\sin(2y-i2x)+(z-2i)^2+iC=i\sin(-2i(x+iy))+(z-2i)^2+iC=\\
+      =\sh(2z)+(z-2i)^2+iC
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      f(z)=\sh(2z)+(z-2i)^2+iC,\quad C\in\mathbb{R}
+    }
+  \]
+\end{solution}

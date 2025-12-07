@@ -1,0 +1,37 @@
+\begin{problem}
+  Вычислить интеграл при помощи вычетов:
+  %
+  \[ \int_L z^3\cos\left(\dfrac{2i}{z}\right)\diff z,\quad L=\{z\colon\abs{z}=\sqrt{2}\} \]
+\end{problem}
+
+\begin{solution}
+  Выполним замену переменной интегрирования:
+  %
+  \[
+    z=\dfrac{2i}{\omega}\implies\int_L z^3\cos\left(\dfrac{2i}{z}\right)\diff z=\int_{\tilde{L}}\dfrac{(2i)^3}{\omega^3}\cos\omega\dfrac{-2i}{\omega^2}\diff\omega=-16\int_{\tilde{L}}\dfrac{\cos\omega}{\omega^5}\diff\omega
+  \]
+
+  Параметризуем контур \( L \) и определим новый контур \( \tilde{L} \):
+  %
+  \[
+    \gamma(t)=\sqrt{2}e^{it},\ t\in[0,2\pi]\implies\tilde{\gamma}(t)=\dfrac{2i}{\sqrt{2}e^{it}}=\sqrt{2}ie^{-it}=\sqrt{2}e^{\frac{\pi}{2}-it},\ t\in[0,2\pi]
+  \]
+
+  Контур \( \tilde{L} \) получен из \( L \) поворотом на \( \frac{\pi}{2} \) и инверсией направления обхода.
+
+  Подынтегральная функция голоморфна на открытом множестве \( D\backslash\{0\} \) с внешней замкнутой границей \( \tilde{L} \).
+
+  По первой теореме Коши о вычетах:
+  %
+  \[
+    \int_{\tilde{L}}\dfrac{\cos\omega}{\omega^5}\diff\omega=-2\pi i\Res_{\omega=0}\dfrac{\cos\omega}{\omega^5}=-\dfrac{2\pi i}{4!}\lim_{\omega\to 0}\dfrac{\diff^4\cos\omega}{\diff\omega^4}=-\dfrac{\pi i}{12}\lim_{\omega\to 0}\cos\omega=-\dfrac{\pi i}{12}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      \int_L z^3\cos\left(\dfrac{2i}{z}\right)\diff z=\dfrac{4\pi i}{3}
+    }
+  \]
+\end{solution}

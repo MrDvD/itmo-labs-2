@@ -1,0 +1,24 @@
+\begin{problem}
+  Вычислить интеграл по заданной кривой в указанном направлении:
+  %
+  \[ \int_C \Im z\diff z,\quad C\colon\abs{z-1}=1,\ \Im z\geq 0,\ z_0=2 \]
+\end{problem}
+
+\begin{solution}
+  Параметризуем кривую \( C \):
+  %
+  \[ \gamma(t)=1+e^{it},\quad t\in[0,\pi] \]
+
+  Вычислим интеграл вдоль пути \( \gamma \):
+  %
+  \[
+    \begin{gathered}
+      \int_{\gamma}\Im\gamma(t)\diff\gamma=\int_0^\pi\Im(1+e^{it})ie^{it}\diff t=i\int_0^\pi \sin te^{it}\diff t=i\int_0^\pi\dfrac{e^{it}-e^{-it}}{2i}e^{it}\diff t=\\
+      =\dfrac{1}{2}\int_0^\pi(e^{2it}-1)\diff t=\dfrac{1}{2}\left(\dfrac{e^{2it}}{2i}-t\middle)\right|_0^\pi=-\dfrac{\pi}{2}
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[ \boxed{\int_C\Im z\diff z=-\dfrac{\pi}{2}} \]
+\end{solution}
