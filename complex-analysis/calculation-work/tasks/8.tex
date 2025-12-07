@@ -1,0 +1,183 @@
+\begin{problem}
+  Вычислить несобственный интеграл:
+  %
+  \[ \int_{-\infty}^{+\infty}\dfrac{x\cos(ax)}{x^2+4x+8}\diff x,\quad a>0 \]
+\end{problem}
+
+\begin{solution}
+  По принципу аналитического продолжения \( \mathbb{R} \) в \( \mathbb{C} \):
+  %
+  \[
+    \int_{-\infty}^{+\infty}\dfrac{x\cos(ax)}{x^2+4x+8}\diff x=\int_{-\infty}^{+\infty}\dfrac{z\cos(az)}{z^2+4z+8}\diff z
+  \]
+
+  Распишем интеграл через предел и разделим по аддитивности:
+  %
+  \[
+    \int_{-\infty}^{+\infty}\dfrac{z\cos(az)}{z^2+4z+8}\diff z=\dfrac{1}{2}\lim_{R\to\infty}\left(\int_{-R}^R\dfrac{ze^{iaz}}{z^2+4z+8}\diff z+\int_{-R}^R\dfrac{ze^{-iaz}}{z^2+4z+8}\diff z\right)
+  \]
+
+  Введём контур \( \gamma(t)=Re^{it},\ t\in[t_0,t_1] \) и функцию \( f(z)=\frac{z}{z^2+4z+8} \).
+  
+  Оценим функцию \( f(z) \) на контуре \( \gamma \):
+  %
+  \[
+    \begin{gathered}
+      \abs{R^2e^{2it}+4Re^{it}+8}\geq R^2-4R-8,\ R>2+\sqrt{12}\implies\\
+      \abs{f(z)}=\dfrac{\abs{Re^{it}}}{\abs{R^2e^{2it}+4Re^{it}+8}}\leq\dfrac{R}{R^2-4R-8}
+    \end{gathered}
+  \]
+
+  Оценим первый интеграл по контуру \( \gamma \):
+  %
+  \[
+    \begin{gathered}
+      \abs{\int_\gamma f(z)e^{iaz}\diff z}\leq\dfrac{R}{R^2-4R-8}\int_{t_0}^{t_1}\abs{e^{iaRe^{it}}}\abs{Rie^{it}\diff t}=\\
+      =\dfrac{R^2}{R^2-4R-8}\int_{t_0}^{t_1}\abs{e^{iaR(\cos t+i\sin t)}}\diff t=\dfrac{R^2}{R^2-4R-8}\int_{t_0}^{t_1}e^{-aR\sin t}\diff t
+    \end{gathered}
+  \]
+
+  Если взять промежуток \( t\in[0,\pi] \) \textit{(обозначим такой контур \( \gamma_1 \))}, то:
+  %
+  \[
+    \begin{gathered}
+      \int_0^\pi e^{-aR\sin t}\diff t=2\int_0^{\frac{\pi}{2}}e^{-aR\sin t}\diff t\leq 2\int_0^{\frac{\pi}{2}}e^{-\frac{2aR}{\pi}t}\diff t=2\left.\dfrac{e^{-\frac{2aR}{\pi}t}}{-\frac{2aR}{\pi}}\right|_0^{\frac{\pi}{2}}=\\
+      =-\dfrac{\pi}{aR}(e^{-aR}-1)\leq\dfrac{\pi}{aR}
+    \end{gathered}
+  \]
+
+  Получаем:
+  %
+  \[
+    \abs{\int_{\gamma_1}f(z)e^{iaz}\diff z}\leq\dfrac{R}{R^2-4R-8}\cdot\dfrac{\pi}{a}\underset{R\to\infty}{\longrightarrow}0
+  \]
+
+  Аналогично оценим второй интеграл по контуру \( \gamma \):
+  %
+  \[
+    \abs{\int_\gamma f(z)e^{-iaz}\diff z}\leq\dots=\dfrac{R^2}{R^2-4R-8}\int_{t_0}^{t_1}e^{aR\sin t}\diff t
+  \]
+
+  Если взять промежуток \( t\in[-\pi,0] \) \textit{(обозначим такой контур \( \gamma_2 \))}, то:
+  %
+  \[
+    \begin{gathered}
+      \int_{-\pi}^0 e^{aR\sin t}\diff t=2\int_{-\frac{\pi}{2}}^0 e^{aR\sin t}\diff t\leq 2\int_{-\frac{\pi}{2}}^0 e^{\frac{2aRt}{\pi}}\diff t=2\left.\dfrac{e^{\frac{2aRt}{\pi}}}{\frac{2aR}{\pi}}\right|_{-\frac{\pi}{2}}^0=\\
+      =-\dfrac{\pi}{aR}(1-e^{-aR})\leq\dfrac{\pi}{aR}
+    \end{gathered}
+  \]
+
+  Получаем:
+  %
+  \[
+    \abs{\int_{\gamma_2}f(z)e^{-iaz}\diff z}\leq\dfrac{R}{R^2-4R-8}\cdot\dfrac{\pi}{a}\underset{R\to\infty}{\longrightarrow}0
+  \]
+
+  Для наглядности изобразим полученные контуры:
+  %
+  \begin{center}
+\begin{tikzpicture}[>=stealth]
+
+    \draw[->, thin] (-3.5,0) -- (3.5,0) node[below] {$\Re(z)$};
+    \draw[->, thin] (0,-3.5) -- (0,3.5) node[left] {$\Im(z)$};
+    \node at (0,0) [below left] {$O$};
+
+    \draw[gray, very thin, dashed] (-3,-3) grid (3,3);
+
+    \coordinate (p1) at (-1, 1);
+    \coordinate (p2) at (-1, -1);
+    
+    \draw[line width=.8pt, dashed] (p1) circle (0.4);
+    \draw[line width=.8pt, dashed] (p2) circle (0.4);
+    
+    \begin{scope}
+        \clip (-3,0) rectangle (3,3);
+        \clip (3,0) arc (0:180:3) -- cycle;
+        \fill[pattern=dots, even odd rule] 
+            (-3,-3) rectangle (3,3)
+            (p1) circle (0.4)
+            (p2) circle (0.4);
+    \end{scope}
+    
+    \begin{scope}
+        \clip (-3,-3) rectangle (3,0);
+        \clip (3,0) arc (0:-180:3) -- cycle;
+        \fill[pattern=vertical lines, even odd rule] 
+            (-3,-3) rectangle (3,3)
+            (p1) circle (0.4)
+            (p2) circle (0.4);
+    \end{scope}
+
+    \draw[fill=white, line width=.8pt] (p1) circle (2pt) node[above left] {$-2+2i$};
+    \draw[fill=white, line width=.8pt] (p2) circle (2pt) node[below left] {$-2-2i$};
+
+    \draw[very thick, ->] (-3,0.02) node[below] {$-R$} -- (3,0.02) node[below] {$R$};
+    \draw[very thick, ->] (3,0) arc (0:180:3);
+    \node at (2.2, 2.2) {$\gamma_1$};
+
+    \draw[very thick, ->, gray] (3,-0.02) -- (-3,-0.02);
+    \draw[very thick, ->, gray] (-3,0) arc (180:360:3);
+    \node at (2.2, -2.2) {$\gamma_2$};
+\end{tikzpicture}
+
+  \end{center}
+
+  По аддитивности интегралов:
+  %
+  \[
+    \begin{gathered}
+      \int_{[-R,R]}f(z)e^{iaz}\diff z=\int_{[-R,R]\cup\gamma_1}f(z)e^{iaz}\diff z-\int_{\gamma_1}f(z)e^{iaz}\diff z\\
+      \int_{[-R,R]}f(z)e^{-iaz}\diff z=-\left(\int_{[R,-R]\cup\gamma_2}f(z)e^{-iaz}\diff z-\int_{\gamma_2}f(z)e^{-iaz}\diff z\right)
+    \end{gathered}
+  \]
+
+  Найдём нули знаменателя:
+  %
+  \[
+    \begin{cases*}
+      &z^2+4z+8=0\\
+      &D_1=4-8=2i
+    \end{cases*}\implies
+    \begin{sqcases*}
+      &z=-2-2i\\
+      &z=-2+2i
+    \end{sqcases*}
+  \]
+
+  По интегральной теореме Коши для замкнутого контура \( [-R,R]\cup\gamma_1 \):
+  %
+  \[
+    \begin{gathered}
+      \int_{[-R,R]\cup\gamma_1}f(z)e^{iaz}\diff z=2\pi i\lim_{z\to -2+2i}\dfrac{ze^{iaz}}{z+2+2i}=2\pi i\dfrac{(-2+2i)e^{ia(-2+2i)}}{4i}=\\
+      =\pi e^{-2a(1+i)}\left(-1+i\right)=\pi ie^{-2a(1+i)}(1+i)
+    \end{gathered}
+  \]
+
+  По интегральной теореме Коши для замкнутого контура \( [R,-R]\cup\gamma_2 \):
+  %
+  \[
+    \begin{gathered}
+      \int_{[R,-R]\cup\gamma_2}f(z)e^{iaz}\diff z=-2\pi i\lim_{z\to -2-2i}\dfrac{ze^{-iaz}}{z+2-2i}=-2\pi i\dfrac{(-2-2i)e^{-ia(-2-2i)}}{-4i}=\\
+      =\pi e^{2a(-1+i)}\left(-1-i\right)=-\pi e^{2a(-1+i)}(1+i)
+    \end{gathered}
+  \]
+
+  В пределе при \( R\to\infty \) имеем:
+  %
+  \[
+    \begin{gathered}
+      \int_{-\infty}^{+\infty}f(z)e^{iaz}\diff z+\int_{-\infty}^{+\infty}f(z)e^{-iaz}\diff z=\pi (1+i)(ie^{-2a(1+i)}-e^{2a(-1+i)})=\\
+      =\pi(1+i)e^{-2a}(ie^{-2ai}-e^{2ai})=\pi (1+i)e^{-2a}(i\cos(2a)+\sin(2a)-\\
+      -\cos(2a)-i\sin(2a))=\pi (1+i)e^{-2a}(1-i)(\sin(2a)-\cos(2a))=\\
+      =2\pi e^{-2a}(\sin(2a)-\cos(2a))
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      \int_{-\infty}^{+\infty}\dfrac{x\cos(ax)}{x^2+4x+8}\diff x=\pi e^{-2a}(\sin(2a)-\cos(2a)),\quad a>0
+    }
+  \]
+\end{solution}

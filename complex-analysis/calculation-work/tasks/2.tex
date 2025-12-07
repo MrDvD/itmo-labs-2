@@ -1,0 +1,26 @@
+\begin{problem}
+  Найти все значения функции в указанной точке:
+  %
+  \[ e^{e^i} \]
+\end{problem}
+
+\begin{solution}
+  Пусть \( \omega(z)=e^{e^z} \), \( z=x+iy \). Преобразуем \( \omega(z) \):
+  %
+  \[
+    \begin{gathered}
+      \omega(z)=e^{e^z}=e^{e^{x+iy}}=e^{e^xe^{iy}}=e^{e^x(\cos y+i\sin y)}=e^{e^x\cos y}e^{e^x i\sin y}=\\
+      =e^{e^x\cos y}\left(\cos(e^x\sin y)+i\sin(e^x\sin y)\right)
+    \end{gathered}
+  \]
+
+  Значение функции \( \omega(z) \) в точке \( z_0=i \):
+  %
+  \[ \omega(i)=e^{e^0\cos 1}\left(\cos(e^0\sin 1)+i\sin(e^0\sin 1)\right)=e^{\cos 1}(\cos(\sin 1)+i\sin(\sin 1)) \]
+
+  Итого:
+  %
+  \[
+    \boxed{e^{e^i}=e^{\cos 1}(\cos(\sin 1)+i\sin(\sin 1))}
+  \]
+\end{solution}
