@@ -5,5 +5,44 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  По определению момента инерции относительно точки \( O(0,0) \):
+  %
+  \[
+    I_O=\int_{L_{AB}}\lambda(s)r^2(s)\diff s=[\lambda(s)=1]=\int_{L_{AB}} r^2(s)\diff s
+  \]
+
+  Параметризуем отрезок прямой \( L_{AB} \):
+  %
+  \[
+    L_{AB}\colon\begin{cases*}
+      &x(t)=-2+2t\\
+      &y(t)=t
+    \end{cases*},\quad t\in[0,1]
+  \]
+
+  Перепишем интеграл:
+  %
+  \[
+    \int_{L_{AB}}r^2(s)\diff s=\int_0^1 r^2(t)\sqrt{(x'(t))^2+(y'(t))^2}\diff t=\sqrt{5}\int_0^1 r^2(t)\diff t
+  \]
+
+  Выразим \( r^2(t) \) через \( x=x(t),\ y=y(t) \):
+  %
+  \[
+    r^2(s)=(x-0)^2+(y-0)^2=(2t-2)^2+t^2=5t^2-8t+4
+  \]
+
+  Подставим \( r^2(t) \) в последний интеграл:
+  %
+  \[
+    \int_0^1 r^2(t)\diff t=\int_0^1 (5t^2-8t+4)\diff t=\left(\dfrac{5}{3}t^3-4t^2+4t\middle)\right|_0^1=\dfrac{5}{3}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      I_O=\dfrac{5\sqrt{5}}{3}
+    }
+  \]
 \end{solution}
