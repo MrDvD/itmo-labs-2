@@ -1,0 +1,44 @@
+\begin{problem}
+Показать, что данное выражение является полным дифференциалом функции \( u(x, y) \). Найти функцию \( u(x, y) \):
+\[
+  (ye^{xy}+y^2)\diff x+(xe^{xy}+2xy)\diff y
+\]
+\end{problem}
+
+\begin{solution}
+  Проверим условие Грина:
+  %
+  \[
+    \begin{gathered}
+      \begin{cases*}
+        &\frac{\partial(ye^{xy}+y^2)}{\partial y}=e^{xy}+xye^{xy}+2y\\
+        &\frac{\partial(xe^{xy}+2xy)}{\partial x}=e^{xy}+xye^{xy}+2y
+      \end{cases*}\implies\dfrac{\partial(ye^{xy}+y^2)}{\partial y}=\dfrac{\partial(xe^{xy}+2xy)}{\partial x}\implies\\
+      \implies\exists u(x,y)\colon\diff u(x,y)=(ye^{xy}+y^2)\diff x+(xe^{xy}+2xy)\diff y
+    \end{gathered}
+  \]
+
+  Найдём функцию \( u(x,y) \) из определения полного дифференциала:
+  %
+  \[
+    \dfrac{\partial u}{\partial x}(x,y)=ye^{xy}+y^2\implies u(x,y)=\int (ye^{xy}+y^2)\diff x=e^{xy}+xy^2+C(y)
+  \]
+
+  Найдём функцию \( C(y) \):
+  %
+  \[
+    \begin{cases*}
+      &\frac{\partial u}{\partial y}(x,y)=xe^{xy}+2xy\\
+      &\frac{\partial u}{\partial y}(x,y)=xe^{xy}+2xy+C'(y)
+    \end{cases*}\implies
+    C'(y)=0\implies C(y)=C\in\mathbb{R}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      u(x,y)=e^{xy}+xy^2+C,\quad C\in\mathbb{R}
+    }
+  \]
+\end{solution}

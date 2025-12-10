@@ -1,0 +1,176 @@
+\begin{problem}
+Найти момент инерции относительно координатных плоскостей тела, ограниченного поверхностями:
+\[
+  \dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=2\dfrac{z}{c},\quad\dfrac{x}{a}+\dfrac{y}{b}=\dfrac{z}{c}\quad(a> 0,\ b> 0,\ c> 0) 
+\]
+\end{problem}
+
+\begin{solution}
+  По определению момента инерции относительно координатных плоскостей тела \( \Omega \):
+  %
+  \[
+    \begin{aligned}
+      &I_{yz}=\iiint_\Omega x^2\rho(x,y,z)\diff x\diff y\diff z\\
+      &I_{xz}=\iiint_\Omega y^2\rho(x,y,z)\diff x\diff y\diff z\\
+      &I_{xy}=\iiint_\Omega z^2\rho(x,y,z)\diff x\diff y\diff z
+    \end{aligned}
+  \]
+
+  Поскольку иное в задаче не оговорено, будем считать плотность тела \( \rho(x,y,z) \) постоянной и равной \( 1 \):
+  %
+  \[
+    I_{yz}=\iiint_\Omega x^2\diff x\diff y\diff z,\quad I_{xz}=\iiint_\Omega y^2\diff x\diff y\diff z,\quad I_{xy}=\iiint_\Omega z^2\diff x\diff y\diff z
+  \]
+
+  По теореме Фубини для момента инерции \( I_{yz} \) тела \( \Omega \):
+  %
+  \[
+    \iiint_\Omega x^2\diff x\diff y\diff z=\int_0^d\diff z\int_{\phi_1(z)}^{\phi_2(z)}\diff y\int_{\psi_1(z,y)}^{\psi_2(z,y)}x^2\diff x
+  \]
+
+  Найдём нижние и верхние границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \):
+  %
+  \[
+    \begin{gathered}
+      \dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=2\dfrac{z}{c}\implies x=\pm\abs{a}\sqrt{2\dfrac{z}{c}-\dfrac{y^2}{b^2}}\implies\psi_1(z,y)=-a\sqrt{2\dfrac{z}{c}-\dfrac{y^2}{b^2}}\\
+      \dfrac{x}{a}+\dfrac{y}{b}=\dfrac{z}{c}\implies x=a\left(\dfrac{z}{c}-\dfrac{y}{b}\right)\implies\psi_2(z,y)=a\left(\dfrac{z}{c}-\dfrac{y}{b}\right)
+    \end{gathered}
+  \]
+
+  Подставим границы \( x=\psi_1(z,y) \), \( x=\psi_2(z,y) \) и посчитаем интеграл:
+  %
+  \[
+    \begin{gathered}
+      \int_{\psi_1(z,y)}^{\psi_2(z,y)}x^2\diff x=\left.\dfrac{x^3}{3}\right|_{-a\sqrt{2\frac{z}{c}-\frac{y^2}{b^2}}}^{a\left(\frac{z}{c}-\frac{y}{b}\right)}=\dfrac{a^3}{3}\left(\left(\frac{z}{c}-\frac{y}{b}\right)^3+\left(\sqrt{2\frac{z}{c}-\frac{y^2}{b^2}}\right)^3\right)
+    \end{gathered}
+  \]
+
+  Найдём нижние и верхние границы \( y=\phi_1(z) \), \( y=\phi_2(z) \):
+  %
+  \[
+    \begin{gathered}
+      \dfrac{y}{b}=\dfrac{z}{c}\implies y=\dfrac{b}{c}z\implies\phi_1(z)=\dfrac{b}{c}z\\
+      \dfrac{y^2}{b^2}=2\dfrac{z}{c}\implies y=\pm\abs{b}\sqrt{2\dfrac{z}{c}}\implies\phi_2(z)=b\sqrt{2\dfrac{z}{c}}
+    \end{gathered}
+  \]
+
+  Подставим границы \( y=\phi_1(z) \), \( y=\phi_2(z) \) и посчитаем интеграл:
+  %
+  \[
+    \begin{gathered}
+      \int_{\phi_1(z)}^{\phi_2(z)}\dfrac{a^3}{3}\left(\left(\frac{z}{c}-\frac{y}{b}\right)^3+\left(\sqrt{2\frac{z}{c}-\frac{y^2}{b^2}}\right)^3\right)\diff y=\\
+      =\dfrac{a^3}{3}\left(\int_{\phi_1(z)}^{\phi_2(z)}\left(\frac{z}{c}-\frac{y}{b}\right)^3\diff y+\int_{\phi_1(z)}^{\phi_2(z)}\left(\sqrt{2\frac{z}{c}-\frac{y^2}{b^2}}\right)^3\diff y\right)
+    \end{gathered}
+  \]
+
+  Посчитаем первое слагаемое:
+  %
+  \[
+    \begin{gathered}
+      \int_{\phi_1(z)}^{\phi_2(z)}\left(\frac{z}{c}-\frac{y}{b}\right)^3\diff y=-b\int_{\phi_1(z)}^{\phi_2(z)}\left(\frac{z}{c}-\frac{y}{b}\right)^3\diff\left(\frac{z}{c}-\frac{y}{b}\right)=-\dfrac{b}{4}\left(\dfrac{z}{c}-\dfrac{y}{b}\middle)^4\right|_{\frac{b}{c}z}^{b\sqrt{2\frac{z}{c}}}=\\
+      =-\dfrac{b}{4}\left(\left(\dfrac{z}{c}-\sqrt{2\dfrac{z}{c}}\right)^4-\left(\dfrac{z}{c}-\dfrac{z}{c}\right)^4\right)=-\dfrac{b}{4}\left(\frac{z}{c}-\sqrt{2\frac{z}{c}}\right)^4
+    \end{gathered}
+  \]
+
+  Посчитаем второе слагаемое:
+  %
+  \[
+    \begin{gathered}
+      \int_{\phi_1(z)}^{\phi_2(z)}\left(\sqrt{2\frac{z}{c}-\frac{y^2}{b^2}}\right)^3\diff y=\\
+      = \left[
+        \begin{array}{c|c}
+          \begin{aligned}
+            y &= b\sqrt{2\frac{z}{c}}\sin\alpha \\
+            \diff y &= b\sqrt{2\frac{z}{c}}\cos\alpha\diff\alpha
+          \end{aligned}
+          & 
+          \begin{aligned}
+            \dfrac{b}{c}z &= b\sqrt{2\frac{z}{c}}\sin\alpha_2\implies\alpha_2=\arcsin\sqrt{\frac{z}{2c}} \\
+            -b\sqrt{2\dfrac{z}{c}} &= b\sqrt{2\frac{z}{c}}\sin\alpha_1\implies\alpha_1=-\pi\slash 2
+          \end{aligned}
+        \end{array}
+      \right] =\\
+      =2\frac{z}{c}\int_{\phi_1(z)}^{\phi_2(z)}\abs{\cos\alpha}\cos\alpha\diff\alpha
+    \end{gathered}
+  \]
+
+  Для поиска верхней границы \( z=d \) выведем условие \( g(x,y)=0 \) как пересечение эллиптического параболоида с плоскостью:
+  %
+  \[
+    \begin{gathered}
+      \begin{cases*}
+        &\dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=2\dfrac{z}{c}\\
+        &\dfrac{x}{a}+\dfrac{y}{b}=\dfrac{z}{c}
+      \end{cases*}\implies
+      \dfrac{x^2}{a^2}-2\dfrac{x}{a}+\dfrac{y^2}{b^2}-2\dfrac{y}{b}=0\implies
+      \left(\dfrac{x}{a}-1\right)^2+\left(\dfrac{y}{b}-1\right)^2=2\implies\\
+      \implies g(x,y)=\left(\dfrac{x}{a}-1\right)^2+\left(\dfrac{y}{b}-1\right)^2-2
+    \end{gathered}
+  \]
+
+  Запишем функцию Лагранжа для поиска экстремума \( z \) плоскости тела \( \Omega \) при условии \( g(x,y)=0 \):
+  %
+  \[ L(x,y,\lambda)=\lambda_0 c\left(\dfrac{x}{a}+\dfrac{y}{b}\right)+\lambda_1\left(\left(\dfrac{x}{a}-1\right)^2+\left(\dfrac{y}{b}-1\right)^2-2\right) \]
+
+  Воспользуемся методом множителей Лагранжа для проверки необходимого условия условного экстремума в точке \( M(x,y) \):
+  %
+  \[
+    \begin{gathered}
+      \begin{cases*}
+        &\frac{\partial L}{\partial x}\left(M,\lambda\right)=0\\
+        &\frac{\partial L}{\partial y}\left(M,\lambda\right)=0\\
+        &\left(\frac{x}{a}-1\right)^2+\left(\frac{y}{b}-1\right)^2=2
+      \end{cases*}\implies
+      \begin{cases*}
+        &\frac{\lambda_0 c}{a}+\frac{2\lambda_1}{a}\left(\frac{x}{a}-1\right)^2=0\\
+        &\frac{\lambda_0c}{b}+\frac{2\lambda_1}{b}\left(\frac{y}{b}-1\right)^2=0\\
+        &\left(\frac{x}{a}-1\right)^2+\left(\frac{y}{b}-1\right)^2=2
+      \end{cases*}\implies\\
+      \implies\begin{cases*}
+        &2\lambda_1\left(\dfrac{x}{a}-1\right)^2-2\lambda_1\left(\dfrac{y}{b}-1\right)^2=0\\
+        &\left(\frac{x}{a}-1\right)^2+\left(\frac{y}{b}-1\right)^2=2
+      \end{cases*}\implies
+      \begin{cases*}
+        &\abs{\dfrac{x}{a}-1}=\abs{\dfrac{y}{b}-1}\\
+        &\left(\frac{x}{a}-1\right)^2+\left(\frac{y}{b}-1\right)^2=2
+      \end{cases*}\implies\\
+      \implies\begin{cases*}
+        &\left(\dfrac{x}{a}-1\right)^2=1\\
+        &\left(\frac{x}{a}-1\right)^2+\left(\frac{y}{b}-1\right)^2=2
+      \end{cases*}\implies
+      \begin{cases*}
+        &\begin{sqcases*}
+          &x=0\\
+          &x=2a
+        \end{sqcases*}\\
+        &\left(\frac{x}{a}-1\right)^2+\left(\frac{y}{b}-1\right)^2=2
+      \end{cases*}\implies\\
+      \implies
+      \begin{cases*}
+        &x\in\{0,2a\}\\
+        &y\in\{0,2b\}
+      \end{cases*}
+    \end{gathered}
+  \]
+
+  Рассмотрим каждую точку \( M \) и найдём верхнюю границу \( z = d \):
+  %
+  \begin{enumerate}
+    \item \( \measuredangle\, M(0,0)\implies\frac{z}{c}=0\implies z=0 \)
+    \item \( \measuredangle\, M(0,2b)\implies\frac{z}{c}=2\implies z=2c \)
+    \item \( \measuredangle\, M(2a,0)\implies\frac{z}{c}=2\implies z=2c \)
+    \item \( \measuredangle\, M(2a,2b)\implies\frac{z}{c}=4\implies z=4c \) --- наибольшее значение.
+  \end{enumerate}
+
+  По теореме Фубини для момента инерции \( I_{xz} \) тела \( \Omega \):
+  %
+  \[
+    \iiint_\Omega x^2\diff x\diff y\diff z=\int_0^d\diff z\int_{\phi_1(z)}^{\phi_2(z)}y^2\diff y\int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x
+  \]
+
+  По теореме Фубини для момента инерции \( I_{xy} \) тела \( \Omega \):
+  %
+  \[
+    \iiint_\Omega x^2\diff x\diff y\diff z=\int_0^d z^2\diff z\int_{\phi_1(z)}^{\phi_2(z)}\diff y\int_{\psi_1(z,y)}^{\psi_2(z,y)}\diff x
+  \]
+\end{solution}
