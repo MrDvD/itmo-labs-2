@@ -15,16 +15,11 @@
   }
   \begin{tikzpicture}[scale=0.8]
 
-\def\radius{2.718}
-
-% Create pattern on entire plane
 \fill[pattern=north east lines, pattern color=black!30] 
     (-3.5,-3.5) rectangle (3.5,3.5);
 
-% Remove pattern from a strip around negative real axis
 \fill[white] (-3.5,-0.15) rectangle (0,0.15);
 
-% Draw axes
 \draw[->, thick] (-3.5,0) -- (3.5,0);
 \draw[->, thick] (0,-3.5) -- (0,3.5);
 
