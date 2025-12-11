@@ -1,0 +1,55 @@
+\section{Постановка задач}
+
+В ходе лабораторной работы \textit{по варианту №15} будут выполнены следующие задачи:
+
+\begin{enumerate}
+  \item Аналитически описать заданные множества.
+  \item Воспользовавшись композицией классических преобразований, составить конформное отображение, которое переводит первую область во вторую.
+  \item Составить обратное отображение, переводящее второе множество в первое.
+  \item На любом удобном языке программирования написать программу, которая изобразит первое множество и все этапы его преобразования во второе. Достаточно наглядным будет взять набор точек множества, передающий его форму \textit{(может понадобится сделать набор «более плотным» в какой-то части множества)}.
+\end{enumerate}
+
+\begin{center}
+  \begin{tblr}{
+    colspec = {X[c] X[c]},
+  }
+  \begin{tikzpicture}[scale=0.8]
+
+\def\radius{2.718}
+
+% Create pattern on entire plane
+\fill[pattern=north east lines, pattern color=black!30] 
+    (-3.5,-3.5) rectangle (3.5,3.5);
+
+% Remove pattern from a strip around negative real axis
+\fill[white] (-3.5,-0.15) rectangle (0,0.15);
+
+% Draw axes
+\draw[->, thick] (-3.5,0) -- (3.5,0);
+\draw[->, thick] (0,-3.5) -- (0,3.5);
+
+\fill (0,0) circle (2.5pt) node[below right] {$0$};
+
+\end{tikzpicture} &
+\begin{tikzpicture}[scale=0.8]
+
+\def\radius{2}
+
+\begin{scope}
+    \clip (-3.5,-3.5) rectangle (3.5,3.5);
+    \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
+        (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
+\end{scope}
+
+\draw[very thick] (0,0) circle (\radius);
+
+\draw[->, thick] (-3.5,0) -- (3.5,0);
+\draw[->, thick] (0,-3.5) -- (0,3.5);
+
+\fill (0,0) circle (2.5pt) node[below left] {$0$};
+\fill (\radius,0) circle (2.5pt) node[below left] {$e$};
+
+\end{tikzpicture} \\
+  Рисунок 4 & Рисунок 9 \\
+  \end{tblr}
+\end{center}
