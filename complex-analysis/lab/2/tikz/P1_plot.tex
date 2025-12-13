@@ -1,0 +1,14 @@
+\begin{tikzpicture}[scale=0.8]
+
+\fill[pattern=north east lines, pattern color=black!30] 
+  (-3.5,-3.5) rectangle (3.5,3.5);
+
+\fill[white] (3.5,-0.15) rectangle (0,0.15);
+\fill[white] (0,0) circle (6pt);
+
+\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
+\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
+
+\fill (0,0) circle (2.5pt) node[below right] {$0$};
+
+\end{tikzpicture}

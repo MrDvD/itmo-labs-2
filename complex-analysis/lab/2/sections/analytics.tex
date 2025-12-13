@@ -6,40 +6,7 @@
   \begin{tblr}{
     colspec = {X[c] X[c]},
   }
-  \begin{tikzpicture}[scale=0.8]
-
-\fill[pattern=north east lines, pattern color=black!30] 
-    (-3.5,-3.5) rectangle (3.5,3.5);
-
-\fill[white] (-3.5,-0.15) rectangle (0,0.15);
-\fill[white] (0,0) circle (6pt);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-\end{tikzpicture} &
-\begin{tikzpicture}[scale=0.8]
-
-\def\radius{2}
-
-\begin{scope}
-    \clip (-3.5,-3.5) rectangle (3.5,3.5);
-    \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-        (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$e$};
-
-\end{tikzpicture} \\
+  \input{tikz/P_plot} & \input{tikz/Q_plot} \\
   Множество \( P'\subset\mathbb{C} \) & Множество \( Q'\subset\mathbb{C} \) \\
   \end{tblr}
 \end{center}
