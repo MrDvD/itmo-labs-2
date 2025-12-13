@@ -57,7 +57,7 @@ def convert_to_tikz(input_file, output_file, step_num):
 """
   match step_num:
     case '4' | '5':
-      tikz_code += "\\fill (1.2,0) circle (2.5pt) node[below left] {$1$};\n"
+      tikz_code += "\\fill (1,0) circle (2.5pt) node[below left] {$1$};\n"
     case '6':
       tikz_code += f"\\fill ({np.e},0) circle (2.5pt) node[below left] {{$e$}};\n"
     case _:
