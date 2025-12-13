@@ -9,34 +9,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-  \fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5);
-
-  \fill[white] (-3.5,-0.15) rectangle (0,0.15);
-  \fill[white] (0,0) circle (6pt);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-  \end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-  \fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5);
-
-  \fill[white] (3.5,-0.15) rectangle (0,0.15);
-  \fill[white] (0,0) circle (6pt);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-  \end{tikzpicture} \\
+    \input{tikz/P_plot} & \input{tikz/P1_plot} \\
     Множество \( P \) & Множество \( P_1=\omega_1(P) \) \\
     \end{tblr}
   \end{center}
@@ -47,33 +20,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-  \fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5);
-
-  \fill[white] (3.5,-0.15) rectangle (0,0.15);
-  \fill[white] (0,0) circle (6pt);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-  \end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-  \fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,0) rectangle (3.5,3.5);
-
-  \fill[white] (-3.5,-0.15) rectangle (3.5,0.15);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-  \end{tikzpicture} \\
+    \input{tikz/P1_plot} & \input{tikz/P2_plot} \\
     Множество \( P_1 \) & Множество \( P_2=\omega_2(P_1) \) \\
     \end{tblr}
   \end{center}
@@ -84,37 +31,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-  \fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,0) rectangle (3.5,3.5);
-
-  \fill[white] (-3.5,-0.15) rectangle (3.5,0.15);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-  \end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\begin{scope}
-  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-      (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-\end{tikzpicture} \\
+    \input{tikz/P2_plot} & \input{tikz/P3_plot} \\
     Множество \( P_2 \) & Множество \( P_3=\omega_3(P_2) \) \\
     \end{tblr}
   \end{center}
@@ -125,42 +42,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\begin{scope}
-  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-      (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-\end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\begin{scope}
-  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-\end{tikzpicture} \\
+    \input{tikz/P3_plot} & \input{tikz/P4_plot} \\
     Множество \( P_3 \) & Множество \( P_4=\omega_4(P_3) \) \\
     \end{tblr}
   \end{center}
@@ -171,43 +53,8 @@
       \begin{tblr}{
         colspec = {X[c] X[c]},
       }
-      \begin{tikzpicture}[scale=0.8]
-
-  \def\radius{1.2}
-
-  \begin{scope}
-    \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-        (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-  \end{scope}
-
-  \draw[dashed] (0,0) circle (\radius);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below left] {$0$};
-  \fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-  \end{tikzpicture} &
-    \begin{tikzpicture}[scale=0.8]
-
-  \def\radius{2}
-
-  \begin{scope}
-    \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-        (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-  \end{scope}
-
-  \draw[dashed] (0,0) circle (\radius);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below left] {$0$};
-  \fill (\radius,0) circle (2.5pt) node[below left] {$e$};
-
-  \end{tikzpicture} \\
-      Множество \( P_4 \) & Множество \( P_5=\omega_5(P_4) \) \\
+      \input{tikz/P4_plot} & \input{tikz/Q_plot} \\
+      Множество \( P_4 \) & Множество \( P_5=\omega_5(P_4)=Q \) \\
       \end{tblr}
   \end{center}
 \end{enumerate}
@@ -225,42 +72,7 @@
       \begin{tblr}{
         colspec = {X[c] X[c]},
       }
-      \begin{tikzpicture}[scale=0.8]
-
-  \def\radius{2}
-
-  \begin{scope}
-    \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-        (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-  \end{scope}
-
-  \draw[dashed] (0,0) circle (\radius);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below left] {$0$};
-  \fill (\radius,0) circle (2.5pt) node[below left] {$e$};
-
-  \end{tikzpicture} &
-    \begin{tikzpicture}[scale=0.8]
-
-  \def\radius{1.2}
-
-  \begin{scope}
-    \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-        (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-  \end{scope}
-
-  \draw[dashed] (0,0) circle (\radius);
-
-  \draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-  \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-  \fill (0,0) circle (2.5pt) node[below left] {$0$};
-  \fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-  \end{tikzpicture} \\
+      \input{tikz/Q_plot} & \input{tikz/P4_plot} \\
       Множество \( Q \) & Множество \( Q_1=z_1(Q) \) \\
       \end{tblr}
   \end{center}
@@ -271,42 +83,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\begin{scope}
-  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-\end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\begin{scope}
-  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-      (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-\end{tikzpicture} \\
+    \input{tikz/P4_plot} & \input{tikz/P3_plot} \\
     Множество \( Q_1 \) & Множество \( Q_2=z_2(Q_1) \) \\
     \end{tblr}
   \end{center}
@@ -317,39 +94,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\begin{scope}
-  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
-      (0,0) circle (\radius);
-\end{scope}
-
-\draw[dashed] (0,0) circle (\radius);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below left] {$0$};
-\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
-
-\end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,0) rectangle (3.5,3.5);
-
-\fill[white] (-3.5,-0.15) rectangle (3.5,0.15);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-\end{tikzpicture} \\
+    \input{tikz/P3_plot} & \input{tikz/P2_plot} \\
     Множество \( Q_2 \) & Множество \( Q_3=z_3(Q_2) \) \\
     \end{tblr}
   \end{center}
@@ -360,37 +105,7 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,0) rectangle (3.5,3.5);
-
-\fill[white] (-3.5,-0.15) rectangle (3.5,0.15);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-\end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5);
-
-\fill[white] (0,-0.15) rectangle (3.5,0.15);
-\fill[white] (0,0) circle (6pt);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-\end{tikzpicture} \\
+    \input{tikz/P2_plot} & \input{tikz/P1_plot} \\
     Множество \( Q_3 \) & Множество \( Q_4=z_4(Q_3) \) \\
     \end{tblr}
   \end{center}
@@ -401,39 +116,8 @@
     \begin{tblr}{
       colspec = {X[c] X[c]},
     }
-    \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5);
-
-\fill[white] (0,-0.15) rectangle (3.5,0.15);
-\fill[white] (0,0) circle (6pt);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-\end{tikzpicture} &
-  \begin{tikzpicture}[scale=0.8]
-
-\def\radius{1.2}
-
-\fill[pattern=north east lines, pattern color=black!30] 
-      (-3.5,-3.5) rectangle (3.5,3.5);
-
-\fill[white] (-3.5,-0.15) rectangle (0,0.15);
-\fill[white] (0,0) circle (6pt);
-
-\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
-\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
-
-\fill (0,0) circle (2.5pt) node[below right] {$0$};
-
-\end{tikzpicture} \\
-    Множество \( Q_4 \) & Множество \( Q_5=z_5(Q_4) \) \\
+    \input{tikz/P1_plot} & \input{tikz/P_plot} \\
+    Множество \( Q_4 \) & Множество \( Q_5=z_5(Q_4)=P \) \\
     \end{tblr}
   \end{center}
 \end{enumerate}
