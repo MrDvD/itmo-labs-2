@@ -1,0 +1,18 @@
+\begin{tikzpicture}[scale=0.8]
+
+\def\radius{1.2}
+
+\begin{scope}
+  \fill[even odd rule, pattern=north east lines, pattern color=black!30] 
+    (-3.5,-3.5) rectangle (3.5,3.5) (0,0) circle (\radius);
+\end{scope}
+
+\draw[dashed] (0,0) circle (\radius);
+
+\draw[->, thick] (-3.5,0) -- (3.5,0) node[right] {$\Re z$};
+\draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\Im z$};
+
+\fill (0,0) circle (2.5pt) node[below left] {$0$};
+\fill (\radius,0) circle (2.5pt) node[below left] {$1$};
+
+\end{tikzpicture}

@@ -1,0 +1,48 @@
+\usepackage{fontspec}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tabularray}
+\usepackage{listings}
+\usepackage{tikz}
+  \usetikzlibrary{patterns}
+\usepackage{tabularx, multirow}
+\usepackage[a4paper,
+            left=3cm,
+            right=3cm,
+            top=2cm,
+            bottom=3cm]{geometry}
+
+\setmainfont{CMU Serif}
+\setsansfont{CMU Sans Serif}
+\setmonofont{CMU Typewriter Text}
+
+\definecolor{salmon}{HTML}{F69289}
+\definecolor{green-cyan}{HTML}{2AFEB7}
+
+\newcommand{\diff}{\mathrm{d}}
+\newcommand{\grad}{\textrm{grad}\,}
+\newcommand{\Arg}{\textrm{Arg}\,}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newenvironment{cases*}{
+\left\{\begin{aligned}
+}{\end{aligned}\right.}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=5pt,
+  frame=single,
+  tabsize=4,
+  breaklines=true,
+  showstringspaces=false
+}
