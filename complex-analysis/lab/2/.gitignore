@@ -1,0 +1,5 @@
+venv
+*.log
+*.aux*
+script/*.txt
+script/*.tex

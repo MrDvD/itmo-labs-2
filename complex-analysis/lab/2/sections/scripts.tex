@@ -1,0 +1,49 @@
+\section{Скрипты для создания графики}
+
+Чтобы изобразить множество \( P \) и все его промежуточные образы, воспользуемся графическим пакетом \textit{TikZ}. Для генерации необходимых файлов напишем скрипты на языке \textit{Python}.
+
+Для генерации точек, описывающих множество \( P \), ограничим \( \abs{z}\leq 3 \). Ещё для наглядности разделим комплексную плоскость на подмножества и окрасим их градиентами, которые меняются от близости к началу координат.
+Более того, используем логарифмическое шкалирование радиусов: 
+
+\begin{center}
+  \begin{tblr}{
+      colspec = {r Q[c,m] Q[c,m]},
+      column{1} = {rightsep=6pt},
+      column{2} = {leftsep=6pt},
+      column{3} = {leftsep=12pt},
+      hline{2-5} = {dashed},
+      vline{2-3} = {dashed},
+      row{1} = {font=\bfseries},
+      row{2-Z} = {rowsep=4pt},
+  }
+      & \(\Arg z\) & Градиент \\
+      1. & \(\left(-\pi, -\dfrac{3\pi}{4}\right)\) & 
+      \begin{tikzpicture}[baseline=4pt]
+          \shade[left color=red,right color=yellow] (0,0) rectangle (3,0.5);
+      \end{tikzpicture} \\
+      2. & \(\left[-\dfrac{3\pi}{4}, 0\right)\) &
+      \begin{tikzpicture}[baseline=4pt]
+          \shade[left color=black,right color=salmon] (0,0) rectangle (3,0.5);
+      \end{tikzpicture} \\
+      3. & \(\left[0, \dfrac{3\pi}{4}\right]\) &
+      \begin{tikzpicture}[baseline=4pt]
+          \shade[left color=blue,right color=green-cyan] (0,0) rectangle (3,0.5);
+      \end{tikzpicture} \\
+      4. & \(\left(\dfrac{3\pi}{4}, \pi\right)\) & 
+      \begin{tikzpicture}[baseline=4pt]
+          \shade[left color=cyan,right color=magenta] (0,0) rectangle (3,0.5);
+      \end{tikzpicture} \\
+  \end{tblr}
+\end{center}
+
+\lstinputlisting[
+  language=Python,
+  caption={Скрипт \texttt{generate\_dots.py}},
+]{script/generate_dots.py}
+
+Для транспиляции окрашенных наборов точек в графики \textit{TikZ} воспользуемся скриптом:
+
+\lstinputlisting[
+  language=Python,
+  caption={Скрипт \texttt{tikzify.py}},
+]{script/tikzify.py}
