@@ -1,0 +1,127 @@
+\section{Конформные отображения множеств}
+
+Составим конформное отображение \( \omega(z) \), переводящее множество \( P \) в \( Q \):
+%
+\begin{enumerate}
+  \item Применим к \( P \) конформное отображение \( \omega_1(z)=-z \):
+  %
+  \begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P_plot} & \input{tikz/P1_plot} \\
+    Множество \( P \) & Множество \( P_1=\omega_1(P) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( P_1 \) конформное отображение \( \omega_2(z)=\sqrt{z} \):
+  %
+  \begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P1_plot} & \input{tikz/P2_plot} \\
+    Множество \( P_1 \) & Множество \( P_2=\omega_2(P_1) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( P_2 \) конформное отображение \( \omega_3(z)=\frac{z-i}{z+i} \):
+  %
+  \begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P2_plot} & \input{tikz/P3_plot} \\
+    Множество \( P_2 \) & Множество \( P_3=\omega_3(P_2) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( P_3 \) конформное отображение \( \omega_4(z)=\frac{1}{z} \):
+  %
+  \begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P3_plot} & \input{tikz/P4_plot} \\
+    Множество \( P_3 \) & Множество \( P_4=\omega_4(P_3) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( P_4 \) конформное отображение \( \omega_5(z)=ez \):
+  %
+  \begin{center}
+      \begin{tblr}{
+        colspec = {X[c] X[c]},
+      }
+      \input{tikz/P4_plot} & \input{tikz/Q_plot} \\
+      Множество \( P_4 \) & Множество \( P_5=\omega_5(P_4)=Q \) \\
+      \end{tblr}
+  \end{center}
+\end{enumerate}
+
+Итого \( \omega(z) \) имеет вид:
+%
+\[ \omega=\omega_5\circ\omega_4\circ\omega_3\circ\omega_2\circ\omega_1\implies\omega(z)=e\cdot\dfrac{\sqrt{-z}+i}{\sqrt{-z}-i} \]
+
+Составим обратное конформное отображение \( z(\omega) \), которое переводит множество \( Q \) в \( P \):
+
+\begin{enumerate}
+  \item Применим к \( Q \) конформное отображение \( z_1(\omega)=\frac{\omega}{e} \):
+  %
+\begin{center}
+      \begin{tblr}{
+        colspec = {X[c] X[c]},
+      }
+      \input{tikz/Q_plot} & \input{tikz/P4_plot} \\
+      Множество \( Q \) & Множество \( Q_1=z_1(Q) \) \\
+      \end{tblr}
+  \end{center}
+
+  \item Применим к \( Q_1 \) конформное отображение \( z_2(\omega)=\frac{1}{\omega} \):
+  %
+\begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P4_plot} & \input{tikz/P3_plot} \\
+    Множество \( Q_1 \) & Множество \( Q_2=z_2(Q_1) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( Q_2 \) конформное отображение \( z_3(\omega)=i\cdot\frac{1+\omega}{1-\omega} \):
+  %
+\begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P3_plot} & \input{tikz/P2_plot} \\
+    Множество \( Q_2 \) & Множество \( Q_3=z_3(Q_2) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( Q_3 \) конформное отображение \( z_4(\omega)=\omega^2 \):
+  %
+\begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P2_plot} & \input{tikz/P1_plot} \\
+    Множество \( Q_3 \) & Множество \( Q_4=z_4(Q_3) \) \\
+    \end{tblr}
+  \end{center}
+
+  \item Применим к \( Q_4 \) конформное отображение \( z_5(\omega)=-\omega \):
+  %
+\begin{center}
+    \begin{tblr}{
+      colspec = {X[c] X[c]},
+    }
+    \input{tikz/P1_plot} & \input{tikz/P_plot} \\
+    Множество \( Q_4 \) & Множество \( Q_5=z_5(Q_4)=P \) \\
+    \end{tblr}
+  \end{center}
+\end{enumerate}
+
+Итого \( z(\omega) \) имеет вид:
+%
+\[ z=z_5\circ z_4\circ z_3\circ z_2\circ z_1\implies z(\omega)=-\left(i\cdot\dfrac{1+\frac{e}{\omega}}{1-\frac{e}{\omega}}\right)^2 \]
