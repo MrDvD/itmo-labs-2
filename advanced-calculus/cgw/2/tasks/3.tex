@@ -10,5 +10,52 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Параметризуем кривую \( L_a \):
+  %
+  \[
+    L_a\colon\begin{cases*}
+      &x(t)=t\\
+      &y(t)=\dfrac{1}{t}
+    \end{cases*},\quad t\in[\sqrt[4]{3},\sqrt[4]{8}]
+  \]
+
+  Рассчитаем \( \diff l \):
+  %
+  \[ \diff l=\sqrt{(x_t')^2+(y_t')^2}\diff t=\sqrt{1+\dfrac{1}{t^4}}\diff t \]
+
+  Найдём массу \( M_a \) дуги кривой \( L_a \):
+  %
+  \[
+    \begin{gathered}
+      M_a=\int_{L_a}\rho(x,y)\diff l=6\int_{\sqrt[4]{3}}^{\sqrt[4]{8}}t^3\cdot t^2\sqrt{1+\dfrac{1}{t^4}}\diff t=6\int_{\sqrt[4]{3}}^{\sqrt[4]{8}}\sqrt{1+t^4}\cdot t^3\diff t=\\
+      =\left[\diff(t^4+1)=4t^3\diff t\right]=\dfrac{3}{2}\int_{\sqrt[4]{3}}^{\sqrt[4]{8}}\sqrt{1+t^4}\diff(1+t^4)=\left.(1+t^4)^{\frac{3}{2}}\right|_{\sqrt[4]{3}}^{\sqrt[4]{8}}=\\
+      =9^{\frac{3}{2}}-4^{\frac{3}{2}}=27-8=19
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      M_a=19
+    }
+  \]
+
+  Рассчитаем \( \diff l \) для кривой \( L_b \):
+  %
+  \[ \diff l=\sqrt{(x_t')^2+(y_t')^2}\diff t=\sqrt{4(1-\cos t)^2+4\sin^2 t}\diff t=\sqrt{16\sin^2\frac{t}{2}}\diff t=4\abs{\sin\frac{t}{2}}\diff t \]
+
+  Найдём массу \( M_b \) дуги кривой \( L_b \):
+  %
+  \[
+    M_b=\int_{L_b}\rho(x,y)\diff l=4\int_0^\pi\abs{\sin\frac{t}{2}}\diff t=\left.-8\cos\dfrac{t}{2}\right|_0^\pi=-8\cdot(-1)=8
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      M_b=8
+    }
+  \]
 \end{solution}

@@ -10,5 +10,27 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  Найдём \( \diff l \):
+  %
+  \[
+    \diff l=\sqrt{(x_t')^2+(y_t')^2+(z_t')^2}\diff t=\sqrt{4+1+4}\diff t=3\diff t
+  \]
+
+  Найдём массу \( M \) дуги пространственной кривой \( L \):
+  %
+  \[
+    \begin{gathered}
+      M=\int_L\rho(x,y,z)\diff l=3\int_6^{20}\dfrac{\diff t}{\sqrt{(2t+1)^2-4t^2}}=3\int_6^{20}\dfrac{\diff t}{\sqrt{4t+1}}=\\
+      =\left[\diff(4t+1)=4\diff t\right]=\dfrac{3}{4}\int_6^{20}\dfrac{\diff(4t+1)}{\sqrt{4t+1}}=\left.\dfrac{3}{2}\sqrt{4t+1}\right|_6^{20}=\\
+      =\dfrac{3}{2}(9-5)=6
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      M=6
+    }
+  \]
 \end{solution}
