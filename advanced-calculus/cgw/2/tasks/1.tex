@@ -10,5 +10,34 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  График кривой \( y=\sqrt[3]{x} \) --- кубическая парабола с инверсией относительно прямой \( y=x \).
+
+  График кривой \( x=-\sqrt{y+2} \) --- левая ветвь параболы с центром в \( (0,2) \).
+  
+  График кривой \( y=3x-2 \) --- прямая, проходящая через т. \( (0,-2) \) и \( (1,1) \).
+
+  Имеем рисунок области \( D \), ограниченной заданными графиками:
+  %
+  \begin{center}
+    \input{tikz/Task1}
+  \end{center}
+
+  Найдём площадь области \( D \) с помощью двойного интеграла:
+  %
+  \[
+    \begin{gathered}
+      S_D=\iint_{D}\diff\Omega=\int_{-1}^0\diff x\int_{x^2-2}^{\sqrt[3]{x}}\diff y+\int_0^1\diff x\int_{3x-2}^{\sqrt[3]{x}}\diff y=\\
+      =\int_{-1}^0\left(\sqrt[3]{x}-x^2+2\right)\diff x+\int_0^1\left(\sqrt[3]{x}-3x+2\right)\diff x=\\
+      =\left(\dfrac{3}{4}(\sqrt[3]{x})^4-\dfrac{x^3}{3}+2x\middle)\right|_{-1}^0+\left(\dfrac{3}{4}(\sqrt[3]{x})^4-\dfrac{3}{2}x^2+2x\middle)\right|_0^1=\\
+      =-\dfrac{3}{4}-\dfrac{1}{3}+2+\dfrac{3}{4}-\dfrac{3}{2}+2=\dfrac{13}{6}
+    \end{gathered}
+  \]
+
+  Ответ:
+  %
+  \[
+    \boxed{
+      S_D=\dfrac{13}{6}
+    }
+  \]
 \end{solution}
