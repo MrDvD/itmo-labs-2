@@ -1,0 +1,69 @@
+\begin{problem}
+  Дано векторное поле \( \vec{a}(M) \):
+  \[
+    \vec{a}=(1+e^y)\vec{i}+(xe^y-e^z-1)\vec{j}+(2-ye^z)\vec{k}
+  \]
+  \begin{enumerate}[(a)]
+    \item Проверьте, является ли векторное поле соленоидальным или потенциальным.
+    \item Если поле потенциально, найдите его потенциал.
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  Проверим условие соленоидальности векторного поля \( \vec{a} \):
+  %
+  \[ \Div\vec{a}=\dfrac{\partial a_x}{\partial x}+\dfrac{\partial a_y}{\partial y}+\dfrac{\partial a_z}{\partial z}=0+xe^y-ye^z\neq 0\text{ на }\mathbb{R}^3\implies\vec{a}\text{ не соленоидально} \]
+
+  Проверим условие потенциальности векторного поля \( \vec{a} \):
+  %
+  \[
+    \begin{gathered}
+      \Rot\vec{a}=\begin{vmatrix}
+      \vec{i} & \vec{j} & \vec{k} \\
+      \frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z} \\
+      1+e^y & xe^y-e^z-1 & 2-ye^z
+      \end{vmatrix}=\\
+      =(-e^z+e^z)\vec{i}-(0-0)\vec{j}+(e^y-e^y)\vec{k}=0\implies\vec{a}\text{ потенциально}
+    \end{gathered}
+  \]
+
+  Значит, существует \( u(x,y,z)\colon\vec{a}=\grad u \).
+
+  Из определения полного дифференциала:
+  %
+  \[ \dfrac{\partial u}{\partial x}=1+e^y\implies u(x,y,z)=\int(1+e^y)\diff x=x+xe^y+C(y,z) \]
+
+  Найдём \( C(y,z) \):
+  %
+  \[
+    \begin{gathered}
+      \begin{cases*}
+        &\dfrac{\partial u}{\partial y}=xe^y+\dfrac{\partial C}{\partial y}\\
+        &\dfrac{\partial u}{\partial y}=xe^y-e^z-1
+      \end{cases*}\implies
+      \dfrac{\partial C}{\partial y}=-(e^z+1)\implies\\
+      \implies C(x,y)=-\int(e^z+1)\diff y=-ye^z-y+D(z)
+    \end{gathered}
+  \]
+
+  Найдём \( D(z) \):
+  %
+  \[
+    \begin{gathered}
+      \begin{cases*}
+        &\dfrac{\partial u}{\partial z}=-ye^z+\dfrac{\partial D}{\partial z}\\
+        &\dfrac{\partial u}{\partial z}=2-ye^z
+      \end{cases*}\implies
+      \dfrac{\partial D}{\partial z}=2\implies\\
+      \implies D(z)=2\int\diff y=2z+C,\quad C\in\mathbb{R}
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      u(x,y,z)=x-y+2z+xe^y-ye^z+C,\quad C\in\mathbb{R}
+    }
+  \]
+\end{solution}
