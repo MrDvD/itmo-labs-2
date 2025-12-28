@@ -1,0 +1,150 @@
+\begin{problem}
+  Дано векторное поле \( \vec{a} \) и плоскость \( \sigma \), пересекающая координатные плоскости по замкнутой ломаной \( KLMK \), где \( K \), \( L \), \( M \) --- точки пересечения плоскости \( \sigma \) координатными осями \( Ox \), \( Oy \), \( Oz \) соответственно:
+  %
+  \[
+    \vec{a}=(3z-x)\vec{i}+(z-y)\vec{j},\quad\sigma\colon x-2y-z=-4
+  \]
+  \begin{enumerate}[(a)]
+    \item Найдите поток \( Q \) векторного поля \( \vec{a} \) через часть \( S \) плоскости \( \sigma \), вырезанной координатными плоскостями, в сторону нормали \( \vec{n} \), направленной от начала координат \( O(0, 0, 0) \).
+    \item С помощью теоремы Остроградского-Гаусса найдите поток \( Q \) векторного поля \( \vec{a} \) через полную поверхность тетраэдра \( OLMK \) в сторону внешней нормали.
+    \item Найдите циркуляцию \( C \) векторного поля \( \vec{a} \) по контуру \( KLMK \), образованному пересечением плоскости \( \sigma \) с координатными плоскостями.
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  Определим координаты точек \( K \), \( L \) и \( M \):
+  %
+  \begin{enumerate}
+    \item \( K(x,0,0)\land K\in\sigma\implies x=-4\implies K(-4,0,0) \)
+    \item \( L(0,y,0)\land L\in\sigma\implies y=2\implies L(0,2,0) \)
+    \item \( M(0,0,z)\land M\in\sigma\implies z=4\implies M(0,0,4) \)
+  \end{enumerate}
+
+  Найдём поток \( Q_a \) векторного поля \( \vec{a} \) через \( \triangle KLM \), который расположен во втором октанте \( (x<0;y,z>0) \):
+  %
+  \[ Q_a=\iint_{KLM}\vec{a}\cdot\vec{n}\diff\Omega \]
+
+  Определим нормальный вектор \( \vec{n}^* \) к \( \triangle KLM\subset\sigma \), направленный от \( O \):
+  %
+  \[ \sigma\colon x-2y-z+4=0\implies \vec{n}^*=(-1,2,1) \]
+
+  Нормируем нормальный вектор:
+  %
+  \[ \abs{\vec{n}^*}=\sqrt{1+4+1}=\sqrt{6}\implies\vec{n}=\dfrac{\vec{n}^*}{\abs{\vec{n}^*}}=\left(-\dfrac{1}{\sqrt{6}},\dfrac{2}{\sqrt{6}},\dfrac{1}{\sqrt{6}}\right) \]
+
+  Выразим \( z(x,y) \) из уравнения \( \sigma \):
+  %
+  \[ z(x,y)=x-2y+4 \]
+
+  Рассчитаем \( \diff\Omega \):
+  %
+  \[ \diff\Omega=\sqrt{1+\left(\dfrac{\partial z}{\partial x}\right)^2+\left(\dfrac{\partial z}{\partial y}\right)^2}\diff x\diff y=\sqrt{1+1+4}\diff x\diff y=\sqrt{6}\diff x\diff y\]
+
+  По теореме Фубини:
+  %
+  \[
+    \begin{gathered}
+      \iint_{KLM}\vec{a}\cdot\vec{n}\diff\Omega=\int_a^b\diff x\int_{\varphi_1(x)}^{\varphi_2(x)}(x-3z+2z-2y)\diff y=\\
+      =\int_a^b\diff x\int_{\varphi_1(x)}^{\varphi_2(x)}(x-2y-(x-2y+4))\diff y=\int_a^b\diff x\int_{\varphi_1(x)}^{\varphi_2(x)}(-4)\diff y=\\
+      =-4\int_a^b\diff x\int_{\varphi_1(x)}^{\varphi_2(x)}\diff y
+    \end{gathered}
+  \]
+
+  Определим границы интегрирования из проекции \( \triangle KLM \) на \( xOy \):
+  %
+  \[
+    \begin{gathered}
+      a=-4,\quad b=0\\
+      \varphi_1(x)=0,\quad\varphi_2(x)=\dfrac{x}{2}+2 
+    \end{gathered}
+  \]
+
+  Вычислим внутренний интеграл:
+  %
+  \[ \int_0^{\frac{x}{2}+2}\diff y=\dfrac{x}{2}+2 \]
+
+  Вычислим внешний интеграл:
+  %
+  \[ \int_{-4}^0\left(\dfrac{x}{2}+2\right)\diff x=\left(\dfrac{x^2}{4}+2x\middle)\right|_{-4}^0=-(4-8)=4 \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      Q_a=-16
+    }
+  \]
+
+  По теореме Остроградского-Гаусса:
+  %
+  \[ Q_b=\iiint_{OLMK}\Div\vec{a}\diff\Omega \]
+
+  Определим дивергенцию векторного поля \( \vec{a} \):
+  %
+  \[ \Div\vec{a}=\dfrac{\partial a_x}{\partial x}+\dfrac{\partial a_y}{\partial y}+\dfrac{\partial a_z}{\partial z}=-1-1+0=-2 \]
+
+  Тогда формула для вычисления потока \( Q_b \) примет вид:
+  %
+  \[ Q_b=-2\iiint_{OLMK}\diff\Omega=-2V_{OLMK} \]
+
+  Воспользуемся формулой для поиска объёма тетраэдра \( OLMK \):
+  %
+  \[ V_{OLMK}=\dfrac{1}{6}\begin{vmatrix}
+    x_2-x_1 & y_2-y_1 & z_2-z_1 \\
+    x_3-x_1 & y_3-y_1 & z_3-z_1 \\
+    x_4-x_1 & y_4-y_1 & z_4-z_1
+  \end{vmatrix}=\dfrac{1}{6}\begin{vmatrix}
+    -4 & 0 & 0 \\
+    0 & 2 & 0 \\
+    0 & 0 & 4
+  \end{vmatrix}=\dfrac{1}{6}\cdot 4\cdot 2\cdot 4=\dfrac{16}{3} \]
+
+  Итого:
+  %
+  \[ \boxed{
+    Q_b=-\dfrac{32}{3}
+  } \]
+
+  Параметризуем замкнутую ломаную \( KLMK=\gamma_1\cup\gamma_2\cup\gamma_3 \):
+  %
+  \[
+    \begin{gathered}
+      \gamma_1\colon
+      \begin{cases*}
+        &x(t)=-4+4t\\
+        &y(t)=2t\\
+        &z(t)=0
+      \end{cases*},\quad t\in[0,1]\qquad
+      \gamma_2\colon
+      \begin{cases*}
+        &x(t)=0\\
+        &y(t)=2-2t\\
+        &z(t)=4t
+      \end{cases*},\quad t\in[0,1]\\
+      \gamma_3\colon
+      \begin{cases*}
+        &x(t)=-4t\\
+        &y(t)=0\\
+        &z(t)=4-4t
+      \end{cases*},\quad t\in[0,1]\\
+    \end{gathered}
+  \]
+
+  Найдём циркуляцию \( C \) векторного поля \( \vec{a} \) по определению:
+  %
+  \[
+    \begin{gathered}
+      C=\oint_{KLMK}\vec{a}\diff\vec{z}=\oint_{\gamma_1\cup\gamma_2\cup\gamma_3}(3z-x)\diff x+(z-y)\diff y=\\
+      =\int_0^1 ((4-4t)4-4t)\diff t+\int_0^1 (4t-2+2t)(-2)\diff t+\int_0^1 (12-12t+4t)(-4)\diff t=\\
+      =\int_0^1(16-20t-12t+4-48+32t)\diff t=-28\int_0^1\diff t=-28
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      C=-28
+    }
+  \]
+\end{solution}

@@ -1,0 +1,59 @@
+\begin{problem}
+  Тело \( T \) ограничено заданными поверхностями:
+  \[
+    z=4-x^2-y^2,\quad 9z=-5(x^2+y^2),\quad y=0\quad\text{при }y\leq 0
+  \]
+  \begin{enumerate}[(a)]
+    \item Сделайте схематический рисунок тела \( T \).
+    \item С помощью тройного интеграла найдите объём тела \( T \), перейдя к цилиндрическим или сферическим координатам.
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  График поверхности \( z=4-x^2-y^2 \) --- эллиптический параболоид с вершиной в точке \( (0,0,4) \), направленный вниз.
+
+  График поверхности \( 9z=-5(x^2+y^2) \) --- эллиптический параболоид с вершиной в точке \( (0,0,0) \), направленный вниз с сжатием в \( \frac{9}{5} \) раз.
+
+  График поверхности \( y=0 \) --- плоскость \( xOz \).
+
+  Имеем рисунок тела \( T \), ограниченного заданными плоскостями \textit{(тело показано с дополнительными сечениями для лучшего понимания его формы)}:
+  %
+  \begin{center}
+    \input{tikz/Task2}
+  \end{center}
+
+  Перейдём к цилиндрическим координатам:
+  %
+  \[
+    \begin{gathered}
+      \mathcal{A}\colon\begin{cases*}
+      &x(r,\varphi,z)=r\cos\varphi\\
+      &y(r,\varphi,z)=r\sin\varphi\\
+      &z(r,\varphi,z)=z
+    \end{cases*}\implies\abs{J_{\mathcal{A}}}=\begin{vmatrix}
+      \cos\varphi & -r\sin\varphi & 0\\
+      \sin\varphi & r\cos\varphi & 0\\
+      0 & 0 & 1
+    \end{vmatrix}=\\
+    =r\cos\varphi\cos\varphi+r\sin\varphi\sin\varphi=r
+    \end{gathered}
+  \]
+
+  Найдём объём тела \( T \) с помощью тройного интеграла по теореме Фубини:
+  %
+  \[
+    \begin{gathered}
+      V_T=\iiint_{T}\diff V=\int_{-5}^0\diff z\int_{\sqrt{-\frac{9}{5}z}}^{\sqrt{4-z}}r\diff r\int_0^\pi\diff\varphi+\int_0^4\diff z\int_0^{\sqrt{4-z}}r\diff r\int_0^\pi\diff\varphi=\\
+      =\dfrac{\pi}{2}\left(\int_{-5}^0 r^2\left|_{\sqrt{-\frac{9}{5}z}}^{\sqrt{4-z}}\right.\diff z+\int_0^4 r^2\left|_0^{\sqrt{4-z}}\right.\diff z\right)=\dfrac{\pi}{2}\left(\int_{-5}^0\left(4+\dfrac{4}{5}z\right)\diff z+\int_0^4\left(4-z\right)\diff z\right)=\\
+      =\dfrac{\pi}{2}\left(\left(4z+\dfrac{2}{5}z^2\middle)\right|_{-5}^0+\left(4z-\dfrac{z^2}{2}\middle)\right|_0^4\right)=\dfrac{\pi}{2}(10+8)=9\pi
+    \end{gathered}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      V_T=9\pi
+    }
+  \]
+\end{solution}
