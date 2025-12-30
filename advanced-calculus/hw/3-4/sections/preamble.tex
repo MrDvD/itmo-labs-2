@@ -1,0 +1,57 @@
+\usepackage{fontspec}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+  \pgfplotsset{compat=1.17}
+  \usepgfplotslibrary{polar}
+\usepackage{tabularx, multirow}
+\usepackage[a4paper,
+            left=3cm,
+            right=3cm,
+            top=2cm,
+            bottom=3cm]{geometry}
+
+\setmainfont{CMU Serif}
+\setsansfont{CMU Sans Serif}
+\setmonofont{CMU Typewriter Text}
+
+\newtheorem{problem}{Задача}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+
+\newcommand{\diff}{\mathrm{d}}
+\newcommand{\grad}{\textrm{grad}\,}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newenvironment{cases*}{
+\left\{\begin{aligned}
+}{\end{aligned}\right.}
+
+\newenvironment{sqcases*}{
+\left[\begin{aligned}
+}{\end{aligned}\right.}
+
+\pgfplotsset{mypolarplot/.style={%
+  clip=false,
+  domain=0:360,
+  samples=180,
+  grid=both,
+  major grid style={gray}, 
+  minor x tick num=1,
+  minor y tick num=1,
+  xtick={0,45,...,359},
+  xticklabels={%
+    $0$,
+    $\frac{ \pi}{4}$,
+    $\frac{ \pi}{2}$,
+    $\frac{3\pi}{4}$,
+    $\pi$,
+    $\frac{5\pi}{4}$,
+    $\frac{3\pi}{2}$,
+    $\frac{7\pi}{4}$
+  },
+  yticklabel style={anchor=north},
+}}
