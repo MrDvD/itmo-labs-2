@@ -6,5 +6,55 @@
 \end{problem}
 
 \begin{solution}
-  \dots
+  По аддитивности поверхностного интеграла:
+  %
+  \[ S=S_{\text{верх}}+S_{\text{низ}}\implies\iint_Sz^2\diff x\diff y=\iint_{S_{\text{верх}}}z^2\diff x\diff y+\iint_{S_{\text{низ}}}z^2\diff x\diff y \]
+
+  Параметризуем поверхность \( S_{\text{верх}} \):
+  %
+  \[
+    S_{\text{верх}}\colon
+    \begin{cases*}
+      &x(\rho,\varphi)=\sqrt{2}\rho\cos\varphi\\
+      &y(\rho,\varphi)=\sqrt{2}\rho\sin\varphi\\
+      &z(\rho,\varphi)=\sqrt{1-\rho^2}
+    \end{cases*},\quad\rho\in\left[0,1\right],\ \varphi\in\left[0,2\pi\right]
+  \]
+
+  Параметризуем поверхность \( S_{\text{низ}} \):
+  %
+  \[
+    S_{\text{низ}}\colon
+    \begin{cases*}
+      &x(\rho,\varphi)=\sqrt{2}\rho\cos\varphi\\
+      &y(\rho,\varphi)=\sqrt{2}\rho\sin\varphi\\
+      &z(\rho,\varphi)=-\sqrt{1-\rho^2}
+    \end{cases*},\quad\rho\in\left[0,1\right],\ \varphi\in\left[0,2\pi\right]
+  \]
+
+  Найдём направляющие косинусы для обоих случаев:
+  %
+  \[
+    \cos\gamma_{\text{верх}}=\cos\gamma_{\text{низ}}=\cos\gamma=\begin{vmatrix}
+      x'_\rho & y'_\rho \\
+      x'_\varphi & y'_\varphi
+    \end{vmatrix}=\begin{vmatrix}
+      \sqrt{2}\cos\varphi & \sqrt{2}\sin\varphi \\
+      -\sqrt{2}\rho\sin\varphi & \sqrt{2}\rho\cos\varphi
+    \end{vmatrix}=2\rho
+  \]
+
+  Перейдём к кратным интегралам по области \( D \):
+  %
+  \[
+    \iint_{S_{\text{верх}}}z^2\diff x\diff y+\iint_{S_{\text{низ}}}z^2\diff x\diff y=2\iint_D (\sqrt{1-\rho^2}-\sqrt{1-\rho^2})\rho\diff\rho\diff\varphi=0
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      \iint_S z^2\diff x\diff y=0
+    }
+  \]
 \end{solution}
