@@ -32,22 +32,39 @@
     \end{cases*},\quad\rho\in\left[0,1\right],\ \varphi\in\left[0,2\pi\right]
   \]
 
-  Найдём направляющие косинусы для обоих случаев:
+  Найдём нормальные векторы для обоих случаев:
   %
   \[
-    \cos\gamma_{\text{верх}}=\cos\gamma_{\text{низ}}=\cos\gamma=\begin{vmatrix}
-      x'_\rho & y'_\rho \\
-      x'_\varphi & y'_\varphi
-    \end{vmatrix}=\begin{vmatrix}
-      \sqrt{2}\cos\varphi & \sqrt{2}\sin\varphi \\
-      -\sqrt{2}\rho\sin\varphi & \sqrt{2}\rho\cos\varphi
-    \end{vmatrix}=2\rho
+    \begin{gathered}
+      \vec{n}_{\text{верх}}^*=\vec{r}_{\text{верх}}(\rho,\varphi)'_\rho\times\vec{r}_{\text{верх}}(\rho,\varphi)'_\varphi=\begin{vmatrix}
+        \vec{i} & \vec{j} & \vec{k} \\
+        \sqrt{2}\cos\varphi & \sqrt{2}\sin\varphi & -\dfrac{\rho}{\sqrt{1-\rho^2}} \\
+        -\sqrt{2}\rho\sin\varphi & \sqrt{2}\rho\cos\varphi & 0 \\
+      \end{vmatrix}=\\
+      =\left(\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},2\rho\right)\\
+      \vec{n}_{\text{низ}}^*=\vec{r}_{\text{низ}}(\rho,\varphi)'_\rho\times\vec{r}_{\text{низ}}(\rho,\varphi)'_\varphi=\begin{vmatrix}
+        \vec{i} & \vec{j} & \vec{k} \\
+        \sqrt{2}\cos\varphi & \sqrt{2}\sin\varphi & \dfrac{\rho}{\sqrt{1-\rho^2}} \\
+        -\sqrt{2}\rho\sin\varphi & \sqrt{2}\rho\cos\varphi & 0 \\
+      \end{vmatrix}=\\
+      =\left(-\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},-\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},2\rho\right)\\
+    \end{gathered}
   \]
 
-  Перейдём к кратным интегралам по области \( D \):
+  Уточним направление нормальных векторов:
   %
   \[
-    \iint_{S_{\text{верх}}}z^2\diff x\diff y+\iint_{S_{\text{низ}}}z^2\diff x\diff y=2\iint_D (\sqrt{1-\rho^2}-\sqrt{1-\rho^2})\rho\diff\rho\diff\varphi=0
+    \grad S=(2x,2y,4z)\implies
+    \begin{cases*}
+      &\vec{n}_{\text{верх}}=\left(\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},2\rho\right)\\
+      &\vec{n}_{\text{низ}}=\left(\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},-2\rho\right)\\
+    \end{cases*}
+  \]
+
+  Перейдём к кратным интегралам по области \( D \) из параметризации:
+  %
+  \[
+    \iint_{S_{\text{верх}}}z^2\diff x\diff y+\iint_{S_{\text{низ}}}z^2\diff x\diff y=2\iint_D (1-\rho^2-(1-\rho^2))\rho\diff\sigma=0
   \]
 
   Итого:
