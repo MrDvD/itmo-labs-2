@@ -1,0 +1,142 @@
+\begin{problem}
+Вычислить поток векторного поля \( \vec{a}(M) \) через внешнюю поверхность пирамиды, образуемую плоскостью \( \rho \) и координатными плоскостями, двумя способами: использовав определение потока и с помощью формулы Остроградского-Гаусса:
+\[
+  \vec{a}(M)=(3x-1)\vec{i}+(y-x+z)\vec{j}+4z\vec{k},\quad\rho\colon 2x-y-2z=2
+\]
+\end{problem}
+
+\begin{solution}
+  Определим вершины пирамиды \( G=OABC \):
+  %
+  \[
+    \rho\colon x-\dfrac{y}{2}-z=1\implies O(0,0,0),\ A(1,0,0),\ B(0,-2,0),\ C(0,0,-1)
+  \]
+
+  По аддитивности поверхностного интеграла:
+  %
+  \[
+    \Phi=\Phi_{OAB}+\Phi_{OAC}+\Phi_{OBC}+\Phi_{ABC}
+  \]
+
+  Вычислим нормированные нормальные векторы к внешним граням пирамиды \( G \):
+  %
+  \[
+    \begin{aligned}
+      OAB\subset z=0&\implies\vec{n}_{OAB}=\dfrac{1}{\sqrt{0+0+1^2}}(0,0,1)=(0,0,1)\\
+      OAC\subset y=0&\implies\vec{n}_{OAC}=\dfrac{1}{\sqrt{0+1^2+0}}(0,1,0)=(0,1,0)\\
+      OBC\subset x=0&\implies\vec{n}_{OBC}=\dfrac{1}{\sqrt{(-1)^2+0+0}}(-1,0,0)=(-1,0,0)\\
+      ABC\subset\rho&\implies\vec{n}_{ABC}=\dfrac{1}{\sqrt{2^2+(-1)^2+(-2)^2}}(2,-1,-2)=\dfrac{1}{3}(2,-1,-2)
+    \end{aligned}
+  \]
+
+  Вычислим \( \Phi_{OAB} \) по определению:
+  %
+  \[
+    z=0\implies\Phi_{OAB}=\iint_{OAB}\vec{a}\cdot\vec{n}_{OAB}\diff\sigma=4\iint_{OAB}0\diff x\diff y=0
+  \]
+
+  Вычислим \( \Phi_{OAC} \) по определению:
+  %
+  \[
+    \begin{gathered}
+      y=0\implies\Phi_{OAC}=\iint_{OAC}\vec{a}\cdot\vec{n}_{OAC}\diff\sigma=\iint_{OAC}(z-x)\diff x\diff z=\\
+      =\int_0^1\diff x\int_{x-1}^0(z-x)\diff z=\int_0^1\left(x(x-1)-\dfrac{(x-1)^2}{2}\right)\diff x=\\
+      =\int_0^1\left(x^2-x-\dfrac{x^2}{2}+x-\dfrac{1}{2}\right)\diff x=\dfrac{1}{2}\int_0^1(x^2-1)\diff x=\dfrac{1}{2}(\dfrac{1}{3}-1)=-\dfrac{1}{3}
+    \end{gathered}
+  \]
+
+  Вычислим \( \Phi_{OBC} \) по определению:
+  %
+  \[
+    \begin{gathered}
+      x=0\implies\Phi_{OBC}=\iint_{OBC}\vec{a}\cdot\vec{n}_{OBC}\diff\sigma=\iint_{OBC}1\diff y\diff z=S_{OBC}=\dfrac{1}{2}\cdot 2\cdot 1=1
+    \end{gathered}
+  \]
+
+  Вычислим \( \Phi_{ABC} \) по определению\footnote{После оформления осознал, что можно не разбивать на три компоненты и спроектировать на одну. Однако переписывать расчёт потока \( \Phi_{ABC} \) нет желания.}:
+  %
+  \[
+    \begin{gathered}
+      \Phi_{ABC}=\iint_{ABC}\vec{a}\cdot\vec{n}_{ABC}\diff\sigma=\\
+      =\dfrac{1}{3}\iint_{ABC}2(3x-1)\dfrac{\diff y\diff z}{\cos\alpha}-(y-x+z)\dfrac{\diff x\diff z}{\cos\beta}-2\cdot 4z\dfrac{\diff x\diff y}{\cos\gamma}=\\
+      =\iint_{ABC}(4+6z+3y)\dfrac{\diff y\diff z}{2}-(x-z-2)\diff x\diff z-2\cdot (4x-2y-4)\dfrac{\diff x\diff y}{2}
+    \end{gathered}
+  \]
+
+  Посчитаем удвоенный первый интеграл:
+  %
+  \[
+    \begin{gathered}
+      \iint_{ABC}(4+6z+3y)\diff y\diff z=\int_{-2}^0\diff y\int_{-\frac{1}{2}y-1}^0(4+6z+3y)\diff z=\\
+      =\int_{-2}^0(4z+3z^2+3zy)\left|_{-\frac{1}{2}y-1}^0\right.\diff y=-\int_{-2}^0\left((4+3y)\left(-\dfrac{1}{2}y-1\right)+3\left(\dfrac{1}{2}y+1\right)^2\right)\diff y=\\
+      =-\int_{-2}^0\left(-2y-4-\dfrac{3}{2}y^2-3y+\dfrac{3}{4}y^2+3y+3\right)\diff y=\int_{-2}^0\left(\dfrac{3}{4}y^2+2y+1\right)\diff y=\\
+      =\left(\dfrac{1}{4}y^3+y^2+y\middle)\right|_{-2}^0=-(-2+4-2)=0
+    \end{gathered}
+  \]
+
+  Посчитаем второй интеграл:
+  %
+  \[
+    \begin{gathered}
+      \iint_{ABC}(2+z-x)\diff x\diff z=\int_0^1\diff x\int_{x-1}^0(2+z-x)\diff z=\int_0^1\left(2z+\dfrac{z^2}{2}-xz\middle)\right|_{x-1}^0\diff x=\\
+      =-\int_0^1\left(2x-2+\dfrac{(x-1)^2}{2}-x^2+x\right)\diff x=\dfrac{1}{2}\int_0^1(x^2-4x+3)\diff x=\\
+      =\dfrac{1}{2}\left(\dfrac{x^3}{3}-2x^2+3x\middle)\right|_0^1=\dfrac{1}{2}\left(\dfrac{1}{3}-2+3\right)=\dfrac{2}{3}
+    \end{gathered}
+  \]
+
+  Посчитаем удвоенный третий интеграл:
+  %
+  \[
+    \begin{gathered}
+      4\iint_{ABC}(y-2x+2)\diff x\diff y=4\int_0^1\diff x\int_{2x-2}^0(y-2x+2)\diff y=\\
+      =4\int_0^1\left(\dfrac{y^2}{2}-2xy+2y\middle)\right|_{2x-2}^0\diff x=-4\int_0^1\left(\dfrac{(2x-2)^2}{2}-2x(2x-2)+2(2x-2)\right)\diff x=\\
+      =-4\int_0^1(2(x^2-2x+1)-4x^2+4x+4x-4)\diff x=-4\int_0^1(-2x^2+4x-2)\diff x=\\
+      =8\int_0^1(x^2-2x+1)\diff x=8\int_0^1(x-1)^2\diff(x-1)=\left.\dfrac{8}{3}(x-1)^3\right|_0^1=\dfrac{8}{3}(0-(-1))=\dfrac{8}{3}
+    \end{gathered}
+  \]
+
+  Имеем:
+  %
+  \[
+    \Phi=0-\dfrac{1}{3}+1+\left(\dfrac{0}{2}+\dfrac{2}{3}+\dfrac{1}{2}\cdot\dfrac{8}{3}\right)=1-\dfrac{1}{3}+2=\dfrac{9-1}{3}=\dfrac{8}{3}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      \Phi=\dfrac{8}{3}
+    }
+  \]
+
+  По формуле Остроградского-Гаусса для внешней поверхности пирамиды \( OABC \):
+  %
+  \[
+    \Phi=\iiint_{OABC}\Div\vec{a}\diff V
+  \]
+
+  Найдём дивергенцию векторного поля \( \vec{a} \):
+  %
+  \[
+    \Div\vec{a}=\dfrac{\partial a_x}{\partial x}+\dfrac{\partial a_y}{\partial y}+\dfrac{\partial a_z}{\partial z}=3+1+4=8
+  \]
+
+  Подставим в поверхностный интеграл:
+  %
+  \[
+    \iiint_{OABC}\Div\vec{a}\diff V=8\iiint_{OABC}\diff V=8V_{OABC}
+  \]
+
+  По формуле объёма тетраэдра:
+  %
+  \[
+    V_{OABC}=\dfrac{1}{3}\cdot S_{OAB}\cdot\abs{\overrightarrow{OC}}=\dfrac{1}{3}\cdot\dfrac{1}{2}\cdot 2\cdot 1\cdot 1=\dfrac{1}{3}
+  \]
+  Итого:
+  %
+  \[
+    \boxed{
+      \Phi=\dfrac{8}{3}
+    }
+  \]
+\end{solution}

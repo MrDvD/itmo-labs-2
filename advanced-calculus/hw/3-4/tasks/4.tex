@@ -1,0 +1,141 @@
+\begin{problem}
+Вычислить циркуляцию векторного поля \( \vec{a}(M) \) по контуру треугольника, полученного в результате пересечения плоскости \( \rho\colon Ax+By+Cz=D \) с координатными плоскостями, при положительном направлении обхода относительно нормального вектора \( \vec{n}=(A,B,C) \) этой плоскости двумя способами: используя определение циркуляции; с помощью формулы Стокса:
+\[
+  \vec{a}(M)=(x+z)\vec{i}+z\vec{j}+(2x-y)\vec{k},\quad\rho\colon 3x+2y+z=6
+\]
+\end{problem}
+
+\begin{solution}
+  По определению циркуляции:
+  %
+  \[
+    C=\oint_L\vec{a}\cdot\diff\vec{l}=\oint_L a_x\diff x+a_y\diff y+a_z\diff z
+  \]
+
+  Из аддитивности криволинейного интеграла:
+  %
+  \[
+    L=\gamma_1\cup\gamma_2\cup\gamma_3\implies\oint_L\vec{a}\cdot\diff\vec{l}=\int_{\gamma_1}\vec{a}\cdot\diff\vec{l}+\int_{\gamma_2}\vec{a}\cdot\diff\vec{l}+\int_{\gamma_3}\vec{a}\cdot\diff\vec{l}
+  \]
+
+  Определим координаты вершин \( \triangle XYZ \) из условия:
+  %
+  \[
+    \begin{aligned}
+      X\in\rho\land y=0\land z=0&\implies x=2\implies X(2,0,0)\\
+      Y\in\rho\land x=0\land z=0&\implies y=3\implies Y(0,3,0)\\
+      Z\in\rho\land x=0\land y=0&\implies z=6\implies Z(0,0,6)\\
+    \end{aligned}
+  \]
+
+  По правилу «правой руки»:
+  %
+  \[
+    \overrightarrow{XY}\times\overrightarrow{YZ}=\begin{vmatrix}
+      \vec{i} & \vec{j} & \vec{k} \\
+      -2 & 3 & 0 \\
+      0 & -3 & 6 \\
+    \end{vmatrix}=(18,12,6)=6\vec{n}\implies XYZX\text{ --- искомый контур}
+  \]
+
+  Параметризуем контуры обхода:
+  %
+  \[
+    \begin{gathered}
+      \gamma_1=XY\colon\begin{cases*}
+        &x(t)=2-2t\\
+        &y(t)=3t\\
+        &z(t)=0
+      \end{cases*},\quad t\in[0,1]\qquad
+      \gamma_2=YZ\colon\begin{cases*}
+        &x(t)=0\\
+        &y(t)=3-3t\\
+        &z(t)=6t
+      \end{cases*},\quad t\in[0,1]\\
+      \gamma_3=ZX\colon\begin{cases*}
+        &x(t)=2t\\
+        &y(t)=0\\
+        &z(t)=6-6t
+      \end{cases*},\quad t\in[0,1]\\
+    \end{gathered}
+  \]
+
+  Посчитаем интеграл вдоль контура \( XY \):
+  %
+  \[
+    \int_{XY}\vec{a}\cdot\diff\vec{l}=\int_0^1(2-2t+0)\cdot(-2)\diff t=-2\cdot(2t-t^2)|_0^1=-2
+  \]
+
+  Посчитаем интеграл вдоль контура \( YZ \):
+  %
+  \[
+    \int_{YZ}\vec{a}\cdot\diff\vec{l}=\int_0^1(6t\cdot(-3)+(3t-3)\cdot 6)\diff t=-18\cdot t|_0^1=-18
+  \]
+
+  Посчитаем интеграл вдоль контура \( ZX \):
+  %
+  \[
+    \int_{ZX}\vec{a}\cdot\diff\vec{l}=\int_0^1((2t+6-6t)\cdot 2+4t\cdot(-6))\diff t=4(3t-4t^2)|_0^1=-4
+  \]
+
+  Имеем:
+  %
+  \[
+    C=-2-18-4=-24
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      C=-24
+    }
+  \]
+
+  По формуле Стокса:
+  %
+  \[
+    \begin{gathered}
+      C=\oint_L a_x\diff x+a_y\diff y+a_z\diff z=\\
+      =\iint_S\left[\left(\dfrac{\partial a_y}{\partial x}-\dfrac{\partial a_x}{\partial y}\right)\diff x\diff y+\left(\dfrac{\partial a_z}{\partial y}-\dfrac{\partial a_y}{\partial z}\right)\diff y\diff z+\left(\dfrac{\partial a_x}{\partial z}-\dfrac{\partial a_z}{\partial x}\right)\diff z\diff x\right]
+    \end{gathered}
+  \]
+
+  Вычислим необходимые частные производные:
+  %
+  \[
+    \dfrac{\partial a_x}{\partial y}=0\quad\dfrac{\partial a_x}{\partial z}=1\quad\dfrac{\partial a_y}{\partial x}=0\quad\dfrac{\partial a_y}{\partial z}=1\quad\dfrac{\partial a_z}{\partial x}=2\quad\dfrac{\partial a_z}{\partial y}=-1\\
+  \]
+
+  Подставим частные производные в формулу Стокса:
+  %
+  \[
+    \oint_L a_x\diff x+a_y\diff y+a_z\diff z=-\iint_S[\diff z\diff x+2\diff y\diff z]
+  \]
+
+  Вычислим первый двойной интеграл:
+  %
+  \[
+    \iint_S\diff z\diff x=\int_0^2\diff x\int_0^{6-3x}\diff z=\int_0^2(6-3x)\diff x=\left(6x-\dfrac{3}{2}x^2\middle)\right|_0^2=12-6=6
+  \]
+
+  Вычислим второй двойной интеграл:
+  %
+  \[
+    \iint_S2\diff y\diff z=2\int_0^3\diff y\int_0^{6-2t}\diff z=2\int_0^3(6-2y)\diff y=2\cdot(6y-y^2)|_0^3=2\cdot(18-9)=18
+  \]
+
+  Имеем:
+  %
+  \[
+    C=-(6+18)=-24
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      C=-24
+    }
+  \]
+\end{solution}
