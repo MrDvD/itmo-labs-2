@@ -1,0 +1,54 @@
+\begin{problem}
+Найти величину и направление наибольшего изменения функции \( u(M)=u(x,y,z) \) в точке \( M_0(x_0,y_0,z_0) \):
+\[
+  u(M)=x^2yz,\quad M_0(2,0,2)
+\]
+\end{problem}
+
+\begin{solution}
+  По определению градиента функции \( u(x,y,z) \):
+  %
+  \[
+    \grad u(x,y,z)=\left(\dfrac{u}{x},\dfrac{u}{y},\dfrac{u}{z}\right)=(2xyz,x^2z,x^2y)\implies\grad(2,0,2)=(0,8,0)
+  \]
+
+  Введём произвольное направление \( L \):
+  %
+  \[
+    L=(\cos\alpha,\cos\beta,\cos\gamma)
+  \]
+
+  Найдём изменение функции \( u(x,y,z) \) по направлению \( L \) по теореме:
+  %
+  \[
+    \dfrac{\partial u}{\partial L}=(0,8,0)\cdot(\cos\alpha,\cos\beta,\cos\gamma)=8\cos\beta
+  \]
+
+  По необходимому условию экстремума:
+  %
+  \[
+    \begin{cases*}
+      &\dfrac{\partial}{\partial\alpha}\dfrac{\partial u}{\partial L}=0\\
+      &\dfrac{\partial}{\partial\beta}\dfrac{\partial u}{\partial L}=-8\sin\beta=0\\
+      &\dfrac{\partial}{\partial\gamma}\dfrac{\partial u}{\partial L}=0
+    \end{cases*}\implies
+    \sin\beta=0\implies\abs{\cos\beta}=1
+  \]
+
+  Учтём нормировку \( L \):
+  %
+  \[
+    \abs{L}=1\implies\cos^2\alpha+\cos^2\beta+\cos^2\gamma=1\implies\cos^2\alpha+\cos^2\gamma=0\implies\begin{cases*}
+      &\cos\alpha=0\\
+      &\cos\gamma=0
+    \end{cases*}
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      \abs{\dfrac{\partial u}{\partial L}}=8,\quad L=(0,1,0)
+    }
+  \]
+\end{solution}

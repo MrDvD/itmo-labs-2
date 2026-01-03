@@ -1,0 +1,77 @@
+\begin{problem}
+Вычислить поверхностный интеграл второго рода:
+\[
+  \iint_S z^2\diff x\diff y,\quad S\colon\text{внешняя сторона поверхности эллипсоида }x^2+y^2+2z^2=2
+\]
+\end{problem}
+
+\begin{solution}
+  По аддитивности поверхностного интеграла:
+  %
+  \[ S=S_{\text{верх}}+S_{\text{низ}}\implies\iint_Sz^2\diff x\diff y=\iint_{S_{\text{верх}}}z^2\diff x\diff y+\iint_{S_{\text{низ}}}z^2\diff x\diff y \]
+
+  Параметризуем поверхность \( S_{\text{верх}} \):
+  %
+  \[
+    S_{\text{верх}}\colon
+    \begin{cases*}
+      &x(\rho,\varphi)=\sqrt{2}\rho\cos\varphi\\
+      &y(\rho,\varphi)=\sqrt{2}\rho\sin\varphi\\
+      &z(\rho,\varphi)=\sqrt{1-\rho^2}
+    \end{cases*},\quad\rho\in\left[0,1\right],\ \varphi\in\left[0,2\pi\right]
+  \]
+
+  Параметризуем поверхность \( S_{\text{низ}} \):
+  %
+  \[
+    S_{\text{низ}}\colon
+    \begin{cases*}
+      &x(\rho,\varphi)=\sqrt{2}\rho\cos\varphi\\
+      &y(\rho,\varphi)=\sqrt{2}\rho\sin\varphi\\
+      &z(\rho,\varphi)=-\sqrt{1-\rho^2}
+    \end{cases*},\quad\rho\in\left[0,1\right],\ \varphi\in\left[0,2\pi\right]
+  \]
+
+  Найдём нормальные векторы для обоих случаев:
+  %
+  \[
+    \begin{gathered}
+      \vec{n}_{\text{верх}}^*=\vec{r}_{\text{верх}}(\rho,\varphi)'_\rho\times\vec{r}_{\text{верх}}(\rho,\varphi)'_\varphi=\begin{vmatrix}
+        \vec{i} & \vec{j} & \vec{k} \\
+        \sqrt{2}\cos\varphi & \sqrt{2}\sin\varphi & -\dfrac{\rho}{\sqrt{1-\rho^2}} \\
+        -\sqrt{2}\rho\sin\varphi & \sqrt{2}\rho\cos\varphi & 0 \\
+      \end{vmatrix}=\\
+      =\left(\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},2\rho\right)\\
+      \vec{n}_{\text{низ}}^*=\vec{r}_{\text{низ}}(\rho,\varphi)'_\rho\times\vec{r}_{\text{низ}}(\rho,\varphi)'_\varphi=\begin{vmatrix}
+        \vec{i} & \vec{j} & \vec{k} \\
+        \sqrt{2}\cos\varphi & \sqrt{2}\sin\varphi & \dfrac{\rho}{\sqrt{1-\rho^2}} \\
+        -\sqrt{2}\rho\sin\varphi & \sqrt{2}\rho\cos\varphi & 0 \\
+      \end{vmatrix}=\\
+      =\left(-\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},-\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},2\rho\right)\\
+    \end{gathered}
+  \]
+
+  Уточним направление нормальных векторов:
+  %
+  \[
+    \grad S=(2x,2y,4z)\implies
+    \begin{cases*}
+      &\vec{n}_{\text{верх}}=\left(\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},2\rho\right)\\
+      &\vec{n}_{\text{низ}}=\left(\dfrac{\sqrt{2}\rho^2\cos\varphi}{\sqrt{1-\rho^2}},\dfrac{\sqrt{2}\rho^2\sin\varphi}{\sqrt{1-\rho^2}},-2\rho\right)\\
+    \end{cases*}
+  \]
+
+  Перейдём к кратным интегралам по области \( D \) из параметризации:
+  %
+  \[
+    \iint_{S_{\text{верх}}}z^2\diff x\diff y+\iint_{S_{\text{низ}}}z^2\diff x\diff y=2\iint_D (1-\rho^2-(1-\rho^2))\rho\diff\sigma=0
+  \]
+
+  Итого:
+  %
+  \[
+    \boxed{
+      \iint_S z^2\diff x\diff y=0
+    }
+  \]
+\end{solution}
