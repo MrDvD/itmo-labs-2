@@ -1,0 +1,77 @@
+\section{Трение}
+
+\hfill\textit{Лекция от 30.09.2025}
+
+\begin{table}[ht]
+\centering
+\begin{tblr}{
+  colspec = {Q[0.5\linewidth,c,m] Q[0.5\linewidth,c,m]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  rowsep = 6pt
+}
+Трение покоя & Трение скольжения \\
+{
+  $F_{\text{тр.пок}} \leq \mu_0 N$ \\
+  $\mu_0 - \text{коэф. трения покоя}$
+} & 
+{
+  $F_{\text{тр}} = \mu N$ \\
+  $\mu - \text{коэф. трения скольжения}$ \\
+  $\mu < \mu_0 \ \text{(обычно)}$
+} \\
+Направлено против возможного движения & Направлено против скорости движения \\
+\end{tblr}
+\caption{Силы сухого трения}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.8]
+    % Оси
+    \draw[->, thick] (0,0) -- (6,0) node[right] {$F_{\text{внеш}}$};
+    \draw[->, thick] (0,0) -- (0,4) node[above] {$F_{\text{тр}}$};
+    
+    % Линия трения покоя
+    \draw[thick] (0,0) -- (3.5,2.2);
+    
+    % Плавный переход к максимуму трения покоя
+    \draw[thick] (3.5,2.2) .. controls (3.8,2.4) and (3.9,2.45) .. (4,2.5);
+    
+    % Плавный спуск к трению скольжения
+    \draw[thick] (4,2.5) .. controls (4.1,2.2) and (4.2,2.0) .. (4.3,1.9);
+    
+    % Сила трения скольжения
+    \draw[thick] (4.3,1.9) -- (6,1.9);
+    
+    % Подписи
+    \node at (2,2.8) {\tiny Трение покоя};
+    \node at (5,2.8) {\tiny\shortstack{Трение\\ скольжения}};
+    
+    % Штриховые линии
+    \draw[dashed] (4,0) node[below] {$F_{\text{тр.пок.max}}$} -- (4,2.5);
+    \draw[dashed] (0,2.5) node[left] {$\mu_0 N$} -- (4,2.5);
+    \draw[dashed] (0,1.9) node[left] {$\mu N$} -- (6,1.9);
+\end{tikzpicture}
+\caption{Зависимость силы трения от внешней силы}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\begin{tblr}{
+  colspec = {Q[0.5\linewidth,c,m] Q[0.5\linewidth,c,m]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  cells = {m},
+  rowsep = 6pt
+}
+Вязкостное трение & Сопротивление среды \\
+\( F \propto v \) & \( F \propto v^2 \) \\
+Малые скорости, ламинарное обтекание & Большие скорости, турбулентное обтекание \\
+\end{tblr}
+\caption{Сопротивление в жидкостях и газах}
+\end{table}
