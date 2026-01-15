@@ -1,0 +1,478 @@
+\section{Оптика}
+
+\subsection{Принцип Гюйгенса --- Френеля}
+Согласно \textbf{принципу Гюйгенса}, каждая точка фронта волны является источником вторичных сферических волн. Огибающая этих волн в следующий момент времени дает положение нового фронта.
+
+По \textbf{дополнению Френеля}, вторичные волны являются \textit{когерентными} и при наложении интерферируют. Амплитуда и фаза в любой точке пространства --- это результат суперпозиции всех вторичных волн от источника.
+
+\textbf{Когерентные источники} имеют одинаковую частоту и неизменную во времени разность фаз ($\Delta \phi = \text{const}$). Только такие волны создают устойчивую интерференционную картину.
+
+\textbf{Интерференция} --- явление перераспределения интенсивности света при наложении когерентных волн.
+\begin{center}
+\begin{tblr}{
+  colspec = {X[1,c]X[2,l]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries, mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {m},
+  rowsep = 6pt
+}
+\textbf{Условие} & \textbf{Формула и пояснение} \\
+$\Delta = k\lambda\ (k \in \mathbb{N}_0)$ & \textbf{Максимум} --- волны приходят в фазе \\
+$\Delta = (2k+1)\frac{\lambda}{2}\ (k \in \mathbb{N}_0)$ & \textbf{Минимум} --- волны приходят в противофазе \\
+\end{tblr}
+\end{center}
+
+\subsection{Схема Юнга и дифракционная решетка}
+\subsubsection{Схема Юнга}
+
+\textbf{Опыт Юнга} заключается в том, что свет от источника проходит через две узкие щели на расстоянии $d$ друг от друга. На экране (расстояние $L$) наблюдаются полосы:
+
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+    \def\L{4}
+    \def\d{1}
+    \def\yP{1.2}
+    \def\sourceX{-1.5}
+
+    \draw[ultra thick] (\L, -2) -- (\L, 2) node[above] {Экран};
+    \draw[ultra thick] (0, -2) -- (0, -\d/2);
+    \draw[ultra thick] (0, -\d/2+0.1) -- (0, \d/2-0.1);
+    \draw[ultra thick] (0, \d/2) -- (0, 2);
+
+    \coordinate (S1) at (0, \d/2);
+    \coordinate (S2) at (0, -\d/2);
+    \node[left] at (S1) {$S_1$};
+    \node[left] at (S2) {$S_2$};
+
+    \coordinate (P) at (\L, \yP);
+    \filldraw[black] (P) circle (1pt) node[right] {$P(x)$};
+
+    \draw[black, thick] (S1) -- (P) node[midway, above, sloped] {$r_1$};
+    \draw[black, thick] (S2) -- (P) node[midway, below, sloped] {$r_2$};
+
+    \draw[dashed] (0,0) -- (\L, 0) node[right] {$0$};
+
+    \draw[<->, >=stealth] (-0.5, -\d/2) -- (-0.5, \d/2) node[midway, left] {$d$};
+    \draw[<->, >=stealth] (0, -1.8) -- (\L, -1.8) node[midway, below] {$L$};
+
+    \coordinate (A) at ($(S2)!(S1)!(P)$);
+    \draw[black, thick, dashed] (S1) -- (A);
+    \draw[black] ($(S2)!0.2!(A)$) -- ($(S2)!0.2!(A) + (0.1, 0.05)$) -- ($(A)!0.8!(S2) + (0.1, 0.05)$);
+    \node[black, xshift=5pt, yshift=-2pt] at ($(S2)!0.5!(A)$) {$\Delta$};
+
+    \coordinate (Source) at (\sourceX, 0);
+    \foreach \angle in {0,45,90,135,180,225,270,315} {
+        \draw[black, thick] (Source) -- ++(\angle:0.3);
+    }
+    \draw[black, dashed, ->] (Source) -- (S1);
+    \draw[black, dashed, ->] (Source) -- (S2);
+    
+    % Белый кружок поверх лучей для маскировки
+    \fill[white] (Source) circle (0.2);
+    \draw[black, thick] (Source) circle (0.2);
+    
+    % Узор внутри круга (штриховка)
+    \fill[pattern=north east lines, pattern color=black!30] (Source) circle (0.18);
+
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{Вывод формулы максимума}
+
+Рассмотрим точку $P$ на экране, находящуюся на расстоянии $x$ от центральной оси. Предполагаем, что $L \gg d$ и $L \gg x$.
+
+Из прямоугольных треугольников для путей $r_1$ и $r_2$ по теореме Пифагора:
+\[
+r_1^2 = L^2 + \left(x - \frac{d}{2}\right)^2, \quad r_2^2 = L^2 + \left(x + \frac{d}{2}\right)^2
+\]
+
+Вычтем первое уравнение из второго:
+\[
+r_2^2 - r_1^2 = \left(x + \frac{d}{2}\right)^2 - \left(x - \frac{d}{2}\right)^2 = 2xd
+\]
+
+Используя формулу разности квадратов $(r_2 - r_1)(r_2 + r_1) = 2xd$, выразим разность хода $\Delta = r_2 - r_1$:
+\[
+\Delta = \frac{2xd}{r_2 + r_1}
+\]
+
+Так как $L \gg d, x$, то $r_1 \approx r_2 \approx L$, следовательно $r_1 + r_2 \approx 2L$. Получаем:
+\[
+\Delta \approx \frac{xd}{L}
+\]
+
+Интерференционный максимум наблюдается, когда разность разность хода кратна целому числу волн:
+\[
+\Delta = k\lambda \implies \frac{xd}{L} = k\lambda, \quad k \in\mathbb{Z}
+\]
+
+Отсюда координата $k$-го максимума на экране:
+\[\boxed{
+x_k = k \frac{\lambda L}{d}
+}\]
+
+\subsubsection{Дифракционная решетка}
+
+\textbf{Дифракционная решётка} --- система из большого числа параллельных щелей.
+Период решетки $d = a + b$, где $a$ --- ширина щели, $b$ --- ширина непрозрачного промежутка:
+
+\begin{center}
+\shorthandoff{"}
+\begin{tikzpicture}[scale=1.3]
+    % Параметры
+    \def\d{1.2}    % Период решетки
+    \def\a{0.4}    % Ширина щели
+    \def\phiAngle{35} % Угол дифракции
+    \def\numSlits{3} % Количество отрисованных щелей
+
+    % 1. Падающие плоские волны (стрелки сверху)
+    \foreach \i in {-1, 0, 1, 2, 3, 4} {
+        \draw [-{Stealth[scale=0.8]}] (1.2+\i*0.6, 1.2) -- (1.2+\i*0.6, 0.7);
+    }
+    \node at (4, 1.0) {$\lambda$};
+
+    % 2. Дифракционная решетка
+    \foreach \i in {0,1,2} {
+        % Обозначение d, a, b для первой щели
+        \ifnum\i=0
+            \draw[<->] (0, 0.5) -- (\d, 0.5) node[midway, fill=white, inner sep=1pt] {$d$};
+            \draw[<->] (0, 0.2) -- (\d-\a, 0.2) node[midway, fill=white, inner sep=1pt] {$b$};
+            \draw[<->] (\d-\a, 0.2) -- (\d, 0.2) node[midway, fill=white, inner sep=1pt] {$a$};
+        \fi
+        
+        % Отрисовка барьеров (толстые линии)
+        \draw[ultra thick] (\i*\d, 0) -- (\i*\d + \d - \a, 0);
+    }
+    \draw[ultra thick] (3*\d, 0) -- (3*\d + 0.5, 0); % хвостик в конце
+
+    % 3. Дифрагированные лучи и треугольник разности хода
+    \coordinate (A) at (2*\d-\a/2, 0); % Точка A
+    \coordinate (S1) at (\d, 0);
+    \coordinate (S0) at (0, 0);
+
+    % Лучи из начал щелей
+    \foreach \x in {1,2,3} {
+        \draw[thick, -{Stealth}] (\x*\d-\a/2, 0) -- ++(90-\phiAngle:-2.5);
+    }
+
+    % Построение треугольника ABC
+    \coordinate (B) at ($(A) + (0:\d)$); % Горизонталь от A
+    \coordinate (C) at ($(A) + (-\phiAngle:0.98)$); % Точка C на луче
+    \coordinate (AA) at ($(A) + (-90-\phiAngle:1)$);
+    \coordinate (P) at (0.5, -3.2);
+    \coordinate (PP) at ($(P) + (0:1.8)$);
+    
+    \draw[thick, dashed] (A) -- (C);
+    \draw[thick, dashed] (A) -- ($(A) + (0,-0.8)$);
+    \node[above] at (A) {A};
+    \node[above] at (B) {B};
+    \node[below] at (C) {C};
+    \node[right=8pt] at (C) {$\Delta = d \cdot \sin \phi$};
+
+    % Углы phi
+    \pic [draw, "$\phi$", angle eccentricity=1.5, angle radius=0.5cm] {angle = C--A--B};
+    \pic [draw, "$\phi$", angle eccentricity=1.5, angle radius=0.4cm] {angle = AA--A--PP};
+
+    % 4. Собирающая линза
+    \draw[thick, <->] (-0.8, -2.05) -- (4.5, -2.05);
+    \node[right] at (2.5, -1.9) {\footnotesize собирающая};
+    \node[right] at (2.5, -2.2) {\footnotesize линза};
+
+    % 5. Экран наблюдения и точка P
+    \draw[ultra thick] (-0.8, -3.2) -- (4.5, -3.2);
+    \node[right] at (2, -3) {\footnotesize экран наблюдения};
+
+    
+    \filldraw (P) circle (2pt) node[below=2pt] {P};
+
+    % Фокусировка лучей в точку P
+    \draw[thick, -{Stealth}] (0-0.42, -2.05) -- (P);
+    \draw[thick, -{Stealth}] (\d-0.42, -2.05) -- (P);
+    \draw[thick, -{Stealth}] (2*\d-0.42, -2.05) -- (P);
+
+\end{tikzpicture}
+\end{center}
+
+\textit{Условие главных максимумов:}
+\[\boxed{
+d \sin \theta = k \lambda, \quad k \in\mathbb{Z}
+}\]
+
+\subsection{Закон Снеллиуса}
+
+\subsubsection{Преломление}
+
+\textbf{Преломление} --- физическое явление, заключающееся в изменении направления распространения волны при его переходе из одной среды в другую, имеющую иной показатель преломления.
+
+\textbf{Абсолютный показатель преломления} $n$ --- безразмерная физическая величина, равная отношению скорости света в вакууме $c$ к скорости света в данной среде $v$:
+\[
+n = \frac{c}{v}
+\]
+
+\textbf{Относительный показатель преломления} $n_{21}$ второй среды относительно первой --- отношение их абсолютных показателей преломления:
+\[
+n_{21} = \frac{n_2}{n_1} = \frac{v_1}{v_2}
+\]
+
+\textbf{Дисперсия} --- зависимость показателя преломления вещества от частоты (длины волны) света: $n = f(\lambda)$. Именно дисперсия объясняет разложение белого света в спектр призмой.
+
+\textbf{Закон преломления (Снеллиуса):}
+\[
+n_1 \sin \alpha = n_2 \sin \beta
+\]
+где:
+\begin{itemize}
+    \item $n_1$ --- показатель преломления среды, из которой свет падает на границу раздела;
+    \item $n_2$ --- показатель преломления среды, в которую свет проникает;
+    \item $\alpha$ --- угол падения \textit{(угол между падающим лучом и нормалью к поверхности в точке падения)};
+    \item $\beta$ --- угол преломления \textit{(угол между преломлённым лучом и нормалью)}.
+\end{itemize}
+
+\textbf{Полное внутреннее отражение} наблюдается при переходе из оптически более плотной среды в менее плотную ($n_1 > n_2$). 
+Критический угол $\alpha_{пр}$, при котором $\beta = 90^\circ$:
+\[
+\sin \alpha_{\text{пр}} = \frac{n_2}{n_1}
+\]
+
+\subsubsection{Вывод через принцип Гюйгенса}
+
+Рассмотрим падение плоской волны на границу $KL$ двух сред со скоростями $v_1$ и $v_2$.
+\begin{center}
+\shorthandoff{"}
+\begin{tikzpicture}[>=stealth]
+    % Fill lower medium with pattern
+    \fill[pattern=north east lines, pattern color=black!20] (-4,-3) rectangle (4,0);
+    \draw[thick] (-4,0) -- (4,0) node[right] {$L$};
+    \node[left=4pt] at (-3.8, 0) {$K$};
+
+    \coordinate (P) at (-3, 2.5);
+    
+    % Incident rays (solid thick lines)
+    \draw[line width=1.2pt, -{Stealth}] (P) -- (0,0) node[pos=0, above] {$P_1$};
+    \draw[line width=1.2pt, -{Stealth}] (0.5, 2.5) -- (3.5,0) node[pos=0, above] {$P_2$};
+    
+    % Secondary waves (dashed)
+    \draw[dashed, line width=0.8pt] (180:1.5) arc (180:360:1.5);
+    \foreach \x in {0.5, 1.2} {
+        \draw[dashed, line width=0.8pt] (\x*1.2, 0) arc (180:360:{(3-\x)*0.35});
+    }
+
+    \coordinate (A) at (0, 0);
+    \coordinate (Q1) at (1.1, -2.5);
+    \coordinate (Q2) at (4, -1.2);
+    \coordinate (T) at (0.6, -1.4);
+    \coordinate (B) at (3.5, 0);
+    \coordinate (S) at (1.5, 1.68);
+    \coordinate (N) at (0, -2);
+    \coordinate (NN) at (0, 2);
+
+    % Normal line at A (dashed)
+    \draw[line width=0.8pt, dash pattern=on 3pt off 1pt] (A) -- (S) node[above right] {$S$};
+    
+    % Refracted rays (solid thick lines)
+    \draw[line width=1.2pt, -{Stealth}] (A) -- (Q1) node[below] {$Q_1$};
+    \draw[line width=1.2pt, -{Stealth}] (B) -- (Q2) node[below] {$Q_2$};
+
+    % Labels
+    \node[above=5pt] at (0,0) {$A$};
+    \node[below] at (T) {$T$};
+    \node[above right] at (B) {$B$};
+    
+    % Refracted wave front (thick line)
+    \draw[line width=1.2pt] (T) -- (B);
+    
+    % Dashed normal line
+    \draw[dashed] (0, 2) -- (N) node[below] {$N$};
+
+    % Angles - using double arcs for emphasis
+    \tikzset{
+        angle style/.style={
+            draw,
+            double,
+            double distance=0.6pt,
+            angle eccentricity=1.5,
+            angle radius=0.7cm
+        },
+        small right angle/.style={
+            draw,
+            angle radius=3mm
+        }
+    }
+    
+    \pic [angle style, "$\beta$"] {angle = A--B--T};
+    \pic [angle style, "$\beta$"] {angle = N--A--T};
+    \pic [draw, "$\alpha$", angle eccentricity=1.5, angle radius=0.7cm] {angle = B--A--S};
+    \pic [draw, "$\alpha$", angle eccentricity=1.5, angle radius=0.7cm] {angle = NN--A--P};
+    \pic [small right angle] {right angle = B--S--A};
+    \pic [small right angle] {right angle = A--T--B};
+    
+    % Add medium labels with boxes for clarity
+    \node at (-2, 1) {$n_1$};
+    \node at (-2, -1.5) {$n_2$};
+\end{tikzpicture}
+\end{center}
+За время $\Delta t$ точка $S$ фронта проходит путь $SB = v_1 \Delta t$, а вторичная волна из точки $A$ --- путь $AT = v_2 \Delta t$. Из треугольников $\triangle ASB$ и $\triangle ATB$:
+\[
+\frac{SB}{AB} = \sin \alpha, \quad \frac{AT}{AB} = \sin \beta \implies \frac{\sin \alpha}{\sin \beta} = \frac{v_1}{v_2} = \frac{n_2}{n_1}\ \square
+\]
+
+\subsubsection{Вывод через принцип Ферма}
+
+Согласно \textbf{принципу Ферма}, свет распространяется между двумя точками по пути, который требует минимального времени.
+
+Пусть точка $A$ находится в среде 1 ($n_1, v_1$) на высоте $h_1$ от границы раздела, а точка $B$ --- в среде 2 ($n_2, v_2$) на глубине $h_2$. Расстояние между проекциями точек на границу раздела равно $L$. Пусть луч проходит через точку $P$, находящуюся на расстоянии $x$ от проекции точки $A$:
+
+\begin{center}
+\shorthandoff{"}
+\begin{tikzpicture}[>=stealth]
+    % Граница раздела с узором
+    \draw[thick] (-1,0) -- (5,0) node[right] {$x$};
+    \fill[pattern=north east lines, pattern color=black!20] (-1,-2.5) rectangle (5,0);
+    
+    % Точки A и B
+    \coordinate (A) at (0, 2);
+    \coordinate (B) at (4, -2);
+    \coordinate (P) at (1.5, 0);
+    \coordinate (N) at ($(P) + (0,1)$);
+    \coordinate (NN) at ($(P) + (0,-1)$);
+    
+    % Луч (толстая сплошная линия)
+    \draw[line width=1.2pt] (A) -- (P) -- (B);
+    
+    % Точки
+    \filldraw[black] (A) circle (2pt) node[left] {$A(0, h_1)$};
+    \filldraw[black] (B) circle (2pt) node[right] {$B(L, -h_2)$};
+    \filldraw[black] (P) circle (2pt) node[above right] {$P(x, 0)$};
+    
+    % Высоты и расстояния (штриховые линии)
+    \draw[dashed] (A) -- (0,0) node[below] {$0$};
+    \draw[dashed] (4,0) -- (B);
+    
+    % Расстояния x и L-x
+    \draw[<->, line width=0.8pt] (0, 2.2) -- (1.5, 2.2) node[midway, above] {$x$};
+    \draw[<->, line width=0.8pt] (1.5, 2.2) -- (4, 2.2) node[midway, above] {$L-x$};
+    
+    % Нормаль
+    \draw[dashed] (N) -- (NN);
+    
+    % Углы
+    \tikzset{
+        angle style/.style={
+            draw,
+            angle eccentricity=1.5,
+            angle radius=0.7cm
+        },
+        double angle/.style={
+            draw,
+            double,
+            double distance=0.6pt,
+            angle eccentricity=1.5,
+            angle radius=0.7cm
+        }
+    }
+    
+    \pic [angle style, "$\alpha$"] {angle = N--P--A};
+    \pic [double angle, "$\beta$"] {angle = NN--P--B};
+    
+    % Подписи сред
+    \node at (3, 1.37) {($n_1$,$v_1$)};
+    \node at (1, -1.7) {($n_2$,$v_2$)};
+\end{tikzpicture}
+\end{center}
+
+Время $t$, затраченное светом на прохождение пути $APB$:
+\[
+t(x) = \frac{\sqrt{x^2 + h_1^2}}{v_1} + \frac{\sqrt{(L-x)^2 + h_2^2}}{v_2}
+\]
+
+Согласно принципу Ферма, время должно быть минимальным, следовательно, производная $t(x)$ по $x$ равна нулю:
+\[
+\frac{dt}{dx} = \frac{1}{v_1} \cdot \frac{2x}{2\sqrt{x^2 + h_1^2}} + \frac{1}{v_2} \cdot \frac{2(L-x) \cdot (-1)}{2\sqrt{(L-x)^2 + h_2^2}} = 0
+\]
+
+Заметим, что из геометрии рисунка:
+\[
+\frac{x}{\sqrt{x^2 + h_1^2}} = \sin \alpha, \quad \frac{L-x}{\sqrt{(L-x)^2 + h_2^2}} = \sin \beta
+\]
+
+Подставляя эти значения в уравнение производной, получаем:
+\[
+\frac{\sin \alpha}{v_1} - \frac{\sin \beta}{v_2} = 0 \implies \frac{\sin \alpha}{\sin \beta} = \frac{v_1}{v_2}
+\]
+
+Учитывая $n = c/v$, получаем окончательную форму закона Снеллиуса:
+\[
+\frac{\sin \alpha}{\sin \beta} = \frac{n_2}{n_1} \implies n_1 \sin \alpha = n_2 \sin \beta\ \square
+\]
+
+\subsection{Закон Бугера --- Ламберта}
+
+\subsubsection{Формулировка}
+
+\textbf{Закон Бугера --- Ламберта} описывает ослабление интенсивности света при прохождении через поглощающее вещество:
+\[
+I(x) = I_0 e^{-\alpha x}
+\]
+где $\alpha$ --- показатель поглощения, $x$ --- толщина слоя.
+
+\subsubsection{Вывод}
+
+Предположим, что слой вещества толщиной $dx$ поглощает часть светового потока $dI$. Опытным путем установлено, что потеря интенсивности пропорциональна самой интенсивности $I$ и толщине слоя $dx$:
+\[
+dI = -\alpha I dx
+\]
+где:
+\begin{itemize}
+    \item $I$ --- интенсивность света на входе в слой $dx$;
+    \item $\alpha$ --- линейный показатель поглощения;
+    \item знак «минус» указывает на убывание интенсивности.
+\end{itemize}
+
+Разделим переменные в дифференциальном уравнении:
+\[
+\frac{dI}{I} = -\alpha dx
+\]
+
+Проинтегрируем обе части уравнения: левую --- от начальной интенсивности $I_0$ до интенсивности $I$ на глубине $x$, правую --- от $0$ до $x$:
+\[
+\int_{I_0}^{I} \frac{dI}{I} = -\int_{0}^{x} \alpha dx
+\]
+
+В результате интегрирования получаем:
+\[
+\ln I - \ln I_0 = -\alpha x \implies \ln \frac{I}{I_0} = -\alpha x
+\]
+
+Потенцируя выражение, получаем закон Бугера --- Ламберта:
+\[\boxed{
+I(x) = I_0 e^{-\alpha x}
+}\]
+
+\subsection{Рассеяние света}
+
+В чистой атмосфере известно, что коэффициент ослабления $\alpha$ обратно пропорционален четвертой степени длины волны:
+\[
+\alpha(\lambda) \approx \frac{k}{\lambda^4}
+\]
+
+Подставим это в основной закон:
+\[
+I(\lambda, x) = I_0(\lambda) \exp\left( -\frac{k \cdot x}{\lambda^4} \right)
+\]
+
+Днем, когда Солнце находится высоко, путь света через атмосферу относительно короток. 
+\begin{itemize}
+    \item Синяя часть спектра интенсивно рассеивается во все стороны, заполняя собой весь небосвод. 
+    \item Наблюдатель, глядя в любую точку неба (кроме направления на само Солнце), видит именно этот рассеянный коротковолновый свет. 
+\end{itemize}
+
+Вечером свет проходит через б\'{о}льшую толщу атмосферы (путь $x$ увеличивается примерно в 30 раз). 
+\begin{itemize}
+    \item Для синего света ($400$ нм) показатель экспоненты становится огромным, и интенсивность прошедшего света $I$ стремится к нулю --- он рассеивается практически полностью, не доходя до глаз. 
+    \item Для красного света ($700$ нм) коэффициент ослабления в $(700/400)^4 \approx 9.4$ раза меньше. 
+\end{itemize}
+В результате до наблюдателя, смотрящего на заходящее Солнце, доходят преимущественно длинноволновые (красно-оранжевые) лучи. 
+
+Таким образом, атмосфера работает как \textit{экспоненциальный фильтр низких частот}, который отсекает синий спектр тем сильнее, чем длиннее путь света в среде. 
