@@ -69,6 +69,56 @@ $\displaystyle a_x(t) = \frac{dv_x}{dt} = -R \omega^2 \cos(\omega t)$ & \textit{
 $\displaystyle a = \frac{v^2}{R}$ & \textit{Связь ускорения и скорости}: центростремительное ускорение
 \end{tblr}
 
+\subsubsection{Движение по винтовой дороге}
+
+По винтовой дороге с постоянным радиусом $R$ автомобиль поднимается равномерно со скоростью $v$, модуль которой постоянен. Высота подъёма за один полный виток равна $h$ (высота одного этажа). \textit{Найти время подъёма на этаж.}
+
+Рассмотрим траекторию движения автомобиля за один полный оборот. Это винтовая линия.
+Сделаем развертку боковой поверхности цилиндра, по которому движется автомобиль. Траектория превратится в гипотенузу прямоугольного треугольника, где:
+\begin{itemize}
+    \item Вертикальный катет равен высоте подъема: $h$.
+    \item Горизонтальный катет равен длине окружности радиуса $R$: $C = 2\pi R$.
+    \item Гипотенуза $L$ — это фактический путь, пройденный автомобилем.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}
+    % Треугольник (толстый контур)
+    \draw[line width=1.2pt] (0,0) coordinate (A) -- (4,0) coordinate (B) -- (4,2) coordinate (C) -- cycle;
+    
+    % Горизонтальная сторона - штриховая с меткой
+    \draw[<->, line width=0.8pt, dash pattern=on 3pt off 2pt] (0,-0.3) -- (4,-0.3) node[midway, below] {$2\pi R$};
+    
+    % Вертикальная сторона - пунктир с меткой
+    \draw[<->, line width=0.8pt, densely dotted] (4.3,0) -- (4.3,2) node[midway, right] {$h$};
+    
+    % Гипотенуза (путь) - толстая сплошная со стрелкой
+    \draw[->, line width=1.5pt] (0,0) -- (4,2) node[midway, above, sloped] {Путь $L$, скорость $\vec{v}$};
+    
+    % Прямой угол (уголок)
+    \draw[line width=0.8pt] (3.8,0) -- (3.8,0.2) -- (4,0.2);
+    
+    % Метки вершин (опционально)
+    \node[below left] at (A) {$A$};
+    \node[below right] at (B) {$B$};
+    \node[above right] at (C) {$C$};
+\end{tikzpicture}
+\end{center}
+
+Согласно теореме Пифагора, длина пути $L$ равна:
+\[
+    L = \sqrt{(2\pi R)^2 + h^2} = \sqrt{4\pi^2 R^2 + h^2}
+\]
+
+Так как движение равномерное, время движения $T$ определяется из пути:
+\[
+    L=vT\implies T = \frac{L}{v}
+\]
+
+Подставим выражение для $L$:
+\[\boxed{T = \frac{\sqrt{4\pi^2 R^2 + h^2}}{v}
+}\]
+
 \subsection{Момент инерции}
 
 \subsubsection{Определение}
@@ -220,6 +270,8 @@ L_z = I_z \omega
 
 \subsection{Теорема Гюйгенса --- Штейнера}
 
+\subsubsection{Формулировка}
+
 Согласно \textbf{теореме Гюйгенса --- Штейнера}, момент инерции тела относительно произвольной оси равен сумме момента инерции относительно параллельной оси, проходящей через центр масс, и произведения массы тела на квадрат расстояния между осями:
 
 \begin{center}
@@ -270,3 +322,66 @@ I = I_{c} + md^2
 \\
 \end{tblr}
 \end{center}
+
+\subsubsection{Момент инерции треугольника}
+
+Для плоского однородного равностороннего треугольника массой $m$ и стороной $a$ требуется найти момент инерции относительно вершины $A$, принятой за начало координат $A(0,0)$.
+
+\begin{center}
+\begin{tikzpicture}
+    % 1. Определение параметров через макросы
+    \pgfmathsetmacro{\side}{4}
+    \pgfmathsetmacro{\height}{\side*sqrt(3)/2}
+    \pgfmathsetmacro{\halfside}{\side/2}
+
+    % 2. Координатные оси
+    \draw[->, >=stealth, thick] (-0.5,0) -- (\side+0.8,0) node[right] {$x$};
+    \draw[->, >=stealth, thick] (0,-0.5) -- (0,\height+0.5) node[above] {$y$};
+
+    % 3. Вершины треугольника
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (\side,0);
+    \coordinate (C) at (\halfside, \height);
+
+    % 4. Рисуем треугольник
+    \draw[thick, fill=blue!5] (A) -- (B) -- (C) -- cycle;
+
+    % 5. Подписи и вспомогательные линии
+    \node[below left] at (A) {$A(0,0)$};
+    \node[below right] at (B) {$B(a,0)$};
+    \node[above] at (C) {$C(\frac{a}{2}, \frac{\sqrt{3}}{2}a)$};
+    
+    \draw[dashed] (C) -- (\halfside, 0) node[below] {$\frac{a}{2}$};
+\end{tikzpicture}
+\end{center}
+
+Параметры треугольника:
+\[ h = \frac{\sqrt{3}}{2}a,\ S = \frac{\sqrt{3}}{4}a^2,\ \sigma = \frac{m}{S} = \frac{4m}{\sqrt{3}a^2}\]
+
+По определению, момент инерции относительно точки $A$ равен:
+\[
+I_A = \iint_S r^2 \, dm = \iint_S (x^2 + y^2) \, dm
+\]
+где $r^2 = x^2 + y^2$ --- квадрат расстояния от элемента массы $dm$ до вершины $A$.
+
+Для однородной пластины массовая плотность постоянна. 
+Элементарная масса $dm = \sigma \, dS = \sigma \, dx\,dy$, поэтому
+\[
+I_A = \sigma \iint_S (x^2 + y^2) \, dx\,dy
+\]
+
+Область $S$ --- равносторонний треугольник со стороной $a$. При выбранном расположении:
+\[
+I_A = \sigma \int_0^h \int_{y/\sqrt{3}}^{a - y/\sqrt{3}} (x^2 + y^2) \, dx \, dy
+\]
+где $h = \frac{\sqrt{3}}{2}a$ --- высота треугольника.
+
+Интегрирование по $x$:
+\[ \int_{y/\sqrt{3}}^{a - y/\sqrt{3}} (x^2 + y^2) \, dx = \left[ \frac{x^3}{3} + xy^2 \right]_{y/\sqrt{3}}^{a - y/\sqrt{3}} = \frac{a^3}{3} - \frac{a^2 y}{\sqrt{3}} + 2ay^2 - \frac{8y^3}{3\sqrt{3}}\]
+
+Интегрирование по $y$:
+\[ I_A = \sigma \int_0^{\frac{\sqrt{3}}{2}a} \left( \frac{a^3}{3} - \frac{a^2 y}{\sqrt{3}} + 2ay^2 - \frac{8y^3}{3\sqrt{3}} \right) dy \]
+\[ I_A = \sigma \left[ \frac{a^3}{3}y - \frac{a^2 y^2}{2\sqrt{3}} + \frac{2ay^3}{3} - \frac{2y^4}{3\sqrt{3}} \right]_0^{\frac{\sqrt{3}}{2}a}\]
+
+Итоговый расчет:
+\[ I_A = \frac{4m}{\sqrt{3}a^2} \left( \frac{\sqrt{3}a^4}{6} - \frac{\sqrt{3}a^4}{8} + \frac{\sqrt{3}a^4}{4} - \frac{3\sqrt{3}a^4}{16} \right) = \frac{4m}{a^2} \cdot \frac{5}{48} a^4 = \frac{5}{12}ma^2 \]
