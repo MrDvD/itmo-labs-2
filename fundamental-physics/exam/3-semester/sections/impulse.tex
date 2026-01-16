@@ -165,3 +165,91 @@ dm = dm_1 - dm_2
 \[\boxed{
 m(t) \frac{d\vec{v}}{dt} = \vec{u}_1 \frac{dm_1}{dt} - \vec{u}_2 \frac{dm_2}{dt} + \vec{F}
 }\]
+
+\subsubsection{Катер с пассивным ротором}
+
+Катер движется в воде. Двигатель (пассивный ротор) захватывает набегающую воду через отверстие площадью $S$ и выбрасывает её назад с относительной скоростью $u$. Сопротивление среды является квадратичным: $F_{\text{сопр}} = kv^2$. Найти максимально возможную скорость катера $V_{max}$:
+
+\begin{center}
+  \begin{tikzpicture}[>=Stealth]
+
+    % --- Стили для ч/б печати ---
+    \tikzstyle{force} = [ultra thick, ->, line width=1.5pt]
+    \tikzstyle{velocity} = [thick, ->, line width=1pt]
+    \tikzstyle{flow path} = [thick, ->, dash pattern=on 4pt off 2pt, line width=0.8pt]
+    \tikzstyle{hull style} = [line width=1.2pt, fill=black!10]
+    \tikzstyle{rotor style} = [line width=1pt, fill=white]
+
+    % --- Фон (вода с узором) ---
+    \fill[pattern=north east lines, pattern color=black!20] (-3.5,-1.8) rectangle (3.5, 0);
+    \draw[black!40, decorate, decoration={waves, segment length=4mm, amplitude=0.5mm}] (-3.5, 0) -- (3.5, 0);
+
+    % --- Катер (корпус с узором) ---
+    \fill[pattern=horizontal lines, pattern color=black!20] (-2, 0) -- (-1.8, 0.7) -- (1.8, 0.7) -- (2, 0) -- cycle;
+    \draw[hull style] (-2, -0.1) -- (-1.8, 0.7) -- (1.8, 0.7) -- (2, -0.1) -- cycle;
+    \node[black] at (0, 0.35) {\textbf{Катер}};
+
+    % --- Роторный механизм (схема снизу) ---
+    % Канал ротора с узором
+    \fill[pattern=vertical lines, pattern color=black!15] (-1.5, -0.1) -- (1.5, -0.1) -- (1.5, -0.8) -- (-1.5, -0.8) -- cycle;
+    \draw[rotor style] (-1.5, -0.1) -- (1.5, -0.1) -- (1.5, -0.8) -- (-1.5, -0.8) -- cycle;
+    
+    % Обозначение площади заборного отверстия S (тонкие линии)
+    \draw[<->, line width=0.6pt] (2.9, -0.1) -- (2.9, -0.8) node[midway, right] {$S$};
+
+    % Линия потока внутри (штриховая)
+    \draw[flow path] (1.5, -0.45) -- (-1.5, -0.45);
+
+
+    % --- Скорости (в системе отсчета катера) ---
+    
+    % Входящий поток воды (скорость v) - сплошная стрелка
+    \draw[velocity] (3.0, -0.45) -- (1.7, -0.45) node[midway, above] {$\vec{u}_{\text{вх}}$};
+    \node[align=center, font=\footnotesize] at (2.4, -1.3) {Набегающий\\поток};
+
+    % Выходящий поток воды (относительная скорость u) - штриховая стрелка
+    \draw[velocity, dash pattern=on 3pt off 2pt] (-1.7, -0.45) -- (-3.0, -0.45) node[midway, above] {$\vec{u}_{\text{вых}}$};
+    \node[align=center, font=\footnotesize] at (-2.4, -1.3) {Реактивная\\струя};
+
+    % Скорость катера (очень толстая стрелка)
+    \draw[line width=1.8pt, ->] (0, 1.0) -- (2, 1.0) node[midway, above] {$\vec{V}_{\text{max}}$};
+
+
+    % --- Силы ---
+    
+    % Сила сопротивления (штриховая толстая стрелка)
+    \draw[force, dash pattern=on 5pt off 3pt] (-0.5, 0.35) -- (-2.5, 0.35) node[midway, above] {$\vec{F}_{\text{сопр}}$};
+    
+    % Реактивная сила тяги (сплошная толстая стрелка)
+    \draw[force] (0, -0.45) -- (1.7, -0.45) node[midway, below, yshift=-2mm] {$\vec{F}_{\text{реак}}$};
+
+\end{tikzpicture}
+\end{center}
+
+Расход массы воды $\mu = \frac{dm}{dt}$ определяется скоростью набегающего потока, которая в системе отсчета катера равна его мгновенной скорости $v$:
+\[
+    \mu(v) = \rho S v
+\]
+Это означает, что при $v = 0$ тяга двигателя отсутствует.
+
+Согласно уравнению Мещерского для установившегося движения ($a = 0$), реактивная сила тяги должна быть уравновешена силой сопротивления:
+\[ F_{\text{реак}} = F_{\text{сопр}} \]
+
+Реактивная сила определяется как произведение секундного расхода массы на изменение относительной скорости воды (относительно катера вода заходит со скоростью $v$ и выходит со скоростью $u$):
+\[ F_{\text{реак}} = \mu \cdot (u_{\text{вых}} - u_{\text{вх}}) = (\rho S v) \cdot (u - v) \]
+
+Запишем полное уравнение равновесия:
+\[
+    \rho S v (u - v) = k v^2\implies \rho S u v - \rho S v^2 = k v^2
+\]
+
+Поскольку нас интересует установившееся движение с ненулевой скоростью, мы можем разделить обе части уравнения на $v$:
+\[ \rho S (u - v) = k v \]
+
+Сгруппируем слагаемые с искомой скоростью $V_{max}$:
+\[ \rho S u - \rho S V_{max} = k V_{max}\implies \rho S u = V_{max} (k + \rho S) \]
+
+Выразим искомую максимальную скорость:
+\[
+    \boxed{V_{max} = \frac{\rho S u}{\rho S + k}}
+\]

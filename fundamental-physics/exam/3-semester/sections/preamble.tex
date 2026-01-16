@@ -2,6 +2,7 @@
 \usepackage[english, russian]{babel}
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{tabularray}
+  \UseTblrLibrary{booktabs}
 \usepackage{caption}
 \usepackage{array}
 \usepackage{float}
@@ -28,3 +29,11 @@
 \pagestyle{fancy}
 \fancyhead{}
 \fancyhead[C]{«Основы физических процессов», 3 семестр --- В.С. Михайлов, 2025--2026}
+
+% for longtblr
+\DefTblrTemplate{firsthead, middlehead,lasthead}{default}{}
+\DefTblrTemplate{contfoot-text}{normal}{}
+\SetTblrTemplate{contfoot-text}{normal}
+\DefTblrTemplate{conthead-text}{normal}{}
+\SetTblrTemplate{conthead-text}{normal}
+\DefTblrTemplate{capcont}{default}{}
