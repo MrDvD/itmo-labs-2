@@ -5,6 +5,15 @@
 
 \begin{document}
 
+\include{sections/Title}
+
+% --- Оглавление ---
+\pagenumbering{gobble} % Отключаем нумерацию для страницы оглавления
+\tableofcontents
+\newpage
+\pagenumbering{arabic} % Включаем обычную нумерацию (1, 2, 3...) со следующей страницы
+\setcounter{page}{1}
+
 \include{sections/Newton}
 \include{sections/Impulse}
 \include{sections/Friction}
