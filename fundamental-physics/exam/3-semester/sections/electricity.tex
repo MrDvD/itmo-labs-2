@@ -341,3 +341,60 @@ $\displaystyle F_{\text{к.ср}} = \frac{F_{\text{к.вак}}}{\varepsilon}$ & 
 Удельная проводимость $\sigma$ & Величина, обратная удельному сопротивлению: $\sigma = \frac{1}{\rho}$. Характеризует способность вещества проводить ток. \\
 \end{tblr}
 \end{center}
+
+\subsubsection{Электроны в кабеле зарядки}
+
+В USB-кабеле, изготовленном из меди, протекает постоянный электрический ток силой $I = 3{,}2$ А. 
+Площадь поперечного сечения проводника составляет $S \approx 0{,}2 \, \text{мм}^2$.
+Найти среднюю скорость $\langle v \rangle$ свободных электронов в проводнике:
+
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+    % Проводник - толстые контуры для ч/б
+    \draw[very thick] (0,0.5) -- (4,0.5);
+    \draw[very thick] (0,-0.5) -- (4,-0.5);
+    \draw[very thick] (0,0) ellipse (0.2 and 0.5);
+    \draw[very thick] (4,0) ellipse (0.2 and 0.5);
+    
+    % Штриховка для обозначения сечения проводника
+    \fill[pattern=north east lines, pattern color=black!40, opacity=0.7] 
+          (4,0) ellipse (0.2 and 0.5);
+    \node[below] at (4, -0.6) {$S$};
+    
+    % Электроны - заливка черным или штриховка
+    \foreach \x in {1, 2, 3} {
+        \foreach \y in {-0.2, 0.2} {
+            \fill[pattern=crosshatch dots, pattern color=black!70] 
+                  (\x + \y, \y) circle (0.1);
+            \draw[->, thick, >=stealth] (\x + \y, \y) -- (\x + \y + 0.4, \y);
+        }
+    }
+    
+    % Ток - толстая стрелка
+    \draw[->, ultra thick, >=stealth] (1.2, 0.8) -- (2.5, 0.8) 
+          node[midway, above] {$I$};
+\end{tikzpicture}
+\end{center}
+
+Сила тока $I$ — это заряд $\Delta q$, проходящий через поперечное сечение проводника за единицу времени $\Delta t$:
+\[ I = \frac{\Delta q}{\Delta t} \]
+
+Заряд $\Delta q$ можно выразить через общее количество частиц $N$:
+\[ \Delta q = e \cdot N = e \cdot (n \cdot V) = e \cdot n \cdot (S \cdot \Delta l) \]
+где $\Delta l = \langle v \rangle \cdot \Delta t$ — расстояние, которое проходят электроны за время $\Delta t$.
+
+Подставим выражение для $\Delta q$ в формулу силы тока:
+\[ I = \frac{e \cdot n \cdot S \cdot \langle v \rangle \cdot \Delta t}{\Delta t} = e \cdot n \cdot S \cdot \langle v \rangle \]
+
+Отсюда выразим среднюю скорость электронов:
+\[ \boxed{\langle v \rangle = \frac{I}{e \cdot n \cdot S}} \]
+
+Концентрацию свободных электронов можно найти через плотность меди $\rho$, молярную массу $M$ и число Авогадро $N_A$, считая, что каждый атом меди даёт один свободный электрон:
+\[ 
+n = \frac{N}{V} = \frac{\nu N_A}{V} = \frac{\rho N_A}{M}\approx \frac{8{,}96\cdot10^3 \cdot 6{,}022\cdot10^{23}}{63{,}5\cdot10^{-3}} \approx 8{,}5\cdot10^{28}\ \text{м}^{-3}
+\]
+
+Подставим значения для медного провода:
+\[ 
+\langle v \rangle = \frac{3{,}2}{1{,}6 \cdot 10^{-19} \cdot 8{,}5 \cdot 10^{28} \cdot 0{,}2 \cdot 10^{-6}}\approx 1{,}17\ \text{мм/с} 
+\]

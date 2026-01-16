@@ -135,6 +135,99 @@ $\displaystyle \vec{a} = \frac{d\vec{v}}{dt} = \frac{d^2\vec{r}}{dt^2}$ & \texti
     \vec{F}_{12} = -\vec{F}_{21}
 \]
 
+\subsubsection{Выстрел под углом}
+
+Тело бросают с начальной скоростью \( v_0 \) под углом \( \alpha \) к горизонту. Ускорение свободного падения равно \( g \), сопротивлением воздуха пренебречь.
+Найти полный путь \( S(\alpha) \), пройденный телом от точки броска до момента падения и угол \( \alpha_{\max} \), при котором этот путь принимает максимальное значение:
+
+\begin{center}
+\begin{tikzpicture}
+    % Оси
+    \draw[->] (-0.5,0) -- (4,0) node[right] {$x$};
+    \draw[->] (0,-0.5) -- (0,2.5) node[above] {$y$};
+    % Траектория (толстая черная линия для ч/б печати)
+    \draw[thick, dashed, domain=0:3.5, smooth, variable=\x] plot ({\x}, {2.2*\x - 0.65*\x*\x});
+    % Вектор скорости (толстый черный)
+    \draw[thick, -{Stealth}] (0,0) -- (0.8, 1.76) node[above right] {$\vec{v}_0$};
+    \draw (0.4,0) arc (0:65:0.4) node[midway, right, xshift=2pt] {$\alpha$};
+    % Обозначение пути
+    \node at (2.4, 2.1) {Путь $S$};
+\end{tikzpicture}
+\end{center}
+
+Зависимость координат от времени $t$:
+\[ x(t) = v_0 \cos \alpha \cdot t, \quad y(t) = v_0 \sin \alpha \cdot t - \frac{gt^2}{2} \]
+
+Время полета $T$ находится из условия $y(T) = 0$:
+\[ T = \frac{2v_0 \sin \alpha}{g} \]
+
+Путь $S$ --- длина дуги траектории, которая вычисляется через интеграл:
+\[ S = \int_0^T \sqrt{\left(\frac{dx}{dt}\right)^2 + \left(\frac{dy}{dt}\right)^2} dt \]
+
+Находим компоненты скорости:
+\[ v_x = v_0 \cos \alpha, \quad v_y = v_0 \sin \alpha - gt \]
+
+Тогда интеграл принимает вид:
+\[ S = \int_0^{T} \sqrt{v_0^2 \cos^2 \alpha + (v_0 \sin \alpha - gt)^2} dt \]
+
+Сделаем замену переменной $u = v_0 \sin \alpha - gt$, тогда $du = -g \, dt$. Пределы интегрирования: от $v_0 \sin \alpha$ до $-v_0 \sin \alpha$.
+\[ S = \frac{1}{g} \int_{-v_0 \sin \alpha}^{v_0 \sin \alpha} \sqrt{v_0^2 \cos^2 \alpha + u^2} du \]
+
+Используя табличный интеграл 
+\[
+\int \sqrt{a^2 + u^2}\, du = \frac{1}{2} \left( u\sqrt{a^2+u^2} + a^2 \ln|u + \sqrt{a^2+u^2}| \right),
+\]
+получаем выражение для длины дуги траектории:
+\[
+\boxed{S(\alpha) = \frac{v_0^2}{g} \left[ \sin \alpha + \cos^2 \alpha \cdot \ln \left( \frac{1 + \sin \alpha}{\cos \alpha} \right) \right]}
+\]
+
+Для поиска максимума берём производную $S(\alpha)$ по $\alpha$ и приравниваем к нулю. Обозначим $L(\alpha) = \ln\left( \frac{1+\sin\alpha}{\cos\alpha} \right)$. Тогда
+\[
+S'(\alpha) = \frac{v_0^2}{g} \cdot \frac{d}{d\alpha}\left[ \sin\alpha + \cos^2\alpha \cdot L(\alpha) \right].
+\]
+
+Вычислим производную:
+\begin{align*}
+\frac{d}{d\alpha}\big[\sin\alpha\big] &= \cos\alpha, \\
+\frac{d}{d\alpha}\big[\cos^2\alpha \cdot L(\alpha)\big] &= -2\cos\alpha\sin\alpha \cdot L(\alpha) + \cos^2\alpha \cdot L'(\alpha).
+\end{align*}
+
+Находим $L'(\alpha)$:
+\[
+L(\alpha) = \ln(1+\sin\alpha) - \ln(\cos\alpha),
+\]
+\[
+L'(\alpha) = \frac{\cos\alpha}{1+\sin\alpha} + \frac{\sin\alpha}{\cos\alpha} 
+= \frac{\cos^2\alpha + \sin\alpha(1+\sin\alpha)}{(1+\sin\alpha)\cos\alpha}
+= \frac{1 + \sin\alpha}{(1+\sin\alpha)\cos\alpha} = \frac{1}{\cos\alpha}.
+\]
+
+Следовательно,
+\[
+\cos^2\alpha \cdot L'(\alpha) = \cos\alpha.
+\]
+
+Подставляя, получаем:
+\[
+S'(\alpha) = \frac{v_0^2}{g} \left[ \cos\alpha - 2\cos\alpha\sin\alpha \cdot L(\alpha) + \cos\alpha \right]
+= \frac{v_0^2}{g} \cdot 2\cos\alpha \left[ 1 - \sin\alpha \cdot L(\alpha) \right].
+\]
+
+Приравнивая производную к нулю при $\alpha \in (0, \pi/2)$ ($\cos\alpha \neq 0$), приходим к уравнению:
+\[
+1 - \sin\alpha \cdot \ln \left( \frac{1 + \sin \alpha}{\cos \alpha} \right) = 0,
+\]
+или
+\[
+\boxed{\sin\alpha \cdot \ln \left( \frac{1 + \sin \alpha}{\cos \alpha} \right) = 1}
+\]
+
+Численное решение этого трансцендентного уравнения даёт:
+\[
+\boxed{\alpha_{\max} \approx 56.45^\circ \quad (\approx 0.985 \text{ рад})}
+\]
+
 \subsection{Космические скорости}
 
 \subsubsection{Первая космическая скорость}
