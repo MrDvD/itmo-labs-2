@@ -1,0 +1,387 @@
+\section{Момент инерции}
+
+\subsection{Движение по окружности}
+
+\subsubsection{Угловая скорость}
+
+\textbf{Угловая скорость} ($\boldsymbol{\omega}$) — это векторная величина, характеризующая быстроту и направление вращения тела.
+\[
+\boldsymbol{\omega} = \frac{d\boldsymbol{\varphi}}{dt}
+\]
+
+Вектор $\boldsymbol{\omega}$ направлен вдоль оси вращения по \textit{правилу «буравчика»} (если вращать буравчик в сторону движения тела, поступательное движение винта укажет направление $\boldsymbol{\omega}$).
+
+\subsubsection{Линейная скорость}
+
+Линейная скорость точки $\mathbf{v}$, находящейся на радиус-векторе $\mathbf{r}$ от центра вращения, определяется векторным произведением:
+\[
+\mathbf{v} = [\boldsymbol{\omega}, \mathbf{r}] = \boldsymbol{\omega} \times \mathbf{r}
+\]
+
+\textbf{Доказательство.} Рассмотрим вращение точки в плоскости $XY$ вокруг оси $Z$.
+Тогда векторы имеют вид:
+\[
+\boldsymbol{\omega} = \{0, 0, \omega\}, \quad \mathbf{r} = \{x, y, 0\}
+\]
+
+Координаты точки, движущейся по окружности:
+\[
+x = R \cos \varphi, \quad y = R \sin \varphi
+\]
+
+Дифференцируя по времени ($dt$), найдем проекции линейной скорости:
+\[\begin{gathered}
+v_x = \dot{x} = -R \sin \varphi \cdot \dot{\varphi} = -\omega y\\
+v_y = \dot{y} = R \cos \varphi \cdot \dot{\varphi} = \omega x
+\end{gathered}
+\]
+
+С другой стороны, вычислим векторное произведение $[\boldsymbol{\omega}, \mathbf{r}]$:
+\[
+[\boldsymbol{\omega}, \mathbf{r}] = 
+\begin{vmatrix} 
+\mathbf{i} & \mathbf{j} & \mathbf{k} \\ 
+0 & 0 & \omega \\ 
+x & y & 0 
+\end{vmatrix} = 
+\mathbf{i}(0 - \omega y) - \mathbf{j}(0 - \omega x) + \mathbf{k}(0) = \{-\omega y, \omega x, 0\}
+\]
+
+Совпадение результатов доказывает справедливость формулы. \( \square \)
+
+\subsubsection{Зависимости $x, v_x, a_x$ от $\omega$}
+Рассмотрим проекцию равномерного движения точки по окружности радиуса $R$ на ось $X$. Это движение является \textit{гармоническим колебанием}.
+Если угол поворота $\varphi = \omega t$, то:
+
+\begin{tblr}{
+    colspec = {X[c]X[l]},
+    vlines,
+    hlines,
+    row{1} = {font=\bfseries, mode=text},
+    row{odd} = {bg=gray!10},
+    cells = {m},
+    rowsep = 6pt
+}
+Величина & Описание \\
+$\displaystyle x(t) = R \cos(\omega t)$ & \textit{Координата} материальной точки, движущейся по окружности \\
+$\displaystyle v_x(t) = \frac{dx}{dt} = -R \omega \sin(\omega t)$ & \textit{Проекция скорости} на ось $x$; модуль скорости $v = \omega R$ \\
+$\displaystyle a_x(t) = \frac{dv_x}{dt} = -R \omega^2 \cos(\omega t)$ & \textit{Проекция ускорения} на ось $x$; модуль ускорения $a = \omega^2 R$ \\
+$\displaystyle a = \frac{v^2}{R}$ & \textit{Связь ускорения и скорости}: центростремительное ускорение
+\end{tblr}
+
+\subsubsection{Движение по винтовой дороге}
+
+По винтовой дороге с постоянным радиусом $R$ автомобиль поднимается равномерно со скоростью $v$, модуль которой постоянен. Высота подъёма за один полный виток равна $h$ (высота одного этажа). \textit{Найти время подъёма на этаж.}
+
+Рассмотрим траекторию движения автомобиля за один полный оборот. Это винтовая линия.
+Сделаем развертку боковой поверхности цилиндра, по которому движется автомобиль. Траектория превратится в гипотенузу прямоугольного треугольника, где:
+\begin{itemize}
+    \item Вертикальный катет равен высоте подъема: $h$.
+    \item Горизонтальный катет равен длине окружности радиуса $R$: $C = 2\pi R$.
+    \item Гипотенуза $L$ — это фактический путь, пройденный автомобилем.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}
+    % Треугольник (толстый контур)
+    \draw[line width=1.2pt] (0,0) coordinate (A) -- (4,0) coordinate (B) -- (4,2) coordinate (C) -- cycle;
+    
+    % Горизонтальная сторона - штриховая с меткой
+    \draw[<->, line width=0.8pt, dash pattern=on 3pt off 2pt] (0,-0.3) -- (4,-0.3) node[midway, below] {$2\pi R$};
+    
+    % Вертикальная сторона - пунктир с меткой
+    \draw[<->, line width=0.8pt, densely dotted] (4.3,0) -- (4.3,2) node[midway, right] {$h$};
+    
+    % Гипотенуза (путь) - толстая сплошная со стрелкой
+    \draw[->, line width=1.5pt] (0,0) -- (4,2) node[midway, above, sloped] {Путь $L$, скорость $\vec{v}$};
+    
+    % Прямой угол (уголок)
+    \draw[line width=0.8pt] (3.8,0) -- (3.8,0.2) -- (4,0.2);
+    
+    % Метки вершин (опционально)
+    \node[below left] at (A) {$A$};
+    \node[below right] at (B) {$B$};
+    \node[above right] at (C) {$C$};
+\end{tikzpicture}
+\end{center}
+
+Согласно теореме Пифагора, длина пути $L$ равна:
+\[
+    L = \sqrt{(2\pi R)^2 + h^2} = \sqrt{4\pi^2 R^2 + h^2}
+\]
+
+Так как движение равномерное, время движения $T$ определяется из пути:
+\[
+    L=vT\implies T = \frac{L}{v}
+\]
+
+Подставим выражение для $L$:
+\[\boxed{T = \frac{\sqrt{4\pi^2 R^2 + h^2}}{v}
+}\]
+
+\subsection{Момент инерции}
+
+\subsubsection{Определение}
+
+\textbf{Масса} --- мера инертности тела при \textit{поступательном} движении. Она определяет, насколько трудно изменить линейную скорость тела:
+\begin{itemize}
+    \item Зависит только от количества вещества.
+    \item Является инвариантной величиной (не зависит от выбора системы координат или направления).
+\end{itemize}
+
+\textbf{Момент инерции} --- мера инертности тела при \textit{вращательном} движении. Он определяет, насколько трудно изменить угловую скорость тела:
+\begin{itemize}
+    \item Зависит от массы тела и от того, как эта масса \textbf{распределена} относительно оси вращения ($I = \sum m_i r_i^2$).
+    \item Одно и то же тело имеет разные моменты инерции относительно разных осей.
+\end{itemize}
+
+В классической механике прослеживается строгая математическая аналогия, где момент инерции выступает «вращательным двойником» массы:
+
+\begin{longtblr}{
+  colspec = {XX},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c},
+  rowsep = 6pt
+}
+\text{Поступательное движение} & \text{Вращательное движение} \\
+\vec{r} & \alpha \\
+\dfrac{\diff\vec{r}}{\diff t} = \vec{v}\quad\left[\dfrac{\text{м}}{\text{с}}\right] & \dfrac{\diff\vec{\alpha}}{\diff t} = \vec{\omega}\quad\left[\dfrac{\text{рад}}{\text{с}}\right] \\
+\begin{array}{c} \vec{f} \\ \text{сила} \end{array} & \begin{array}{c} \vec{M}=[\vec{r}\times\vec{f}] \\ \text{момент силы} \end{array} \\
+\begin{array}{c} m \\ \text{масса} \end{array} & \begin{array}{c} I \\ \text{момент инерции} \end{array} \\
+\begin{array}{c} \vec{p} = m \vec{v} \\ \text{импульс} \end{array} & \begin{array}{c} \vec{L} = I \vec{\omega} \\ \text{момент импульса} \end{array} \\
+\dfrac{\diff \vec{p}}{\diff t} = \vec{f} & \dfrac{\diff \vec{L}}{\diff t} = \vec{M} \\
+\end{longtblr}
+
+\begin{center}
+\begin{tblr}{
+  colspec = {X[1.7,c]X[3,c]},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c,m},
+  rowsep = 8pt
+}
+\text{Тип системы} & \text{Формула момента инерции} \\
+\text{Точечные массы} & I = \sum_{i} m_i r_i^2 = m_1r_1^2 + m_2r_2^2 + \cdots + m_nr_n^2 \\
+\text{Непрерывное тело} & I = \int r^2  dm = \int_V \rho(\vec{r}) r^2  dV \\
+\end{tblr}
+\end{center}
+
+\begin{center}
+\begin{tblr}{
+  colspec = {lcc},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries,mode=text},
+  row{odd} = {bg=gray!10},
+  cells = {mode=math,c,m},
+  rowsep = 4pt
+}
+\text{Тело} & \text{Ось вращения} & \text{Момент инерции} \\
+\text{Стержень} & \text{Через центр} & \dfrac{1}{12}mL^2 \\
+\text{Стержень} & \text{Через конец} & \dfrac{1}{3}mL^2 \\
+\text{Кольцо} & \text{Через центр} & mR^2 \\
+\text{Диск} & \text{Через центр} & \dfrac{1}{2}mR^2 \\
+\text{Шар} & \text{Через центр} & \dfrac{2}{5}mR^2 \\
+\text{Сфера} & \text{Через центр} & \dfrac{2}{3}mR^2 \\
+\text{Цилиндр} & \text{Ось симметрии} & \dfrac{1}{2}mR^2 \\
+\text{Пластина } a\times b & \text{Через центр} & \dfrac{1}{12}m(a^2 + b^2) \\
+\text{Равнобедренный треугольник} & \text{Через вершину} & \dfrac{1}{24}m(a^2 + 12h^2) \\
+\text{Правильный треугольник} & \text{Через центр масс} & \dfrac{1}{12}ma^2 \\
+\end{tblr}
+\end{center}
+
+\subsubsection{Абсолютно твёрдое тело}
+
+\textbf{Абсолютно твёрдым телом} называется система материальных точек, расстояние между которыми всегда остаётся постоянным:
+\[
+|\mathbf{r}_i - \mathbf{r}_j| = \text{const} \quad \text{для любых } i, j
+\]
+
+Ключевые свойства:
+\begin{itemize}
+    \item Тело не обладает внутренней потенциальной энергией упругой деформации ($\Delta U_{деф} = 0$).
+    \item Движение тела полностью описывается движением его центра масс и вращением вокруг него.
+    \item Работа внутренних сил в абсолютно твёрдом теле всегда равна нулю.
+\end{itemize}
+
+\subsubsection{Теорема Эйлера}
+
+\textbf{Теорема Эйлера о вращении} описывает кинематику абсолютно твёрдого тела с одной неподвижной точкой.
+
+По теореме, любое перемещение абсолютно твёрдого тела, имеющего одну неподвижную точку, из одного положения в другое можно осуществить путём одного поворота вокруг некоторой неподвижной оси, проходящей через эту точку.
+
+Из теоремы следует, что движение абсолютно твёрдого тела можно описать как композицию поступательного и вращательного движения так:
+\[ \vec{v}=\vec{v}_{\text{ц.м.}}+\vec{\omega}\times\vec{r} \] 
+
+\subsubsection{Вывод момента импульса}
+
+Рассмотрим абсолютно твердое тело, вращающееся вокруг неподвижной точки $O$ с угловой скоростью $\boldsymbol{\omega}$.
+
+Момент импульса системы материальных точек определяется как сумма моментов импульса каждой точки:
+\[
+\mathbf{L} = \sum_i [\mathbf{r}_i, \mathbf{p}_i] = \sum_i m_i [\mathbf{r}_i, \mathbf{v}_i]
+\]
+
+Так как тело вращается как единое целое, линейная скорость каждой точки $\mathbf{v}_i$ выражается через угловую:
+\[
+\mathbf{v}_i = [\boldsymbol{\omega}, \mathbf{r}_i]
+\]
+
+Используем формулу двойного векторного произведения:
+\[
+[\mathbf{a}, [\mathbf{b}, \mathbf{c}]] = \mathbf{b}(\mathbf{a} \cdot \mathbf{c}) - \mathbf{c}(\mathbf{a} \cdot \mathbf{b})
+\]
+В нашем случае: $\mathbf{a} = \mathbf{r}_i$, $\mathbf{b} = \boldsymbol{\omega}$, $\mathbf{c} = \mathbf{r}_i$.
+
+Раскрываем произведение для каждой точки:
+\[
+[\mathbf{r}_i, [\boldsymbol{\omega}, \mathbf{r}_i]] = \boldsymbol{\omega}(\mathbf{r}_i \cdot \mathbf{r}_i) - \mathbf{r}_i(\mathbf{r}_i \cdot \boldsymbol{\omega})
+\]
+Учитывая, что скалярное произведение вектора на самого себя дает квадрат его длины ($\mathbf{r}_i \cdot \mathbf{r}_i = r_i^2$):
+\[
+\mathbf{L} = \sum_i m_i \left( \boldsymbol{\omega} r_i^2 - \mathbf{r}_i (\mathbf{r}_i \cdot \boldsymbol{\omega}) \right)
+\]
+
+Пусть вращение происходит вокруг оси $Z$. Тогда $\boldsymbol{\omega} = (0, 0, \omega)$.
+Радиус-вектор точки: $\mathbf{r}_i = (x_i, y_i, z_i)$.
+Квадрат длины: $r_i^2 = x_i^2 + y_i^2 + z_i^2$.
+Скалярное произведение: $(\mathbf{r}_i \cdot \boldsymbol{\omega}) = z_i \omega$.
+
+Найдем проекцию момента импульса $L_z$ на ось $Z$. Для этого возьмем $z$-компоненту от общего уравнения:
+\[
+L_z = \sum_i m_i ( \omega r_i^2 - z_i (z_i \omega) ) = \omega \sum_i m_i ( r_i^2 - z_i^2 )
+\]
+Так как $r_i^2 - z_i^2 = (x_i^2 + y_i^2 + z_i^2) - z_i^2 = x_i^2 + y_i^2 = R_i^2$, где $R_i$ --- расстояние от точки до \textit{оси} вращения (а не до начала координат).
+
+\[
+L_z = \omega \sum_i m_i R_i^2
+\]
+
+Величина $\sum m_i R_i^2$ есть момент инерции относительно оси $Z$.
+Таким образом, приходим к известной скалярной формуле:
+\[\boxed{
+L_z = I_z \omega
+}\]
+
+\subsection{Теорема Гюйгенса --- Штейнера}
+
+\subsubsection{Формулировка}
+
+Согласно \textbf{теореме Гюйгенса --- Штейнера}, момент инерции тела относительно произвольной оси равен сумме момента инерции относительно параллельной оси, проходящей через центр масс, и произведения массы тела на квадрат расстояния между осями:
+
+\begin{center}
+\begin{tblr}{
+  colspec = {XX},
+  vlines,
+  hlines,
+  row{1} = {font=\bfseries},
+  row{odd} = {bg=gray!10},
+  row{2} = {valign=m},
+  cells = {mode=math,c},
+  rowsep = 6pt
+}
+\text{Формула} & \text{Схема} \\
+I = I_{c} + md^2 
+&
+\begin{minipage}[c]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.0]
+    % Основные координаты
+    \coordinate (B) at (1.5,0.8); % Центр масс
+    \coordinate (A) at (3,1.5);   % Новая ось
+    
+    % Тело (произвольная фигура)
+    \draw[fill=black!10, draw=black, thick] (B) circle (0.8);
+    
+    % Центр масс
+    \filldraw[black] (B) circle (2pt) node[below right] {Ц.М.};
+    
+    % Новая ось
+    \filldraw[black] (A) circle (2pt) node[above right] {Новая ось};
+    
+    % Расстояние d
+    \draw[dashed, thick] (B) -- (A) node[midway, above] {$d$};
+    
+    % Обозначения моментов инерции
+    \node at (1.5,2.2) {$I_{c}$};
+    \node at (3.5,2.2) {$I$};
+    
+    % Стрелки к осям
+    \draw[->, thick] (1.8,2) to[out=0,in=90] (B);
+    \draw[->, thick] (3.2,2) to[out=180,in=90] (A);
+    
+    % Масса
+    \node at (1,1.8) {$m$};
+\end{tikzpicture}
+\end{minipage}
+\\
+\end{tblr}
+\end{center}
+
+\subsubsection{Момент инерции треугольника}
+
+Для плоского однородного равностороннего треугольника массой $m$ и стороной $a$ требуется найти момент инерции относительно вершины $A$, принятой за начало координат $A(0,0)$.
+
+\begin{center}
+\begin{tikzpicture}
+    % 1. Определение параметров через макросы
+    \pgfmathsetmacro{\side}{4}
+    \pgfmathsetmacro{\height}{\side*sqrt(3)/2}
+    \pgfmathsetmacro{\halfside}{\side/2}
+
+    % 2. Координатные оси
+    \draw[->, >=stealth, thick] (-0.5,0) -- (\side+0.8,0) node[right] {$x$};
+    \draw[->, >=stealth, thick] (0,-0.5) -- (0,\height+0.5) node[above] {$y$};
+
+    % 3. Вершины треугольника
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (\side,0);
+    \coordinate (C) at (\halfside, \height);
+
+    % 4. Рисуем треугольник
+    \draw[thick, fill=blue!5] (A) -- (B) -- (C) -- cycle;
+
+    % 5. Подписи и вспомогательные линии
+    \node[below left] at (A) {$A(0,0)$};
+    \node[below right] at (B) {$B(a,0)$};
+    \node[above] at (C) {$C(\frac{a}{2}, \frac{\sqrt{3}}{2}a)$};
+    
+    \draw[dashed] (C) -- (\halfside, 0) node[below] {$\frac{a}{2}$};
+\end{tikzpicture}
+\end{center}
+
+Параметры треугольника:
+\[ h = \frac{\sqrt{3}}{2}a,\ S = \frac{\sqrt{3}}{4}a^2,\ \sigma = \frac{m}{S} = \frac{4m}{\sqrt{3}a^2}\]
+
+По определению, момент инерции относительно точки $A$ равен:
+\[
+I_A = \iint_S r^2 \, dm = \iint_S (x^2 + y^2) \, dm
+\]
+где $r^2 = x^2 + y^2$ --- квадрат расстояния от элемента массы $dm$ до вершины $A$.
+
+Для однородной пластины массовая плотность постоянна. 
+Элементарная масса $dm = \sigma \, dS = \sigma \, dx\,dy$, поэтому
+\[
+I_A = \sigma \iint_S (x^2 + y^2) \, dx\,dy
+\]
+
+Область $S$ --- равносторонний треугольник со стороной $a$. При выбранном расположении:
+\[
+I_A = \sigma \int_0^h \int_{y/\sqrt{3}}^{a - y/\sqrt{3}} (x^2 + y^2) \, dx \, dy
+\]
+где $h = \frac{\sqrt{3}}{2}a$ --- высота треугольника.
+
+Интегрирование по $x$:
+\[ \int_{y/\sqrt{3}}^{a - y/\sqrt{3}} (x^2 + y^2) \, dx = \left[ \frac{x^3}{3} + xy^2 \right]_{y/\sqrt{3}}^{a - y/\sqrt{3}} = \frac{a^3}{3} - \frac{a^2 y}{\sqrt{3}} + 2ay^2 - \frac{8y^3}{3\sqrt{3}}\]
+
+Интегрирование по $y$:
+\[ I_A = \sigma \int_0^{\frac{\sqrt{3}}{2}a} \left( \frac{a^3}{3} - \frac{a^2 y}{\sqrt{3}} + 2ay^2 - \frac{8y^3}{3\sqrt{3}} \right) dy \]
+\[ I_A = \sigma \left[ \frac{a^3}{3}y - \frac{a^2 y^2}{2\sqrt{3}} + \frac{2ay^3}{3} - \frac{2y^4}{3\sqrt{3}} \right]_0^{\frac{\sqrt{3}}{2}a}\]
+
+Итоговый расчет:
+\[ I_A = \frac{4m}{\sqrt{3}a^2} \left( \frac{\sqrt{3}a^4}{6} - \frac{\sqrt{3}a^4}{8} + \frac{\sqrt{3}a^4}{4} - \frac{3\sqrt{3}a^4}{16} \right) = \frac{4m}{a^2} \cdot \frac{5}{48} a^4 = \frac{5}{12}ma^2 \]
