@@ -1,23 +1,11 @@
     .data
 
+do_capitalize:   .word  1
 input_addr:      .word  0x80
 output_addr:     .word  0x84
-do_capitalize:   .word  0x82 \ why i can't put there 1?
 
     .text
-
-try_capitalize:
-    dup lit 'a' inv lit 1 + +
-    -if upper_bound_check
-    ;
-upper_bound_check:
-    dup lit 'z' over inv lit 1 + +
-    -if capitalize_lowercase_ascii
-    ;
-capitalize_lowercase_ascii:
-    lit -32 +
-    ;
-
+.org 0x200
 _start:
     @p input_addr a!         \ a for input
     @p output_addr b!        \ b for output
@@ -30,9 +18,10 @@ while:
     dup
     if end
 
-    @ lit 255 and
-    dup lit ' ' inv lit 1 + + \ input != ' '
-    if set_flag
+    @ lit 0xFF and
+    dup lit -10 + if end
+
+    dup lit -32 + if set_flag
 
     @p do_capitalize
     if print_char
@@ -53,3 +42,15 @@ print_char:
     while ;
 end:
     halt
+
+try_capitalize:
+    dup lit -97 +
+    -if upper_bound_check
+    ;
+upper_bound_check:
+    dup lit -122 +
+    -if capitalize_lowercase_ascii
+    ;
+capitalize_lowercase_ascii:
+    lit -32 +
+    ;
