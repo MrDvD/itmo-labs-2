@@ -1,0 +1,19 @@
+name: big to little endian
+limit: 400
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [2018915346]
+  0x84: []
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction}	{pc:label}
+  - name: Result
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:hex}
+      numio[0x84]: {io:0x84:hex}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [0x12345678]
