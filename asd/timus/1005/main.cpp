@@ -1,43 +1,45 @@
 #include <iostream>
 #include <vector>
 
-std::vector<int> add_options(std::vector<int> options) {
-  std::vector<int> new_options;
-  for (int o : options) {
-    new_options.push_back(o << 1 | 1);
-    new_options.push_back(o << 1);
-  }
-  return new_options;
-}
-
 int main() {
   int N;
   std::cin >> N;
   std::vector<int> arr;
+  long total_sum = 0;
   for (int i = 0; i < N; i++) {
     int item;
     std::cin >> item;
     arr.push_back(item);
+    total_sum += item;
   }
-  std::vector<int> opts = {0, 1};
-  for (int i = 0; i < N - 1; i++) {
-    opts = add_options(opts);
-  }
-  long ans = 2000000;
-  for (int o : opts) {
-    long sum1 = 0, sum2 = 0, curr;
-    for (int i = 0; i < N; i++) {
-      if (o >> i & 1) {
-        sum1 += arr[i];
-      } else {
-        sum2 += arr[i];
-      }
+  std::vector<int> min_coins[2];
+  int INF = N + 1;
+  for (int j = 0; j < 2; j++) {
+    std::vector<int> step;
+    for (int i = 0; i <= total_sum; i++) {
+      step.push_back(INF);
     }
-    curr = abs(sum2 - sum1);
-    if (curr < ans) {
-      ans = curr;
+    step[0] = 0;  // dp base
+    min_coins[j] = step;
+  }
+  short curr_step_idx = 0, prev_step_idx = 1;
+  for (int i = 1; i <= N; i++) {
+    curr_step_idx ^= 1;
+    prev_step_idx ^= 1;
+    for (long cost = 0; cost <= total_sum; cost++) {
+      int prev = min_coins[prev_step_idx][cost];
+      long prev_cost = cost - arr[i - 1];
+      int curr = prev_cost >= 0 ? min_coins[prev_step_idx][cost - arr[i - 1]] + 1 : INF;
+      min_coins[curr_step_idx][cost] = prev <= curr ? prev : curr;
     }
   }
-  std::cout << ans;
+  long diff = total_sum;
+  for (long cost = 0; cost < total_sum; cost++) {
+    long curr_diff = abs(2 * cost - total_sum);
+    if (min_coins[curr_step_idx][cost] != INF && curr_diff < diff) {
+      diff = curr_diff;
+    }
+  }
+  std::cout << diff;
   return 0;
 }
