@@ -9,7 +9,7 @@ int main() {
     return 0;
   }
   long x = a;
-  for (long long i = 0; i < k; i++) {
+  for (int i = 0; i < (d < k ? d : k); i++) {
     x *= b;
     if (x < c) {
       x = 0;
