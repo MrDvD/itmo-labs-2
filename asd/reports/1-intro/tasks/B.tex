@@ -46,24 +46,23 @@ int main() {
     if (stack.size() == 0 || stack.top().value != curr.value || stack.top().isTrap == curr.isTrap) {
       stack.push(curr);
       continue;
+    }
+    item top = stack.top();
+    stack.pop();
+    if (top.isTrap) {
+      order[top.idx - 1] = curr.idx;
     } else {
-      item top = stack.top();
-      stack.pop();
-      if (top.isTrap) {
-        order[top.idx - 1] = curr.idx;
-      } else {
-        order[curr.idx - 1] = top.idx;
-      }
+      order[curr.idx - 1] = top.idx;
     }
   }
   if (stack.size() > 0) {
     std::cout << "Impossible";
-  } else {
-    std::cout << "Possible" << std::endl;
-    for (int i = 0; i < N; i++) {
-      if (order[i] != -1) {
-        std::cout << order[i] << " ";
-      }
+    return 0;
+  }
+  std::cout << "Possible" << std::endl;
+  for (int i = 0; i < N; i++) {
+    if (order[i] != -1) {
+      std::cout << order[i] << " ";
     }
   }
   return 0;
