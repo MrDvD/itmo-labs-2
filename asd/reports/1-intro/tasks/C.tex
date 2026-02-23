@@ -1,0 +1,73 @@
+\subsection{Конфигурационный файл}
+
+\subsubsection{Описание решения}
+
+Сфокусировавшись на потоке ввода, упростим задачу до трёх ситуаций:
+%
+\begin{enumerate}
+  \item Начало блока.
+  \item Конец блока.
+  \item Присваивание переменной значения.
+\end{enumerate}
+
+Введём «глобальную» хеш-таблицу, которая хранит текущее состояние переменных. Ключи --- имена переменных, значение по ключу --- значение переменной.
+
+Также введём стек, элементы которого будут эквивалентны вложенным блокам. Идея --- хранить в нём историю изменений значений переменных. Вершина стека хранит значения переменных на прошлом уровне.
+
+Когда из потока ввода поступает команда «начать новый блок», в стек будет записана пустая хеш-таблица. По мере обновления значений переменных в текущий блок будет записываться старое значение переменной, а в глобальную хеш-таблицу --- актуальное значение.
+
+Как только поступит команда «завершить текущий блок», из вершины стека удаляется блок. Затем, для каждой переменной из удаляемого блока мы восстанавливаем старое значение в глобальной хеш-таблице. Так мы восстанавливаем исходное состояние переменных до входа в очередной блок.
+
+\subsubsection{Асимптотическая сложность}
+
+Временная сложность решения --- \( \mathcal{O}(N) \). Для каждой считанной строки выполняется константное количество операций в случае начала блока и обновления значения переменной. Если же блок завершается, то все предыдущие присвоения блока отменяются за константное время --- в сумме такие операции не превысят линейное время работы.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <bits/stdc++.h>
+
+#include <iostream>
+#include <stack>
+#include <unordered_map>
+
+using scope = std::unordered_map<std::string, long>;
+
+void update_scope(std::stack<scope>& ctx, scope& vars, std::string lval, std::string rval) {
+  char* fail;
+  long rval_long = std::strtol(rval.c_str(), &fail, 10);
+  if (ctx.top().count(lval) == 0) {
+    ctx.top()[lval] = vars.count(lval) ? vars[lval] : 0;
+  }
+  if (*fail) {
+    vars[lval] = vars[rval];
+    std::cout << vars[lval] << "\n";
+  } else {
+    vars[lval] = rval_long;
+  }
+}
+
+int main() {
+  std::string line;
+  scope vars;
+  std::stack<scope> ctx;
+  ctx.push({});
+  while (std::getline(std::cin, line)) {
+    if (line == "{") {
+      ctx.push({});
+    } else if (line == "}") {
+      for (auto h : ctx.top()) {
+        vars[h.first] = h.second;
+      }
+      ctx.pop();
+    } else {
+      std::stringstream ss(line);
+      std::string lval, rval;
+      std::getline(ss, lval, '=');
+      std::getline(ss, rval, '=');
+      update_scope(ctx, vars, lval, rval);
+    }
+  }
+  return 0;
+}
+\end{lstlisting}
