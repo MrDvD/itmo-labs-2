@@ -5,23 +5,21 @@ buf_idx:         .word  0
 do_capitalize:   .word  1
 input_addr:      .word  0x80
 output_addr:     .word  0x84
-_mask:           .word  0x5F5F0000
 
     .text
     .org 0x100
 _start:
-    @p input_addr a!         \ a for input
-    @p output_addr b!        \ b for output
+    @p buf_idx a!            \ 'a' for filling a buffer
+    @p input_addr b!         \ 'b' for input
 
-    lit 1
-    !p do_capitalize
+    lit 1 !p do_capitalize
 
-    lit 0
+    lit 0 a!
 while:
-    dup lit -31 +            \ hardcoded counter on T
-    if end
+    a lit -32 +
+    if handle_buffer_overflow
 
-    @ lit 0xFF and
+    @b lit 0xFF and
     dup lit -10 + if end
 
     dup lit -32 + if set_flag
@@ -32,33 +30,40 @@ while:
 
     lit 0
     !p do_capitalize
-    print_char ;
+    print_char_to_buffer ;
 
 lowercase_current_char:
     try_lowercase
-    print_char ;
+    print_char_to_buffer ;
 
 set_flag:
     lit 1
     !p do_capitalize
 
-print_char:
-    dup !b
-    a over @p buf_idx a! _or !+ \ it writes word, so i use _or function
-    a !p buf_idx a!
+print_char_to_buffer:
+    lit 0x5F5F0000 inv over inv and inv \ removes the trailing \0\0\0 (as it writes a whole word)
+    !+
 
     while ;
 end:
-    drop drop
+    print_the_buffer
+    drop drop                \ clean the stack
     halt
 
-\\\\\\\\\\\\\\\\\\\\
+handle_buffer_overflow:
+    lit 0 a!
+while_overflow:
+    a lit -32 + if end_rest
+    lit 0xCC !+
 
-_or:
- \ removes the trailing \0\0\0
-    @p _mask inv over inv and inv ;
+    while_overflow ;
 
-\\\\\\\\\\\\\\\\\\\\
+end_rest:
+    @p output_addr b!
+    lit 0xCCCCCCCC !b
+    halt
+
+    \\\\\\\\\\\\\\\\\\\\
 
 try_lowercase:
     dup lit -65 +
@@ -72,7 +77,7 @@ lowercase_capital_ascii:
     lit 32 +
     ;
 
-\\\\\\\\\\\\\\\\\\\\
+    \\\\\\\\\\\\\\\\\\\\
 
 try_capitalize:
     dup lit -97 +
@@ -84,4 +89,22 @@ upper_bound_lower_check:
     ;
 capitalize_lowercase_ascii:
     lit -32 +
+    ;
+
+    \\\\\\\\\\\\\\\\\\\\
+
+print_the_buffer:
+    @p output_addr b!
+
+    lit 0 a!
+
+while_print:
+    a lit -32 + if stop_print
+
+    @+ lit 0xFF and
+    dup if stop_print
+    !b
+
+    while_print ;
+stop_print:
     ;
