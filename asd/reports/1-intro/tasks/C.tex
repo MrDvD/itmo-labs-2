@@ -58,8 +58,8 @@ int main() {
     if (line == "{") {
       ctx.push({});
     } else if (line == "}") {
-      for (auto h : ctx.top()) {
-        vars[h.first] = h.second;
+      for (const auto& [key, value] : ctx.top()) {
+        vars[key] = value;
       }
       ctx.pop();
     } else {
