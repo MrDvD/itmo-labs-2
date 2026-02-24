@@ -54,10 +54,12 @@ int main() {
   scope vars;
   std::stack<scope> ctx;
   ctx.push({});
-  while (std::getline(std::cin, line)) {
+  while (std::cin >> line) {
     if (line == "{") {
       ctx.push({});
     } else if (line == "}") {
+      // insert_range does not suit there:
+      // "if there is no element with key equivalent to the key of that element"
       for (const auto& [key, value] : ctx.top()) {
         vars[key] = value;
       }
