@@ -9,12 +9,12 @@ using letter = struct {
 };
 
 int main() {
-  std::string word;
-  std::cin >> word;
   std::unordered_map<char, long> occur;
-  for (char c : word) {
+  char c;
+  while (std::cin >> std::noskipws >> c && c != '\n') {
     occur[c] = occur.count(c) ? occur[c] + 1 : 1;
   }
+  std::cin >> std::skipws;
   std::vector<letter> costs;
   struct {
     bool operator()(letter a, letter b) const {
