@@ -16,18 +16,14 @@ int main() {
   }
   std::cin >> std::skipws;
   std::vector<letter> costs;
-  struct {
-    bool operator()(letter a, letter b) const {
-      return a.v > b.v;
-    }
-  } customLess;
+  costs.reserve(26);
   for (int i = 0; i < 26; i++) {
     letter l;
     l.c = 'a' + i;
     std::cin >> l.v;
     costs.push_back(l);
   }
-  std::sort(costs.begin(), costs.end(), customLess);
+  std::sort(costs.begin(), costs.end(), [](const letter& a, const letter& b) { return a.v > b.v; });
   std::string pair, rest;
   for (letter l : costs) {
     if (occur.count(l.c) == 0) {
@@ -38,9 +34,9 @@ int main() {
       for (int i = 0; i < occur[l.c] - 2; i++) {
         rest += l.c;
       }
-    } else {
-      rest += l.c;
+      continue;
     }
+    rest += l.c;
   }
   std::cout << pair << rest << std::string(pair.rbegin(), pair.rend());
   return 0;
