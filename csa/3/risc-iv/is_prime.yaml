@@ -1,0 +1,24 @@
+name: "assert hello(*()) == ('Hello\n\0World',)"
+limit: 100
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [0x7fffffff]
+  0x84: []
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction}	{pc:label}
+      t0: {T0:hex} -- t1: {T1:dec} -- t2: {T2:dec} -- a0: {A0:dec} -- a1: {A1:dec} -- a2: {A2:dec} -- a3: {A3:dec}
+  - name: Check results
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+      symio[0x80]: {io:0x80:sym}
+      symio[0x84]: {io:0x84:sym}
+    # assert: |
+    #   numio[0x80]: [] >>> []
+    #   numio[0x84]: [] >>> [72,101,108,108,111,10,0,87,111,114,108,100]
+    #   symio[0x80]: "" >>> ""
+    #   symio[0x84]: "" >>> "Hello\n\0World"
