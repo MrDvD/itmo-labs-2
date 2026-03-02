@@ -6,6 +6,11 @@ module lab_types
   type :: time_system
     real :: t, tau
   end type time_system
+
+  type :: function_system
+    real, pointer :: x(:), y(:)
+    integer :: count
+  end type function_system
 end module lab_types
 
 module lab_functions
@@ -18,8 +23,6 @@ module lab_functions
 
 contains
   real function get_real(msg)
-    implicit none
-
     character(len=*), intent(in) :: msg
 
     write(0,'(A,1X)',advance='no') trim(msg)
@@ -27,8 +30,6 @@ contains
   end function get_real
 
   function f_practice(vector, time, k_m)
-    implicit none
-
     type(vector_system), intent(in) :: vector
     type(time_system), intent(in) :: time
     real, intent(in) :: k_m
@@ -41,14 +42,12 @@ contains
   end function f_practice
 
   function f_theory(vector, time, k_m)
-    implicit none
-
     type(vector_system), intent(in) :: vector
     type(time_system), intent(in) :: time
     real, intent(in) :: k_m
     real, dimension(4) :: f_theory
 
-    f_theory(1) = vector%start(3) * k_m * (1 - exp(-k_m * time%t))
+    f_theory(1) = vector%start(3) / k_m * (1 - exp(-k_m * time%t))
     f_theory(2) = (vector%start(4) / k_m + g / k_m ** 2) * (1 - exp(-k_m * time%t)) - g * time%t / k_m
     f_theory(3) = vector%start(3) * exp(-k_m * time%t)
     f_theory(4) = -g / k_m + (vector%start(4) + g / k_m) * exp(-k_m * time%t)
@@ -82,10 +81,53 @@ contains
       t, ',', vector(1), ',', vector(2), ',', vector(3), ',', vector(4)
   end subroutine write_csv_row
 
-  subroutine start_simulation(vector, tau, k_m, f_func, file_unit)
-    implicit none
+  subroutine resize(var, n)
+    real, pointer :: var(:), tmp(:)
+    integer, intent(in) :: n
+    integer :: this_size
 
+    if (associated(var)) then
+      this_size = size(var, 1)
+      allocate(tmp(this_size))
+      tmp = var
+      deallocate(var)
+    end if
+
+    allocate(var(n))
+
+    if (associated(tmp)) then
+      this_size = min(size(tmp, 1), size(var, 1))
+      var(:this_size) = tmp(:this_size)
+      deallocate(tmp)
+    end if
+  end subroutine resize
+
+  subroutine draw_plot(x1, y1, x2, y2, n1, n2, file_name)
+    real, dimension(:), intent(in) :: x1, y1, x2, y2
+    integer, intent(in) :: n1, n2
+    character(len=*), intent(in) :: file_name
+    integer pgopen, ier
+    ier = pgopen(file_name // '.ps/PS')
+    if (ier .ne. 1) stop
+
+    call pgenv(min(minval(x1), minval(x2)),&
+               max(maxval(x1), maxval(x2)),&
+               min(minval(y1), minval(y2)),&
+               max(maxval(y1), maxval(y2)), 0, 1)
+    call pglab('x', 'y', 'Theory (dashed) vs Practice (solid)')
+    call pgsls(2)
+    call pgline(n1, x1, y1)
+    call pgpt(n1, x1, y1, 9)
+    call pgsls(1)
+    call pgline(n2, x2, y2)
+    call pgpt(n2, x2, y2, 9)
+    call pgend
+  end subroutine draw_plot
+
+  function start_simulation(vector, tau, k_m, f_func, file_unit)
     real, dimension(4), intent(in) :: vector
+    type(function_system) :: start_simulation
+    integer :: dots_cap = 4
     integer, intent(in) :: file_unit
     real, intent(in) :: tau, k_m
     type(vector_system) :: prev_vector
@@ -93,12 +135,12 @@ contains
     type(time_system) :: time
 
     interface
-      function f_func(v, t, k_m)
+      function f_func(v, t, k)
         use lab_types
         implicit none
         type(vector_system), intent(in) :: v
         type(time_system), intent(in) :: t
-        real, intent(in) :: k_m
+        real, intent(in) :: k
         real, dimension(4) :: f_func
       end function f_func
     end interface
@@ -107,20 +149,40 @@ contains
     time%tau = tau
     prev_vector%start = vector
     prev_vector%curr = vector
+
+    allocate(start_simulation%x(dots_cap))
+    allocate(start_simulation%y(dots_cap))
+    start_simulation%count = 1
+    start_simulation%x(start_simulation%count) = vector(1)
+    start_simulation%y(start_simulation%count) = vector(2)
+
     call write_csv_row(prev_vector%start, .true., time%t, file_unit)
     call print_table_row(prev_vector%start, .true., time%t)
 
     do
       time%t = time%t + time%tau
       new_vector = f_func(prev_vector, time, k_m)
+      start_simulation%count = start_simulation%count + 1
+      if (start_simulation%count == dots_cap) then
+        dots_cap = start_simulation%count * 2
+        call resize(start_simulation%x, dots_cap)
+        call resize(start_simulation%y, dots_cap)
+      end if
+      start_simulation%x(start_simulation%count) = new_vector(1)
+      start_simulation%y(start_simulation%count) = new_vector(2)
+      call write_csv_row(new_vector, .false., time%t, file_unit)
+      call print_table_row(new_vector, .false., time%t)
       if (new_vector(2) - prev_vector%curr(2) <= 0 .and. new_vector(2) <= 0) then
         exit
       end if
-      call write_csv_row(new_vector, .false., time%t, file_unit)
-      call print_table_row(new_vector, .false., time%t)
       prev_vector%curr = new_vector
     end do
-  end subroutine start_simulation
+
+    if (start_simulation%count < dots_cap) then
+      call resize(start_simulation%x, start_simulation%count)
+      call resize(start_simulation%y, start_simulation%count)
+    end if
+  end function start_simulation
 end module lab_functions
 
 program lab_3
@@ -130,6 +192,7 @@ program lab_3
   real, dimension(4) :: vector
   real :: v_0, alpha, tau, k_m
   integer :: practice_unit = 10, theory_unit = 11
+  type(function_system) :: kinetics_theory, kinetics_practice
 
   vector(1) = 0
   vector(2) = 0
@@ -172,10 +235,14 @@ program lab_3
   open(unit=theory_unit, file='output_theory.csv', status='replace')
 
   write(*,*) "### Practice:"
-  call start_simulation(vector, tau, k_m, f_practice, practice_unit)
+  kinetics_theory = start_simulation(vector, tau, k_m, f_practice, practice_unit)
   
   write(*,*) "### Theory:"
-  call start_simulation(vector, tau, k_m, f_theory, theory_unit)
+  kinetics_practice = start_simulation(vector, tau, k_m, f_theory, theory_unit)
+  call draw_plot(kinetics_theory%x, kinetics_theory%y,&
+                 kinetics_practice%x, kinetics_practice%y,&
+                 kinetics_theory%count, kinetics_practice%count,&
+                 "plot")
 
   close(practice_unit)
   close(theory_unit)
