@@ -16,7 +16,7 @@ contains
 
     character(len=*), intent(in) :: msg
 
-    write(0,'(AX)',advance='no') trim(msg)
+    write(0,'(A,1X)',advance='no') trim(msg)
     read*, get_real
   end function get_real
 

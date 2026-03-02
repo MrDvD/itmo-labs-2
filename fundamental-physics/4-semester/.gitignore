@@ -1,4 +1,6 @@
 *.out
 *.csv
+*.mod
 venv/
+temp/
 .vscode/
