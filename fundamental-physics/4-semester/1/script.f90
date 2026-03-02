@@ -6,7 +6,7 @@ end function
 function get_real(msg)
   real :: get_real
   character(len=*), intent(in) :: msg
-  write(0,'(AX)',advance='no') trim(msg)
+  write(0,'(A, 1X)',advance='no') trim(msg)
   read*, get_real
 end function
 
@@ -27,16 +27,16 @@ program lab_1
     v = v + h * (k_1 + 2 * k_2 + 2 * k_3 + k_4) / 6
     s = s + v * h
     if (s >= threshold) then
-      write(0,'(AX)',advance='no') 'Estimated time:'
+      write(0,'(A, 1X)',advance='no') 'Estimated time:'
       write(0,'(f0.6)',advance='no') t
       print*, 'seconds'
-      call exit(0)
+      stop 0
     end if
   end do
-  write(0,'(AX)',advance='no') "Can't reach"
-  write(0,'(f0.2X)',advance='no') threshold
-  write(0,'(AX)',advance='no') 'metres in'
+  write(0,'(A, 1X)',advance='no') "Can't reach"
+  write(0,'(f0.2, 1X)',advance='no') threshold
+  write(0,'(A, 1X)',advance='no') 'metres in'
   write(0,'(f0.2)',advance='no') t_r
   print*,'seconds'
-  call exit(1)
+  stop 1
 end program lab_1
