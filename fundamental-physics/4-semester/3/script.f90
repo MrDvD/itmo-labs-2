@@ -234,11 +234,11 @@ program lab_3
   open(unit=practice_unit, file='output_practice.csv', status='replace')
   open(unit=theory_unit, file='output_theory.csv', status='replace')
 
-  write(*,*) "### Practice:"
-  kinetics_theory = start_simulation(vector, tau, k_m, f_practice, practice_unit)
-  
   write(*,*) "### Theory:"
-  kinetics_practice = start_simulation(vector, tau, k_m, f_theory, theory_unit)
+  kinetics_theory = start_simulation(vector, tau, k_m, f_theory, theory_unit)
+
+  write(*,*) "### Practice:"
+  kinetics_practice = start_simulation(vector, tau, k_m, f_practice, practice_unit)
   call draw_plot(kinetics_theory%x, kinetics_theory%y,&
                  kinetics_practice%x, kinetics_practice%y,&
                  kinetics_theory%count, kinetics_practice%count,&
