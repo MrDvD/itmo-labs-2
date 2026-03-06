@@ -1,4 +1,4 @@
-name: big to little endian
+name: "big to little endian"
 limit: 400
 memory_size: 0x1000
 memory_mapped_io:
