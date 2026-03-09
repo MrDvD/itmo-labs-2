@@ -106,7 +106,7 @@ contains
     real, dimension(:), intent(in) :: x1, y1, x2, y2
     integer, intent(in) :: n1, n2
     character(len=*), intent(in) :: file_name
-    integer pgopen, ier
+    integer :: pgopen, ier
     ier = pgopen(file_name // '.ps/PS')
     if (ier .ne. 1) stop
 
