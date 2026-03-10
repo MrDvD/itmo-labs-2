@@ -1,3 +1,66 @@
 \subsection{Блок-схема численного метода}
 
-W.I.P\dots
+На вход реализуемого метода подаются следующие данные:
+
+\begin{itemize}
+  \item \( f \) --- номер интерполируемой функции; является целым числом.
+  \item \( a \) --- левая граница интерполируемого интервала; является вещественным числом двойной точности.
+  \item \( b \) --- правая граница интерполируемого интервала; является вещественным числом двойной точности.
+  \item \( x \) --- значение аргумента для интерполяционного многочлена; является вещественным числом двойной точности.
+\end{itemize}
+
+На выходе метода ожидается значение интерполяционного многочлена в точке \( x \), которое является вещественным числом двойной точности.
+
+Далее приводятся блок-схемы, реализующие численный метод:
+
+\begin{scheme}
+  \centering
+  \begin{tikzpicture}[gost flowchart, start chain=flow going below]
+    \node [terminator, on chain] (start) {Начало};
+    \node [terminator, on chain, join] (end) {Конец};
+  \end{tikzpicture}
+  \caption{Вычисление значения интерполирующей функции \( F(x) \) заданной точности.}
+\end{scheme}
+
+\begin{scheme}
+  \centering
+  \begin{tikzpicture}[gost flowchart, start chain=flow going below]
+    \node [terminator, on chain] (start) {Начало};
+    \node [terminator, on chain, join] (end) {Конец};
+  \end{tikzpicture}
+  \caption{Построение интерполяционного многочлена в форме Лагранжа \( L_n(t) \).}
+\end{scheme}
+
+\begin{scheme}
+  \centering
+  \begin{tikzpicture}[gost flowchart, start chain=flow going below]
+    \node [terminator, on chain] (start) {Начало};
+    \node [terminator, on chain, join] (end) {Конец};
+  \end{tikzpicture}
+  \caption{Поиск корней многочлена Чебышева первого рода \( T_n(t) \).}
+\end{scheme}
+
+\begin{center}
+\begin{tikzpicture}[%
+    start chain=going below,    % General flow is top-to-bottom
+    node distance=6mm and 60mm, % Global setup of box spacing
+        ]
+        \node [cloud] (start) {Начало};
+        \node [block, join] (phase1) {Этап 1};
+        \node [cyclebegin, join=by red] (phase2) {Этап 2};
+        \node [block, join=by green] (phase3) {Этап 3};
+        \node [cycleend, join] (phase4) {Этап 4};
+        \node [subroutine, join, subrtshape w = 3mm, fxd] (phase5) {Этап 5 1 2 3 4 5 6 7 8
+9 0};
+        \node [io, join, fxd] (input) {Этап 6 - ввод данных};
+        \node [block, join] (phase7) {Этап 7};
+        \node [decision, join] (condition) {Условие};
+        \node [connector] (finish) {Конец};
+        \node [block, left of = phase4, node distance = 3cm] (correction) {Коррекция};
+        \node [print_block, right of = phase4, node distance = 3cm] (print) {Print};
+        \path [line, red] (condition) -| node [u,near start] {Нет} (correction);
+        \path [line] (correction) |- (phase1);
+        \path [line] (phase2) -| node [r,near end] {Печать} (print);
+        \path [line, green] (condition) to node [r] {Да}(finish);
+\end{tikzpicture}
+\end{center}
