@@ -7,6 +7,8 @@
             top=2cm,
             bottom=3cm]{geometry}
 \usepackage{amsmath, amsfonts}
+\usepackage{tikz}
+  \usetikzlibrary{shapes.geometric, arrows.meta, chains, shapes.symbols, shapes.misc}
 
 \setmainfont{CMU Serif}
 \setsansfont{CMU Sans Serif}
@@ -26,3 +28,32 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 \newcommand{\subsubsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
+
+\usepackage{float}
+\newfloat{scheme}{htbp}{los}
+\floatname{scheme}{Схема}
+
+\usepackage[justification=centering]{caption}
+\DeclareCaptionLabelSeparator{emdash}{\space\textemdash\space}
+\captionsetup{labelsep=emdash}
+
+\usepackage{listings}
+% Настройки для листингов кода
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    tabsize=4,
+    breaklines=true,
+    showstringspaces=false,
+    captionpos=b
+}
+
+\input{sections/Block}
