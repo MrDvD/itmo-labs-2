@@ -39,7 +39,7 @@ function<double(double)> generate_lagrange_polynomial(const int n, const functio
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Поиск корней многочлена Чебышева первого рода \( T_n(t) \).]
+\begin{lstlisting}[caption=Поиск корней многочлена Чебышёва первого рода \( T_n(t) \).]
 void fill_chebyshev_polynomial_roots(const int n, const double a, const double b, double roots[]) {
   for (int k = 1; k <= n; k++) {
     roots[k - 1] = 0.5 * (a + b + (b - a) * cos(M_PI * (2 * k - 1) / (2.0 * n)));

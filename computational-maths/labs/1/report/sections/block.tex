@@ -1,6 +1,6 @@
 \tikzset{
   gost flowchart/.style = {
-    node distance = 10mm,
+    node distance = 6mm and 10mm,
     every join/.style = {thick, -Stealth}
   },
   terminator/.style = {
@@ -8,8 +8,91 @@
     rounded rectangle,
     minimum width = 3cm,
     minimum height = 1.5em,
-    inner sep = 5pt
-  }
+    inner sep = 5pt,
+    align = center,
+  },
+  data/.style = {
+    draw,
+    trapezium,
+    trapezium left angle = 70,
+    trapezium right angle = 110,
+    minimum width = 3cm,
+    minimum height = 1.5em,
+    inner sep = 5pt,
+    align = center,
+  },
+  annotation/.style = {
+    draw = none, 
+    inner sep = 7pt,
+    text width = 3cm, 
+    align = left,
+    font = \small,
+    append after command = {
+      \pgfextra{
+        \draw [thick] 
+          ($(\tikzlastnode.north west) + (0.2,0)$) --
+          (\tikzlastnode.north west) -- 
+          (\tikzlastnode.south west) -- 
+          ($(\tikzlastnode.south west) + (0.2,0)$);
+      }
+    }
+  },
+  predefined process/.style = {
+    draw,
+    rectangle,
+    minimum width = 4cm,
+    minimum height = 1cm,
+    inner ysep = 5pt,
+    inner xsep = 15pt,
+    align = center,
+    path picture = {
+      \draw ([xshift=2mm]path picture bounding box.north west) 
+         -- ([xshift=2mm]path picture bounding box.south west);
+      \draw ([xshift=-2mm]path picture bounding box.north east) 
+         -- ([xshift=-2mm]path picture bounding box.south east);
+    }
+  },
+  preparation/.style = {
+    minimum width = 3cm,
+    minimum height = 1cm,
+    inner xsep = 10pt,
+    align = center,
+    draw = none, 
+    append after command = {
+        \pgfextra{
+            \draw 
+            (\tikzlastnode.north west) -- (\tikzlastnode.north east) 
+            -- ([xshift=0.4cm]\tikzlastnode.east) 
+            -- (\tikzlastnode.south east) -- (\tikzlastnode.south west) 
+            -- ([xshift=-0.4cm]\tikzlastnode.west) 
+            -- cycle;
+        }
+    }
+  },
+  process/.style = {
+    draw,
+    rectangle,
+    minimum width = 3cm,
+    minimum height = 1cm,
+    inner sep = 6pt,
+    align = center,
+  },
+  decision/.style = {
+    draw,
+    diamond, aspect=2, align=center, inner sep=.5ex,
+    minimum width = 3cm,
+    minimum height = 1.5cm,
+    align = center,
+  },
+  connector/.style = {
+    draw,
+    thick,
+    circle,
+    minimum size = 0.6cm,
+    inner sep = 1pt,
+    font = \small,
+    align = center,
+  },
 }
 % -------
 \tikzset{
@@ -38,15 +121,6 @@
 		coordinate,
 		on chain,
 		on grid
-	]
-\tikzstyle{decision} =
-	[
-		base,
-		diamond,
-		aspect=2,
-		fill = green!10,
-		node distance = 2cm,
-		inner sep = 0pt
 	]
 \tikzstyle{block} =
 	[
@@ -168,10 +242,4 @@
 		base,
 		cycleendshape,
 		fill = blue!25
-	]
-\tikzstyle{connector} =
-	[
-		base,
-		circle,
-		fill = red!25
 	]
