@@ -8,7 +8,7 @@
             bottom=3cm]{geometry}
 \usepackage{amsmath, amsfonts}
 \usepackage{tikz}
-  \usetikzlibrary{shapes.geometric, arrows.meta, chains, shapes.symbols, shapes.misc}
+  \usetikzlibrary{positioning, shapes.geometric, calc, arrows.meta, chains, shapes.symbols, shapes.misc}
 
 \setmainfont{CMU Serif}
 \setsansfont{CMU Sans Serif}
@@ -57,3 +57,5 @@
 }
 
 \input{sections/Block}
+
+\newcommand{\abs}[1]{\left|#1\right|}
