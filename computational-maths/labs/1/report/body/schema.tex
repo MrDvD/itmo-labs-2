@@ -19,22 +19,25 @@
       \node [terminator] (start) {Start\\ interpolateLagrange};
       \node [data, on chain, right=of start] (input) {Input: $f$, $a$, $b$, $x$};
       \node [predefined process, on chain, join] {$func:=\text{getFunction}(f)$};
-      \node [preparation, on chain, join] (prep) {$n := 1$\\ Create array $roots(n)$};
+      \node [preparation, on chain, join] (prep) {$n := 4$\\ Create array $roots(n)$};
       \node [predefined process, on chain, join] {$\text{fillChebyshevRoots}(a, b, n, roots)$};
       \node [predefined process, on chain, join] {$L_n(t):=\text{generateLagrange}(func, n, roots)$};
       \node [process, on chain, join] {$F_x:=L_n(x)$};
       \node [process, on chain, join] (begin_cycle) {$n:=n+1$\\ $F_{\text{old}}:=F_x$\\ Expand array $roots(n)$};
       \node [connector, on chain, join] {1};
-      \node [connector, on chain] {2};
-      \node [decision, join, on chain] (check) {$\abs{L_x-L_{\text{old}}}<0.01$ \\ or $n > 100$?};
-      \node [data, on chain] (output) {Output: $F_x$};
-      \node [terminator, right=of output] (end) {End\\ interpolateLagrange};
     \end{scope}
 
-    \draw [thick, -Stealth] (check.east) -- ++(1,0) node[above left] {No} |- (begin_cycle.east);
+    \begin{scope}[start chain=flow going below]
+      \node [decision, on chain, right= of begin_cycle] (check) {$\abs{L_x-L_{\text{old}}}<0.01$ \\ or $n > 100$?};
+      \node [connector, above= of check] (a2) {2};
+      \node [data, on chain] (output) {Output: $F_x$};
+      \node [terminator, on chain, join] (end) {End\\ interpolateLagrange};
+    \end{scope}
+
+    \draw [thick, -Stealth] (check.180) -- node[above] {No} (begin_cycle.east);
     \draw [thick, -Stealth] (check) -- node[right] {Yes} (output);
     \draw [thick, -Stealth] (start) -- (input);
-    \draw [thick, -Stealth] (output) -- (end);
+    \draw [thick, -Stealth] (a2) -- (check);
   \end{tikzpicture}
 \end{center}
 

@@ -7,8 +7,10 @@
             top=2cm,
             bottom=3cm]{geometry}
 \usepackage{amsmath, amsfonts}
+
+\usepackage{pgfplots}
 \usepackage{tikz}
-  \usetikzlibrary{positioning, shapes.geometric, calc, arrows.meta, chains, shapes.symbols, shapes.misc}
+  \usetikzlibrary{positioning, shapes.geometric, calc, arrows.meta, chains, shapes.symbols, shapes.misc, patterns}
 
 \setmainfont{CMU Serif}
 \setsansfont{CMU Sans Serif}
@@ -21,6 +23,12 @@
     urlcolor=blue,          % цвет URL-ссылок
     citecolor=green,        % цвет ссылок на литературу
     pdfborder={0 0 0}       % убрать рамки вокруг ссылок
+}
+\addto\extrasrussian{%
+  \def\figureautorefname{рис.}%
+  \def\tableautorefname{табл.}%
+  \def\sectionautorefname{разд.}%
+  \def\equationautorefname{ур-ние}%
 }
 
 \usepackage{float}
@@ -53,3 +61,5 @@
 \input{sections/Block}
 
 \newcommand{\abs}[1]{\left|#1\right|}
+
+\addto\captionsrussian{\renewcommand{\refname}{}}

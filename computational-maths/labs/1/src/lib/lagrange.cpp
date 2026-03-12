@@ -52,11 +52,17 @@ void fill_chebyshev_polynomial_roots(const int n, const double a, const double b
   }
 }
 
-std::function<double(double)> generate_lagrange_polynomial(const int n, const std::function<double(double)> func, const double grid[]) {
-  return [n, func, grid](double x) {
+void fill_function_values(const std::function<double(double)> func, std::size_t n, double values[], const double roots[]) {
+  for (int i = 0; i < n; i++) {
+    values[i] = func(roots[i]);
+  }
+}
+
+std::function<double(double)> generate_lagrange_polynomial(const int n, const double values[], const double grid[]) {
+  return [n, values, grid](double x) {
     double result = 0;
     for (int i = 0; i < n; i++) {
-      double current_term = func(grid[i]);
+      double current_term = values[i];
       for (int j = 0; j < n; j++) {
         if (j != i) {
           current_term *= x - grid[j];
@@ -71,16 +77,18 @@ std::function<double(double)> generate_lagrange_polynomial(const int n, const st
 
 debug_result interpolate_by_lagrange(int f, double a, double b, double x) {
   std::function<double(double)> func = get_function(f);
-  int n = 1;
-  std::vector<double> roots(n);
+  int n = 4;
+  std::vector<double> roots(n), values(n);
   fill_chebyshev_polynomial_roots(n, a, b, roots.data());
-  double lagrange_old, lagrange_current = generate_lagrange_polynomial(n, func, roots.data())(x);
+  fill_function_values(func, n, values.data(), roots.data());
+  double lagrange_old, lagrange_current = generate_lagrange_polynomial(n, values.data(), roots.data())(x);
   do {
     n++;
     lagrange_old = lagrange_current;
-    roots.reserve(n);
+    roots.reserve(n); values.reserve(n);
     fill_chebyshev_polynomial_roots(n, a, b, roots.data());
-    lagrange_current = generate_lagrange_polynomial(n, func, roots.data())(x);
+    fill_function_values(func, n, values.data(), roots.data());
+    lagrange_current = generate_lagrange_polynomial(n, values.data(), roots.data())(x);
   } while (abs(lagrange_current - lagrange_old) > 1e-4 && n < 100);
   return {
     lagrange_current,
