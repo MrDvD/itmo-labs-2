@@ -69,7 +69,10 @@
   \end{gathered}
 \]
 
-Таким образом, мы вывели формулу для \textit{интерполяционного многочлена в форме Лагранжа}.
+Таким образом, мы вывели формулу для \textit{интерполяционного многочлена в форме Лагранжа}:
+\[
+  L_N(t)=\sum_{n=0}^N f(t_n)\cdot\prod_{\substack{j=0\\ n\neq j}}^N\dfrac{t-t_j}{t_n-t_j}
+\]
 
 \subsubsection{Многочлен Чебышёва}
 
@@ -86,18 +89,18 @@
 \[
   \begin{gathered}
     \cos(n\arccos t)=0\implies n\arccos t_k=\dfrac{\pi}{2}+\pi k,\quad k\in\mathbb{Z}\implies\\
-    \implies\arccos t_k=\dfrac{2k+1}{2n}\pi\implies t_k=\cos\left(\dfrac{2k+1}{2n}\pi\right)
+    \implies\arccos t_k=\dfrac{2k+1}{2n}\pi\implies t_k=\cos\left(\dfrac{2k+1}{2n}\pi\right),\quad\dfrac{2k+1}{2n}\pi\in[0,\pi]
   \end{gathered}
 \]
 
-Заметим, что нули симметричны: \( t_{n+k}=t_{n-k-1} \). Это значит, что многочлен Чебышёва степени \( n \) имеет ровно \( n \) различных корней на отрезке \( [-1,1] \):
+Поскольку это многочлен степени \( n \), он имеет не более \( n \) различных вещественных корней \textit{(основная теорема алгебры)}. Из \( \cos\colon\mathbb{R}\to\mathbb{R} \) следует, что все \( n \) корней лежат на отрезке \( [-1,1] \):
 \[
-  t_k=\cos\left(\dfrac{2k+1}{2n}\pi\right),\quad k=\overline{1,n}
+  t_k=\cos\left(\dfrac{2k-1}{2n}\pi\right),\quad k=\overline{1,n}
 \]
 
 Масштабируем корни на произвольный отрезок \( [a,b] \):
 \[
-  t_k=\dfrac{a+b}{2}+\dfrac{b-a}{2}\cos\left(\dfrac{2k+1}{2n}\pi\right)
+  t_k=\dfrac{a+b}{2}+\dfrac{b-a}{2}\cos\left(\dfrac{2k-1}{2n}\pi\right)
 \]
 
 Таким образом, мы получили набор интерполяционных узлов \( \{t_n\}_{n=0}^N\subset[a,b] \) и можем приступить к составлению численного метода.
