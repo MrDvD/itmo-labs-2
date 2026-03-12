@@ -5,7 +5,7 @@
 \begin{lstlisting}[caption=Вычисление значения интерполирующей функции \( F(x) \) заданной точности.]
 double interpolate_by_lagrange(int f, double a, double b, double x) {
   function<double(double)> func = get_function(f);
-  int n = 1;
+  int n = 4;
   std::vector<double> roots(n);
   fill_chebyshev_polynomial_roots(n, a, b, roots.data());
   double lagrange_old, lagrange_current = generate_lagrange_polynomial(n, func, roots.data())(x);
@@ -15,7 +15,7 @@ double interpolate_by_lagrange(int f, double a, double b, double x) {
     roots.reserve(n);
     fill_chebyshev_polynomial_roots(n, a, b, roots.data());
     lagrange_current = generate_lagrange_polynomial(n, func, roots.data())(x);
-  } while (abs(lagrange_current - lagrange_old) > 1e-4 && n < 100);
+  } while (abs(lagrange_current - lagrange_old) > 0.01 && n < 100);
   return lagrange_current;
 }
 \end{lstlisting}
