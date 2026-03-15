@@ -11,8 +11,9 @@ reports:
 
       {pc}:	{instruction}	{pc:label}
       D0: {D0:hex} D1: {D1:hex} A0: {A0:hex} A1: {A1:hex} A7(SP): {A7:hex} SR: {SR:bin}
-      stack: {memory:236:251}
+      stack: {memory:308:335}
       buffer: {memory:64:100}
+      virt_mem: {memory:0:32}
 
   - name: Check results
     slice: last

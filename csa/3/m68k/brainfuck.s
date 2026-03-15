@@ -1,11 +1,11 @@
     .data
-    .org     0x100
+    .org     0x150
 mem_ptr:         .word  0x0
 line_ptr:        .word  0x40
 
 input_addr:      .word  0x80               ; Input device address
 output_addr:     .word  0x84               ; Output device address
-stack_top:       .word  0x100              ; Stack top address
+stack_top:       .word  0x150              ; Stack top address
 
     .text
     .org     0x200
@@ -14,8 +14,8 @@ _start:
     movea.l   (A7), A7                     ; Memory Addressing (Indirect)
     movea.l   input_addr, A0               ; Immediate Addressing
     move.l    (A0), D0
-    movea.l   output_addr, A2
-    movea.l   (A2), A2
+    movea.l   output_addr, A1
+    move.l    (A1), D2
 
     move.l    0, -(A7)                     ; for return code
     movea.l   line_ptr, A1
@@ -24,62 +24,48 @@ _start:
 
     jsr       func_read_line
 
-    link      A1, -16                      ; A7(SP) += 12
-
-    halt
+    link      A1, -20                      ; A7(SP) += 12
 
     cmp.b     0, -4(A7)
-    beq       start_interpretation
+    beq       check_brackets
 
-    movea.l   (A2), A2
-    move.l    0xCC, (A2)
+    movea.l   D2, A1
+    move.l    0xCC, (A1)
 
     jmp       end       
 
-start_interpretation:
+check_brackets:
     move.l    0, -(A7)
     movea.l   mem_ptr, A1
     move.l    (A1), -(A7)
 
     jsr       func_validate_brackets
 
-    halt
-
-    link      A1, -12
+    link      A1, -16                      ; A7(SP) += 8
     cmp.b     0, -4(A7)
-    beq       while
+    beq       start_processing
 
-    movea.l   (A2), A2
-    move.l    -1, (A2)
+    movea.l   D2, A1
+    move.l    -1, (A1)
 
     jmp       end
 
-while:
-    move.l    (A0), D0
-    cmp.b     10, D0                       ; reading till 'LF' (\n)
-    beq       end
+start_processing:
+    move.l    D2, -(A7)
+    movea.l   mem_ptr, A1
+    move.l    (A1), -(A7)
+    movea.l   line_ptr, A1
+    move.l    (A1), -(A7)
 
-    move.l    A0, -(A7)
-    move.l    (A2), -(A7)
-    move.l    D0, -(A7)
-
-    jsr       func_process_command
-
-    move.l    A7, D0
-    add.l     12, D0
-    movea.l   D0, A7
-
-    cmp.b     0, -8(A7)
-    bne       end
-
-    jmp       while
+    jsr       func_process_all_commands
+    link      A1, -16                      ; A7(SP) += 12
 end:
     halt
 
 func_read_line:                            ; int read_line(in_ptr, line_ptr) { ... }
     link      A6, 0
     move.l    0, (A6)                      ; int line_idx = 0
-    move.l    0, 12(A7)                    ; set return code to 0
+    move.l    0, 16(A6)                    ; set return code to 0
 _while_read:
     cmp.l     32, (A6)
     beq       _overflow_read
@@ -96,13 +82,14 @@ _while_read:
     move.l    (A6), D1                     ; saving to the buffer
     add.l     12(A6), D1
     movea.l   D1, A1
+
     move.b    D0, (A1)                     
 
     add.l     1, (A6)
 
     jmp       _while_read
 _overflow_read:
-    move.l    0xCC, 12(A7)                 ; update return code
+    move.l    1, 12(A7)                    ; update return code
 _end_read:
     unlk      A6
     rts
@@ -111,15 +98,17 @@ func_validate_brackets:                    ; bool validate_brackets(line_ptr)
     link      A6, 4
     move.l    0, (A6)                      ; int bracket_count = 0
     move.l    0, -4(A6)                    ; int line_idx = 0
-    move.l    0, 12(A6)
+    move.l    0, 8(A6)                     ; set return code to 0
 _while_validate:
-    cmp.l     32, -4(A6)
-    beq       _end_validate
-
     move.l    -4(A6), D0
-    cmp.l     83, 8(A6,D0)
+    add.l     8(A6), D0
+    movea.l   D0, A1
+
+    cmp.b     0, (A1)
+    beq       _end_validate
+    cmp.b     83, (A1)
     beq       _found_opening_bracket
-    cmp.l     85, 8(A6,D0)
+    cmp.b     85, (A1)
     beq       _found_closing_bracket
 
     jmp       _rest_while
@@ -133,7 +122,7 @@ _rest_while:
     add.l     1, -4(A6)                    ; line_idx++
     jmp       _while_validate
 _error_validate:
-    move.l    1, 8(A7)
+    move.l    1, 8(A6)
     unlk      A6
     rts
 _end_validate:
@@ -142,10 +131,41 @@ _end_validate:
     unlk      A6
     rts
 
-func_process_command:                      ; bool process_command(cmd, out_ptr, mem_ptr) { ... }
-    link      A6, 8
+func_process_all_commands:                 ; void process_all_commands(line_ptr, mem_ptr, out_ptr)
+    link      A6, 0
+    move.l    0, (A6)                      ; int line_idx = 0
+_while_process:
+    movea.l   12(A6), A1
+    move.l    (A1), -(A7)
+    move.l    16(A6), -(A7)
+    move.l    (A6), D0
+    add.l     8(A6), D0
+    movea.l   D0, A1
+    move.l    (A1), -(A7)
 
-    cmp.b     50, (A6)
+    jsr       func_process_command
+
+    link      A1, -24                      ; A7(SP) += 16
+    cmp.b     0, -8(A7)
+    bne       _end_process_all
+
+    add.l     1, (A6)
+
+    jmp       _while_process
+_end_process_all:
+    unlk      A6
+    rts
+
+func_process_command:                      ; bool process_command(cmd, out_ptr, mem_ptr) { ... }
+    move.l    0, 16(A7)                    ; set return code to 0
+    cmp.b     0, 4(A7)
+    bne       _command_not_null
+
+    move.l    1, 16(A7)
+
+    jmp       _end_process
+_command_not_null:
+    cmp.b     50, 4(A7)
     bne       _command_not_inc_ptr
 
     movea.l   -8(A6), A1
@@ -157,7 +177,7 @@ func_process_command:                      ; bool process_command(cmd, out_ptr, 
 
     jmp       _end_process
 _command_not_inc_ptr:
-    cmp.b     48, D0
+    cmp.b     48, 4(A7)
     bne       _command_not_dec_ptr
 
     movea.l   -8(A6), A1
@@ -174,7 +194,5 @@ _out_of_bounds_error:
     movea.l   -4(A6), A1                   ; Memory Addressing (Indirect with Displacement)
     move.b    -1, (A1)
     jmp       _end_process
-
 _end_process:
-    unlk      A6 
     rts
