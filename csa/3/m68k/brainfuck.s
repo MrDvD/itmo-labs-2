@@ -227,6 +227,12 @@ _command_not_output:
     cmp.b     44, 4(A7)                    ; char == ','
     bne       _command_not_input
 
+    movea.l   16(A7), A1
+    movea.l   (A1), A1
+
+    movea.l   12(A7), A2
+    move.b    (A2), (A1)
+
     jmp       _end_process
 _command_not_input:
     jmp       _end_process
