@@ -24,7 +24,7 @@ _start:
 
     jsr       func_read_line
 
-    link      A1, -20                      ; A7(SP) += 12
+    link      A1, -16                      ; A7(SP) += 12
 
     cmp.b     0, -4(A7)
     beq       check_brackets
@@ -35,13 +35,13 @@ _start:
     jmp       end       
 
 check_brackets:
-    move.l    0, -(A7)
+    move.l    0, -(A7)                     ; for return code
     movea.l   mem_ptr, A1
-    move.l    (A1), -(A7)
+    move.l    (A1), -(A7)                  ; pass-by value
 
     jsr       func_validate_brackets
 
-    link      A1, -16                      ; A7(SP) += 8
+    link      A1, -12                      ; A7(SP) += 8
     cmp.b     0, -4(A7)
     beq       start_processing
 
@@ -52,8 +52,7 @@ check_brackets:
 
 start_processing:
     move.l    D2, -(A7)
-    movea.l   mem_ptr, A1
-    move.l    (A1), -(A7)
+    move.l    mem_ptr, -(A7)               ; pass-by reference
     movea.l   line_ptr, A1
     move.l    (A1), -(A7)
 
@@ -98,7 +97,7 @@ func_validate_brackets:                    ; bool validate_brackets(line_ptr)
     link      A6, 4
     move.l    0, (A6)                      ; int bracket_count = 0
     move.l    0, -4(A6)                    ; int line_idx = 0
-    move.l    0, 8(A6)                     ; set return code to 0
+    move.l    0, 12(A6)                    ; set return code to 0
 _while_validate:
     move.l    -4(A6), D0
     add.l     8(A6), D0
@@ -113,7 +112,7 @@ _while_validate:
 
     jmp       _rest_while
 _found_closing_bracket:
-    add.l     -1, (A6)
+    sub.l     1, (A6)
     bmi       _error_validate
     jmp       _rest_while
 _found_opening_bracket:
@@ -131,12 +130,12 @@ _end_validate:
     unlk      A6
     rts
 
-func_process_all_commands:                 ; void process_all_commands(line_ptr, mem_ptr, out_ptr)
+func_process_all_commands:                 ; void process_all_commands(line_ptr, *mem_ptr, out_ptr)
     link      A6, 0
     move.l    0, (A6)                      ; int line_idx = 0
 _while_process:
-    movea.l   12(A6), A1
-    move.l    (A1), -(A7)
+    move.l    0, -(A7)                     ; for return code
+    move.l    12(A6), -(A7)
     move.l    16(A6), -(A7)
     move.l    (A6), D0
     add.l     8(A6), D0
@@ -145,18 +144,24 @@ _while_process:
 
     jsr       func_process_command
 
-    link      A1, -24                      ; A7(SP) += 16
-    cmp.b     0, -8(A7)
+    link      A1, -20                      ; A7(SP) += 16
+    cmp.b     0, -4(A7)
     bne       _end_process_all
 
     add.l     1, (A6)
 
     jmp       _while_process
 _end_process_all:
+    cmp.b     1, -4(A7)
+    beq       _ignore_error_code
+
+    movea.l   16(A6), A1
+    move.l    -4(A7), (A1)
+_ignore_error_code:
     unlk      A6
     rts
 
-func_process_command:                      ; bool process_command(cmd, out_ptr, mem_ptr) { ... }
+func_process_command:                      ; int process_command(cmd, out_ptr, *mem_ptr) { ... }
     move.l    0, 16(A7)                    ; set return code to 0
     cmp.b     0, 4(A7)
     bne       _command_not_null
@@ -165,34 +170,68 @@ func_process_command:                      ; bool process_command(cmd, out_ptr, 
 
     jmp       _end_process
 _command_not_null:
-    cmp.b     50, 4(A7)
+    cmp.b     62, 4(A7)                    ; char == '>'
     bne       _command_not_inc_ptr
 
-    movea.l   -8(A6), A1
-
-    cmp.l     29, (A1)
-    bge       _out_of_bounds_error
-
+    movea.l   12(A7), A1
     add.l     1, (A1)
+
+    cmp.l     30, (A1)
+    bge       _out_of_bounds_error
 
     jmp       _end_process
 _command_not_inc_ptr:
-    cmp.b     48, 4(A7)
+    cmp.b     60, 4(A7)                    ; char == '<'
     bne       _command_not_dec_ptr
 
-    movea.l   -8(A6), A1
+    movea.l   12(A7), A1
+    sub.l     1, (A1)
 
-    cmp.l     1, (A1)
+    cmp.l     0, (A1)
     blt       _out_of_bounds_error
-
-    add.l     -1, (A1)
 
     jmp       _end_process
 _command_not_dec_ptr:
+    cmp.b     43, 4(A7)                    ; char == '+'
+    bne       _command_not_inc_val
+
+    movea.l   12(A7), A1
+    movea.l   (A1), A1                     ; dereferencing *mem_ptr
+    add.l     1, (A1)
+
+    bvs       _overflow_error
+
+    jmp       _end_process
+_command_not_inc_val:
+    cmp.b     45, 4(A7)                    ; char == '-'
+    bne       _command_not_dec_val
+
+    movea.l   12(A7), A1
+    movea.l   (A1), A1                     ; dereferencing *mem_ptr
+    sub.l     1, (A1)
+
+    bvs       _overflow_error
+
+    jmp       _end_process
+_command_not_dec_val:
+    cmp.b     46, 4(A7)                    ; char == '.'
+    bne       _command_not_output
+
+    movea.l   12(A7), A1
+    movea.l   (A1), A1
+    move.l    (A1), D0
+    
+    movea.l   8(A7), A1
+    move.b    D0, (A1)
+
+    jmp       _end_process
+_command_not_output:
+    jmp       _end_process
+_overflow_error:
+    move.l    0xCC, 16(A7)
     jmp       _end_process
 _out_of_bounds_error:
-    movea.l   -4(A6), A1                   ; Memory Addressing (Indirect with Displacement)
-    move.b    -1, (A1)
+    move.l    -1, 16(A7)
     jmp       _end_process
 _end_process:
     rts
