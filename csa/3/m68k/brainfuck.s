@@ -1,11 +1,11 @@
     .data
-    .org     0x150
+    .org     0x60
 mem_ptr:         .word  0x0
-line_ptr:        .word  0x40
+line_ptr:        .word  0x150
 
 input_addr:      .word  0x80               ; Input device address
 output_addr:     .word  0x84               ; Output device address
-stack_top:       .word  0x150              ; Stack top address
+stack_top:       .word  0x120              ; Stack top address
 
     .text
     .org     0x200
@@ -51,13 +51,15 @@ check_brackets:
     jmp       end
 
 start_processing:
+    movea.l   input_addr, A0
+    move.l    (A0), -(A7)
     move.l    D2, -(A7)
     move.l    mem_ptr, -(A7)               ; pass-by reference
     movea.l   line_ptr, A1
     move.l    (A1), -(A7)
 
     jsr       func_process_all_commands
-    link      A1, -16                      ; A7(SP) += 12
+    link      A1, -20                      ; A7(SP) += 16
 end:
     halt
 
@@ -66,9 +68,6 @@ func_read_line:                            ; int read_line(in_ptr, line_ptr) { .
     move.l    0, (A6)                      ; int line_idx = 0
     move.l    0, 16(A6)                    ; set return code to 0
 _while_read:
-    cmp.l     32, (A6)
-    beq       _overflow_read
-
     movea.l   8(A6), A1
     move.l    (A1), D0
 
@@ -87,8 +86,6 @@ _while_read:
     add.l     1, (A6)
 
     jmp       _while_read
-_overflow_read:
-    move.l    1, 12(A7)                    ; update return code
 _end_read:
     unlk      A6
     rts
@@ -130,12 +127,13 @@ _end_validate:
     unlk      A6
     rts
 
-func_process_all_commands:                 ; void process_all_commands(line_ptr, *mem_ptr, out_ptr)
+func_process_all_commands:                 ; void process_all_commands(line_ptr, *mem_ptr, out_ptr, in_ptr)
     link      A6, 0
     move.l    0, (A6)                      ; int line_idx = 0
 _while_process:
     move.l    0, -(A7)                     ; for return code
     move.l    12(A6), -(A7)
+    move.l    20(A6), -(A7)
     move.l    16(A6), -(A7)
     move.l    (A6), D0
     add.l     8(A6), D0
@@ -144,7 +142,7 @@ _while_process:
 
     jsr       func_process_command
 
-    link      A1, -20                      ; A7(SP) += 16
+    link      A1, -24                      ; A7(SP) += 20
     cmp.b     0, -4(A7)
     bne       _end_process_all
 
@@ -161,19 +159,19 @@ _ignore_error_code:
     unlk      A6
     rts
 
-func_process_command:                      ; int process_command(cmd, out_ptr, *mem_ptr) { ... }
-    move.l    0, 16(A7)                    ; set return code to 0
+func_process_command:                      ; int process_command(cmd, out_ptr, in_ptr, *mem_ptr) { ... }
+    move.l    0, 20(A7)                    ; set return code to 0
     cmp.b     0, 4(A7)
     bne       _command_not_null
 
-    move.l    1, 16(A7)
+    move.l    1, 20(A7)
 
     jmp       _end_process
 _command_not_null:
     cmp.b     62, 4(A7)                    ; char == '>'
     bne       _command_not_inc_ptr
 
-    movea.l   12(A7), A1
+    movea.l   16(A7), A1
     add.l     1, (A1)
 
     cmp.l     30, (A1)
@@ -184,7 +182,7 @@ _command_not_inc_ptr:
     cmp.b     60, 4(A7)                    ; char == '<'
     bne       _command_not_dec_ptr
 
-    movea.l   12(A7), A1
+    movea.l   16(A7), A1
     sub.l     1, (A1)
 
     cmp.l     0, (A1)
@@ -195,7 +193,7 @@ _command_not_dec_ptr:
     cmp.b     43, 4(A7)                    ; char == '+'
     bne       _command_not_inc_val
 
-    movea.l   12(A7), A1
+    movea.l   16(A7), A1
     movea.l   (A1), A1                     ; dereferencing *mem_ptr
     add.l     1, (A1)
 
@@ -206,7 +204,7 @@ _command_not_inc_val:
     cmp.b     45, 4(A7)                    ; char == '-'
     bne       _command_not_dec_val
 
-    movea.l   12(A7), A1
+    movea.l   16(A7), A1
     movea.l   (A1), A1                     ; dereferencing *mem_ptr
     sub.l     1, (A1)
 
@@ -217,7 +215,7 @@ _command_not_dec_val:
     cmp.b     46, 4(A7)                    ; char == '.'
     bne       _command_not_output
 
-    movea.l   12(A7), A1
+    movea.l   16(A7), A1
     movea.l   (A1), A1
     move.l    (A1), D0
     
@@ -226,12 +224,17 @@ _command_not_dec_val:
 
     jmp       _end_process
 _command_not_output:
+    cmp.b     44, 4(A7)                    ; char == ','
+    bne       _command_not_input
+
+    jmp       _end_process
+_command_not_input:
     jmp       _end_process
 _overflow_error:
-    move.l    0xCC, 16(A7)
+    move.l    0xCC, 20(A7)
     jmp       _end_process
 _out_of_bounds_error:
-    move.l    -1, 16(A7)
+    move.l    -1, 20(A7)
     jmp       _end_process
 _end_process:
     rts
