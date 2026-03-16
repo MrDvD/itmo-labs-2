@@ -1,5 +1,5 @@
 name: "assert hello(*()) == ('Hello\n\0World',)"
-limit: 1000
+limit: 200
 memory_size: 0x1000
 memory_mapped_io:
   0x80: [43, 43, 46, 10]
