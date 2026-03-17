@@ -250,11 +250,36 @@ _command_not_input:
     cmp.l     0, D0
     bne       _skip_jump_forward
 
+    link      A6, 0
+    move.l    1, (A6)                      ; int bracket_count = 1
+    move.l    24(A6), D0
 _while_jump_forward:
-    ; wip
+    add.l     1, D0
+    
+    move.l    D0, D1
+    add.l     24(A6), D1
+    movea.l   D1, A1
 
+    move.b    (A1), D1
+    cmp.b     91, D1
+    bne       _jump_forward_not_open_br
+
+    add.l     1, (A6)
+
+    jmp       _check_bracket_count_forward
+_jump_forward_not_open_br:
+    cmp.b     93, D1
+    bne       _while_jump_forward
+
+    sub.l     1, (A6)
+_check_bracket_count_forward:
+    cmp.l     0, (A6)
+    beq       _exit_jump_forward
     jmp       _while_jump_forward
+_exit_jump_forward:
+    unlk      A6
 
+    move.l    D0, 28(A7)
 _skip_jump_forward:
     jmp       _end_process
 _command_not_jump_forward:
@@ -268,6 +293,36 @@ _command_not_jump_forward:
     cmp.l     0, D0
     beq       _skip_jump_back
 
+    link      A6, 0
+    move.l    1, (A6)                      ; int bracket_count = 1
+    move.l    24(A6), D0
+_while_jump_back:
+    sub.l     1, D0
+    
+    move.l    D0, D1
+    add.l     24(A6), D1
+    movea.l   D1, A1
+
+    move.b    (A1), D1
+    cmp.b     91, D1
+    bne       _jump_back_not_open_br
+
+    sub.l     1, (A6)
+
+    jmp       _check_bracket_count_back
+_jump_back_not_open_br:
+    cmp.b     93, D1
+    bne       _while_jump_back
+
+    add.l     1, (A6)
+_check_bracket_count_back:
+    cmp.l     0, (A6)
+    beq       _exit_jump_back
+    jmp       _while_jump_back
+_exit_jump_back:
+    unlk      A6
+
+    move.l    D0, 28(A7)
 _skip_jump_back:
     jmp       _end_process
 _overflow_error:
