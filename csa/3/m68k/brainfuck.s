@@ -32,7 +32,7 @@ _start:
     movea.l   D2, A1
     move.l    0xCC, (A1)
 
-    jmp       end       
+    jmp       end  
 
 check_brackets:
     move.l    0, -(A7)                     ; for return code
@@ -132,6 +132,9 @@ func_process_all_commands:                 ; void process_all_commands(line_ptr,
     move.l    0, (A6)                      ; int line_idx = 0
 _while_process:
     move.l    0, -(A7)                     ; for return code
+    move.l    0, -(A7)                     ; for return idx
+    move.l    (A6), -(A7)
+    move.l    8(A6), -(A7)
     move.l    12(A6), -(A7)
     move.l    20(A6), -(A7)
     move.l    16(A6), -(A7)
@@ -142,7 +145,8 @@ _while_process:
 
     jsr       func_process_command
 
-    link      A1, -24                      ; A7(SP) += 20
+    link      A1, -36                      ; A7(SP) += 32
+    move.l    -8(A7), (A6)
     cmp.b     0, -4(A7)
     bne       _end_process_all
 
@@ -159,12 +163,13 @@ _ignore_error_code:
     unlk      A6
     rts
 
-func_process_command:                      ; int process_command(cmd, out_ptr, in_ptr, *mem_ptr) { ... }
-    move.l    0, 20(A7)                    ; set return code to 0
+func_process_command:                      ; struct { int idx, int exit_code; } process_command(cmd, out_ptr, in_ptr, *mem_ptr, line_ptr, line_idx) { ... }
+    move.l    24(A7), 28(A7)               ; set return idx to line_idx
+    move.l    0, 32(A7)                    ; set return code to 0
     cmp.b     0, 4(A7)
     bne       _command_not_null
 
-    move.l    1, 20(A7)
+    move.l    1, 32(A7)
 
     jmp       _end_process
 _command_not_null:
@@ -235,12 +240,41 @@ _command_not_output:
 
     jmp       _end_process
 _command_not_input:
+    cmp.b     91, 4(A7)                    ; char == '['
+    bne       _command_not_jump_forward
+
+    movea.l   16(A7), A1
+    movea.l   (A1), A1
+    move.l    (A1), D0
+
+    cmp.l     0, D0
+    bne       _skip_jump_forward
+
+_while_jump_forward:
+    ; wip
+
+    jmp       _while_jump_forward
+
+_skip_jump_forward:
+    jmp       _end_process
+_command_not_jump_forward:
+    cmp.b     93, 4(A7)                    ; char == ']'
+    bne       _out_of_bounds_error
+
+    movea.l   16(A7), A1
+    movea.l   (A1), A1
+    move.l    (A1), D0
+
+    cmp.l     0, D0
+    beq       _skip_jump_back
+
+_skip_jump_back:
     jmp       _end_process
 _overflow_error:
-    move.l    0xCC, 20(A7)
+    move.l    0xCC, 32(A7)
     jmp       _end_process
 _out_of_bounds_error:
-    move.l    -1, 20(A7)
+    move.l    -1, 32(A7)
     jmp       _end_process
 _end_process:
     rts
