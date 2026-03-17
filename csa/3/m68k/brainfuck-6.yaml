@@ -1,0 +1,21 @@
+name: "assert brainfuck_interpreter('++++++++++[>++++++++++<-]>.\n') == ('d', '')"
+limit: 5000
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 91, 62, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 60, 45, 93, 62, 46, 10]
+  0x84: []
+reports:
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+      symio[0x80]: {io:0x80:sym}
+      symio[0x84]: {io:0x84:sym}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [100]
+      symio[0x80]: "" >>> ""
+      symio[0x84]: "" >>> "d"
