@@ -30,7 +30,7 @@ _start:
     beq       check_brackets
 
     movea.l   D2, A1
-    move.l    0xCC, (A1)
+    move.l    0xCCCCCCCC, (A1)
 
     jmp       end  
 
@@ -67,6 +67,9 @@ func_read_line:                            ; int read_line(in_ptr, line_ptr) { .
     move.l    0, (A6)                      ; int line_idx = 0
     move.l    0, 16(A6)                    ; set return code to 0
 _while_read:
+    cmp.l     64, (A6)
+    beq       _buffer_overflow
+
     movea.l   8(A6), A1
     move.l    (A1), D0
 
@@ -80,6 +83,8 @@ _while_read:
     add.l     1, (A6)
 
     jmp       _while_read
+_buffer_overflow:
+    move.l    1, 16(A6)
 _end_read:
     unlk      A6
     rts
