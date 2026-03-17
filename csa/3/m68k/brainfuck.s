@@ -158,35 +158,7 @@ _ignore_error_code:
 func_process_command:                      ; struct { int idx, int exit_code; } process_command(cmd, out_ptr, in_ptr, line_ptr, line_idx) { ... }
     move.l    20(A7), 24(A7)               ; set return idx to line_idx
     move.l    0, 28(A7)                    ; set return code to 0
-    cmp.b     0, 4(A7)
-    bne       _command_not_null
 
-    move.l    1, 28(A7)
-
-    jmp       _end_process
-_command_not_null:
-    cmp.b     62, 4(A7)                    ; char == '>'
-    bne       _command_not_inc_ptr
-
-    movea.l   mem_ptr, A1
-    add.l     1, (A1)
-
-    cmp.l     30, (A1)
-    bge       _out_of_bounds_error
-
-    jmp       _end_process
-_command_not_inc_ptr:
-    cmp.b     60, 4(A7)                    ; char == '<'
-    bne       _command_not_dec_ptr
-
-    movea.l   mem_ptr, A1
-    sub.l     1, (A1)
-
-    cmp.l     0, (A1)
-    blt       _out_of_bounds_error
-
-    jmp       _end_process
-_command_not_dec_ptr:
     cmp.b     43, 4(A7)                    ; char == '+'
     bne       _command_not_inc_val
 
@@ -209,6 +181,28 @@ _command_not_inc_val:
 
     jmp       _end_process
 _command_not_dec_val:
+    cmp.b     62, 4(A7)                    ; char == '>'
+    bne       _command_not_inc_ptr
+
+    movea.l   mem_ptr, A1
+    add.l     1, (A1)
+
+    cmp.l     30, (A1)
+    bge       _out_of_bounds_error
+
+    jmp       _end_process
+_command_not_inc_ptr:
+    cmp.b     60, 4(A7)                    ; char == '<'
+    bne       _command_not_dec_ptr
+
+    movea.l   mem_ptr, A1
+    sub.l     1, (A1)
+
+    cmp.l     0, (A1)
+    blt       _out_of_bounds_error
+
+    jmp       _end_process
+_command_not_dec_ptr:
     cmp.b     46, 4(A7)                    ; char == '.'
     bne       _command_not_output
 
@@ -268,9 +262,10 @@ _exit_jump_forward:
     unlk      A6
 
     move.l    D0, 24(A7)
+    jmp       _end_process
 _command_not_jump_forward:
     cmp.b     93, 4(A7)                    ; char == ']'
-    bne       _out_of_bounds_error
+    bne       _command_not_jump_back
 
     movea.l   mem_ptr, A1
     movea.l   (A1), A1
@@ -305,6 +300,14 @@ _exit_jump_back:
     unlk      A6
 
     move.l    D0, 24(A7)
+    jmp       _end_process
+_command_not_jump_back:
+    cmp.b     0, 4(A7)
+    bne       _out_of_bounds_error
+
+    move.l    1, 28(A7)
+
+    jmp       _end_process
 _overflow_error:
     move.l    0xCC, 28(A7)
     jmp       _end_process
