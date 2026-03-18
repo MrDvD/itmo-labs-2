@@ -1,8 +1,8 @@
-name: "assert brainfuck_interpreter('+++++[>+++++[>++<-]<-]>>.\n') == ('2', '')"
-limit: 5000
+name: "assert brainfuck_interpreter(',.\nA') == ('A', '')"
+limit: 2000
 memory_size: 0x1000
 memory_mapped_io:
-  0x80: [43, 43, 43, 43, 43, 91, 62, 43, 43, 43, 43, 43, 91, 62, 43, 43, 60, 45, 93, 60, 45, 93, 62, 62, 46, 10]
+  0x80: [44, 46, 10, 65]
   0x84: []
 reports:
   - name: Step-by-step
@@ -26,6 +26,6 @@ reports:
       symio[0x84]: {io:0x84:sym}
     assert: |
       numio[0x80]: [] >>> []
-      numio[0x84]: [] >>> [50]
+      numio[0x84]: [] >>> [65]
       symio[0x80]: "" >>> ""
-      symio[0x84]: "" >>> "2"
+      symio[0x84]: "" >>> "A"
