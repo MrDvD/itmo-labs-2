@@ -29,28 +29,10 @@ _start:
     link      A1, -16                      ; A7(SP) += 12
 
     cmp.b     0, -4(A7)
-    beq       check_brackets
-
-    movea.l   D2, A1
-    move.l    0xCCCCCCCC, (A1)
-
-    jmp       end  
-
-check_brackets:
-    move.l    0, -(A7)                     ; for return code
-    movea.l   hash_ptr, A1
-    move.l    (A1), -(A7)
-    movea.l   line_ptr, A1
-    move.l    (A1), -(A7)                  ; pass-by value
-
-    jsr       func_validate_brackets
-
-    link      A1, -16                      ; A7(SP) += 12
-    cmp.b     0, -4(A7)
     beq       start_processing
 
     movea.l   D2, A1
-    move.l    -1, (A1)
+    move.l    -4(A7), (A1)
 
     jmp       end
 
@@ -67,11 +49,12 @@ end:
     halt
 
 func_read_line:                            ; int read_line(in_ptr, line_ptr) { ... }
-    link      A6, 4
-    move.l    0, -4(A6)                    ; int line_idx = 0
+    link      A6, 8
+    move.l    0, -4(A6)                    ; int bracket_count = 0
+    move.l    0, -8(A6)                    ; int line_idx = 0
     move.l    0, 16(A6)                    ; set return code to 0
 _while_read:
-    cmp.l     64, -4(A6)
+    cmp.l     64, -8(A6)
     beq       _buffer_overflow
 
     movea.l   8(A6), A1
@@ -80,41 +63,23 @@ _while_read:
     cmp.b     10, D0                       ; reading till 'LF' (\n)
     beq       _end_read
 
-    movea.l   -4(A6), A1                   ; saving to the buffer
+    movea.l   -8(A6), A1                   ; saving to the buffer
     movea.l   12(A6), A2
-    move.b    D0, (A1,A2)                     
+    move.b    D0, (A1,A2)
 
-    add.l     1, -4(A6)
-
-    jmp       _while_read
-_buffer_overflow:
-    move.l    1, 16(A6)
-_end_read:
-    unlk      A6
-    rts
-
-func_validate_brackets:                    ; bool validate_brackets(line_ptr, hash_ptr)
-    link      A6, 8
-    move.l    0, -4(A6)                    ; int bracket_count = 0
-    move.l    0, -8(A6)                    ; int line_idx = 0
-    move.l    0, 16(A6)                    ; set return code to 0
-_while_validate:
-    move.l    -8(A6), D1
-    movea.l   8(A6), A2
-
-    cmp.b     0, (A2,D1)
-    beq       _end_validate
-    cmp.b     91, (A2,D1)
+    cmp.b     91, D0
     beq       _found_opening_bracket
-    cmp.b     93, (A2,D1)
+    cmp.b     93, D0
     beq       _found_closing_bracket
-
     jmp       _rest_while
 _found_closing_bracket:
     sub.l     1, -4(A6)
-    bmi       _error_validate
-
-    movea.l   12(A6), A1
+    bpl       _skip_setting_bracket_error
+    move.l    -1, 16(A6)
+_skip_setting_bracket_error:
+    move.l    -8(A6), D1
+    movea.l   hash_ptr, A1
+    movea.l   (A1), A1
     move.l    D1, D3
     asl.l     2, D1
     move.l    (A7), (A1,D1)
@@ -126,16 +91,19 @@ _found_closing_bracket:
     jmp       _rest_while
 _found_opening_bracket:
     add.l     1, -4(A6)
-
-    move.l    D1, -(A7)
+    move.l    -8(A6), -(A7)
 _rest_while:
-    add.l     1, -8(A6)                    ; line_idx++
-    jmp       _while_validate
+    add.l     1, -8(A6)
+    jmp       _while_read
 _error_validate:
-    move.l    1, 16(A6)
+    move.l    -1, 16(A6)
     unlk      A6
     rts
-_end_validate:
+_buffer_overflow:
+    move.l    0xCCCCCCCC, 16(A6)
+    unlk      A6
+    rts
+_end_read:
     cmp.l     0, -4(A6)
     bne       _error_validate
     unlk      A6
