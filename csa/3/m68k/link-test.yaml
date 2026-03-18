@@ -8,5 +8,7 @@ reports:
   - name: Step-by-step
     slice: all
     view: |
-      {memory:32:71} -- A7(SP): {A7:hex} -- A6: {A6:hex}
-      {pc:hex}:	{instruction}	{pc:label}
+
+      stack: {memory:32:71}
+      A7(SP): {A7:hex} -- A6: {A6:hex}
+      {pc:dec}:	{instruction}	{pc:label}

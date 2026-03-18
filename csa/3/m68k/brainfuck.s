@@ -2,6 +2,8 @@
     .org     0x60
 mem_ptr:         .word  0x0
 line_ptr:        .word  0x150
+line_idx:        .word  0
+hash_ptr:        .word  
 
 input_addr:      .word  0x80               ; Input device address
 output_addr:     .word  0x84               ; Output device address
@@ -63,11 +65,11 @@ end:
     halt
 
 func_read_line:                            ; int read_line(in_ptr, line_ptr) { ... }
-    link      A6, 0
-    move.l    0, (A6)                      ; int line_idx = 0
+    link      A6, 4
+    move.l    0, -4(A6)                    ; int line_idx = 0
     move.l    0, 16(A6)                    ; set return code to 0
 _while_read:
-    cmp.l     64, (A6)
+    cmp.l     64, -4(A6)
     beq       _buffer_overflow
 
     movea.l   8(A6), A1
@@ -76,11 +78,11 @@ _while_read:
     cmp.b     10, D0                       ; reading till 'LF' (\n)
     beq       _end_read
 
-    movea.l   (A6), A1                     ; saving to the buffer
+    movea.l   -4(A6), A1                   ; saving to the buffer
     movea.l   12(A6), A2
     move.b    D0, (A1,A2)                     
 
-    add.l     1, (A6)
+    add.l     1, -4(A6)
 
     jmp       _while_read
 _buffer_overflow:
@@ -90,12 +92,12 @@ _end_read:
     rts
 
 func_validate_brackets:                    ; bool validate_brackets(line_ptr)
-    link      A6, 4
-    move.l    0, (A6)                      ; int bracket_count = 0
-    move.l    0, -4(A6)                    ; int line_idx = 0
+    link      A6, 8
+    move.l    0, -4(A6)                    ; int bracket_count = 0
+    move.l    0, -8(A6)                    ; int line_idx = 0
     move.l    0, 12(A6)                    ; set return code to 0
 _while_validate:
-    movea.l   -4(A6), A1
+    movea.l   -8(A6), A1
     movea.l   8(A6), A2
 
     cmp.b     0, (A1,A2)
@@ -107,47 +109,43 @@ _while_validate:
 
     jmp       _rest_while
 _found_closing_bracket:
-    sub.l     1, (A6)
+    sub.l     1, -4(A6)
     bmi       _error_validate
     jmp       _rest_while
 _found_opening_bracket:
-    add.l     1, (A6)
+    add.l     1, -4(A6)
 _rest_while:
-    add.l     1, -4(A6)                    ; line_idx++
+    add.l     1, -8(A6)                    ; line_idx++
     jmp       _while_validate
 _error_validate:
     move.l    1, 8(A6)
     unlk      A6
     rts
 _end_validate:
-    cmp.l     0, (A6)
+    cmp.l     0, -4(A6)
     bne       _error_validate
     unlk      A6
     rts
 
 func_process_all_commands:                 ; void process_all_commands(line_ptr, out_ptr, in_ptr)
     link      A6, 0
-    move.l    0, (A6)                      ; int line_idx = 0
+    movea.l   line_idx, A5
 _while_process:
     move.l    0, -(A7)                     ; for return code
-    move.l    0, -(A7)                     ; for return idx
-    
-    move.l    (A6), -(A7)
     move.l    8(A6), -(A7)
     move.l    16(A6), -(A7)
     move.l    12(A6), -(A7)
-    movea.l   (A6), A1
+    movea.l   (A5), A1
     movea.l   8(A6), A2
     move.l    (A1,A2), -(A7)
 
     jsr       func_process_command
 
-    link      A1, -32                      ; A7(SP) += 28
-    move.l    -8(A7), (A6)
+    link      A1, -24                      ; A7(SP) += 20
     cmp.b     0, -4(A7)
     bne       _end_process_all
 
-    add.l     1, (A6)
+    add.l     1, (A5)
 
     jmp       _while_process
 _end_process_all:
@@ -160,9 +158,8 @@ _ignore_error_code:
     unlk      A6
     rts
 
-func_process_command:                      ; struct { int idx, int exit_code; } process_command(cmd, out_ptr, in_ptr, line_ptr, line_idx) { ... }
-    move.l    20(A7), 24(A7)               ; set return idx to line_idx
-    move.l    0, 28(A7)                    ; set return code to 0
+func_process_command:                      ; int process_command(cmd, out_ptr, in_ptr, line_ptr) { ... }
+    move.l    0, 20(A7)                    ; set return code to 0
 
     cmp.b     43, 4(A7)                    ; char == '+'
     bne       _command_not_inc_val
@@ -173,7 +170,7 @@ func_process_command:                      ; struct { int idx, int exit_code; } 
 
     bvs       _overflow_error
 
-    jmp       _end_process
+    rts
 _command_not_inc_val:
     cmp.b     45, 4(A7)                    ; char == '-'
     bne       _command_not_dec_val
@@ -184,30 +181,114 @@ _command_not_inc_val:
 
     bvs       _overflow_error
 
-    jmp       _end_process
+    rts
 _command_not_dec_val:
     cmp.b     62, 4(A7)                    ; char == '>'
     bne       _command_not_inc_ptr
 
     movea.l   mem_ptr, A1
-    add.l     1, (A1)
+    add.l     4, (A1)
 
-    cmp.l     30, (A1)
+    cmp.l     120, (A1)
     bge       _out_of_bounds_error
 
-    jmp       _end_process
+    rts
 _command_not_inc_ptr:
     cmp.b     60, 4(A7)                    ; char == '<'
     bne       _command_not_dec_ptr
 
     movea.l   mem_ptr, A1
-    sub.l     1, (A1)
+    sub.l     4, (A1)
 
     cmp.l     0, (A1)
     blt       _out_of_bounds_error
 
-    jmp       _end_process
+    rts
 _command_not_dec_ptr:
+    cmp.b     93, 4(A7)                    ; char == ']'
+    bne       _command_not_jump_back
+
+    movea.l   mem_ptr, A1
+    movea.l   (A1), A1
+    move.l    (A1), D0
+
+    cmp.l     0, D0
+    bne       _continue_jump_back
+    rts
+
+_continue_jump_back:
+    link      A6, 4
+    move.l    1, -4(A6)                    ; int bracket_count = 1
+    movea.l   line_idx, A2
+    move.l    (A2), D0
+
+    movea.l   20(A6), A1
+_while_jump_back:
+    sub.l     1, D0
+    
+    cmp.b     91, (A1,D0)
+    bne       _jump_back_not_open_br
+
+    sub.l     1, -4(A6)
+
+    jmp       _check_bracket_count_back
+_jump_back_not_open_br:
+    cmp.b     93, (A1,D0)
+    bne       _while_jump_back
+
+    add.l     1, -4(A6)
+_check_bracket_count_back:
+    cmp.l     0, -4(A6)
+    beq       _exit_jump_back
+    jmp       _while_jump_back
+_exit_jump_back:
+    unlk      A6
+
+    move.l    D0, (A2)
+    rts
+_command_not_jump_back:
+    cmp.b     91, 4(A7)                    ; char == '['
+    bne       _command_not_jump_forward
+
+    movea.l   mem_ptr, A1
+    movea.l   (A1), A1
+    move.l    (A1), D0
+
+    cmp.l     0, D0
+    beq       _continue_jump_forward
+    rts
+
+_continue_jump_forward:
+    link      A6, 4
+    move.l    1, -4(A6)                    ; int bracket_count = 1
+    movea.l   line_idx, A2
+    move.l    (A2), D0
+
+    movea.l   20(A6), A1
+_while_jump_forward:
+    add.l     1, D0
+    
+    cmp.b     91, (A1,D0)
+    bne       _jump_forward_not_open_br
+
+    add.l     1, -4(A6)
+
+    jmp       _check_bracket_count_forward
+_jump_forward_not_open_br:
+    cmp.b     93, (A1,D0)
+    bne       _while_jump_forward
+
+    sub.l     1, -4(A6)
+_check_bracket_count_forward:
+    cmp.l     0, -4(A6)
+    beq       _exit_jump_forward
+    jmp       _while_jump_forward
+_exit_jump_forward:
+    unlk      A6
+
+    move.l    D0, (A2)
+    rts
+_command_not_jump_forward:
     cmp.b     46, 4(A7)                    ; char == '.'
     bne       _command_not_output
 
@@ -218,7 +299,7 @@ _command_not_dec_ptr:
     movea.l   8(A7), A1
     move.b    D0, (A1)
 
-    jmp       _end_process
+    rts
 _command_not_output:
     cmp.b     44, 4(A7)                    ; char == ','
     bne       _command_not_input
@@ -229,94 +310,16 @@ _command_not_output:
     movea.l   12(A7), A2
     move.b    (A2), (A1)
 
-    jmp       _end_process
+    rts
 _command_not_input:
-    cmp.b     91, 4(A7)                    ; char == '['
-    bne       _command_not_jump_forward
-
-    movea.l   mem_ptr, A1
-    movea.l   (A1), A1
-    move.l    (A1), D0
-
-    cmp.l     0, D0
-    bne       _end_process
-
-    link      A6, 0
-    move.l    1, (A6)                      ; int bracket_count = 1
-    move.l    20(A6), D0
-_while_jump_forward:
-    add.l     1, D0
-    
-    movea.l   16(A7), A1
-    cmp.b     91, (A1,D0)
-    bne       _jump_forward_not_open_br
-
-    add.l     1, (A6)
-
-    jmp       _check_bracket_count_forward
-_jump_forward_not_open_br:
-    cmp.b     93, (A1,D0)
-    bne       _while_jump_forward
-
-    sub.l     1, (A6)
-_check_bracket_count_forward:
-    cmp.l     0, (A6)
-    beq       _exit_jump_forward
-    jmp       _while_jump_forward
-_exit_jump_forward:
-    unlk      A6
-
-    move.l    D0, 24(A7)
-    jmp       _end_process
-_command_not_jump_forward:
-    cmp.b     93, 4(A7)                    ; char == ']'
-    bne       _command_not_jump_back
-
-    movea.l   mem_ptr, A1
-    movea.l   (A1), A1
-    move.l    (A1), D0
-
-    cmp.l     0, D0
-    beq       _end_process
-
-    link      A6, 0
-    move.l    1, (A6)                      ; int bracket_count = 1
-    move.l    20(A6), D0
-_while_jump_back:
-    sub.l     1, D0
-    
-    movea.l   16(A7), A1
-    cmp.b     91, (A1,D0)
-    bne       _jump_back_not_open_br
-
-    sub.l     1, (A6)
-
-    jmp       _check_bracket_count_back
-_jump_back_not_open_br:
-    cmp.b     93, (A1,D0)
-    bne       _while_jump_back
-
-    add.l     1, (A6)
-_check_bracket_count_back:
-    cmp.l     0, (A6)
-    beq       _exit_jump_back
-    jmp       _while_jump_back
-_exit_jump_back:
-    unlk      A6
-
-    move.l    D0, 24(A7)
-    jmp       _end_process
-_command_not_jump_back:
     cmp.b     0, 4(A7)
     bne       _out_of_bounds_error
 
-    move.l    1, 28(A7)
-
-    jmp       _end_process
+    move.l    1, 20(A7)
+    rts
 _overflow_error:
-    move.l    0xCC, 28(A7)
-    jmp       _end_process
+    move.l    0xCC, 20(A7)
+    rts
 _out_of_bounds_error:
-    move.l    -1, 28(A7)
-_end_process:
+    move.l    -1, 20(A7)
     rts
