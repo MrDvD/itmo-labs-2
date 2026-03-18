@@ -37,14 +37,10 @@ _start:
     jmp       end
 
 start_processing:
-    movea.l   input_addr, A0
-    move.l    (A0), -(A7)
-    move.l    D2, -(A7)
     movea.l   line_ptr, A1
     move.l    (A1), -(A7)
 
     jsr       func_process_all_commands
-    link      A1, -20                      ; A7(SP) += 16
 end:
     halt
 
@@ -80,12 +76,11 @@ _skip_setting_bracket_error:
     move.l    -8(A6), D1
     movea.l   hash_ptr, A1
     movea.l   (A1), A1
-    move.l    D1, D3
     asl.l     2, D1
     move.l    (A7), (A1,D1)
     move.l    (A7), D1
     asl.l     2, D1
-    move.l    D3, (A1,D1)
+    move.l    -8(A6), (A1,D1)
     link      A1, -8
 
     jmp       _rest_while
@@ -109,21 +104,18 @@ _end_read:
     unlk      A6
     rts
 
-func_process_all_commands:                 ; void process_all_commands(line_ptr, out_ptr, in_ptr)
-    link      A6, 0
+func_process_all_commands:                 ; void process_all_commands()
     movea.l   line_idx, A5
+    movea.l   line_ptr, A4
+    movea.l   (A4), A4
 _while_process:
     move.l    0, -(A7)                     ; for return code
-    move.l    8(A6), -(A7)
-    move.l    16(A6), -(A7)
-    move.l    12(A6), -(A7)
     movea.l   (A5), A1
-    movea.l   8(A6), A2
-    move.l    (A1,A2), -(A7)
+    move.l    (A1,A4), -(A7)
 
     jsr       func_process_command
 
-    link      A1, -24                      ; A7(SP) += 20
+    link      A1, -12                      ; A7(SP) += 8
     cmp.b     0, -4(A7)
     bne       _end_process_all
 
@@ -134,14 +126,14 @@ _end_process_all:
     cmp.b     1, -4(A7)
     beq       _ignore_error_code
 
-    movea.l   12(A6), A1
+    movea.l   output_addr, A1
+    movea.l   (A1), A1
     move.l    -4(A7), (A1)
 _ignore_error_code:
-    unlk      A6
     rts
 
-func_process_command:                      ; int process_command(cmd, out_ptr, in_ptr, line_ptr) { ... }
-    move.l    0, 20(A7)                    ; set return code to 0
+func_process_command:                      ; int process_command(cmd) { ... }
+    move.l    0, 8(A7)                     ; set return code to 0
 
     cmp.b     43, 4(A7)                    ; char == '+'
     bne       _command_not_inc_val
@@ -195,10 +187,9 @@ _command_not_dec_ptr:
     move.l    (A1), D0
 
     cmp.l     0, D0
-    bne       _continue_jump_back
+    bne       _continue_jump
     rts
-
-_continue_jump_back:
+_continue_jump:
     movea.l   line_idx, A2
     move.l    (A2), D0
     asl.l     2, D0
@@ -215,16 +206,7 @@ _command_not_jump_back:
     move.l    (A1), D0
 
     cmp.l     0, D0
-    beq       _continue_jump_forward
-    rts
-
-_continue_jump_forward:
-    movea.l   line_idx, A2
-    move.l    (A2), D0
-    asl.l     2, D0
-    movea.l   hash_ptr, A1
-    movea.l   (A1), A1
-    move.l    (A1,D0), (A2)
+    beq       _continue_jump
     rts
 _command_not_jump_forward:
     cmp.b     46, 4(A7)                    ; char == '.'
@@ -234,7 +216,8 @@ _command_not_jump_forward:
     movea.l   (A1), A1
     move.b    (A1), D0
     
-    movea.l   8(A7), A1                    ; this loads 0x16
+    movea.l   output_addr, A1
+    movea.l   (A1), A1
     move.b    D0, (A1)
 
     rts
@@ -245,7 +228,8 @@ _command_not_output:
     movea.l   mem_ptr, A1
     movea.l   (A1), A1
 
-    movea.l   12(A7), A2
+    movea.l   input_addr, A2
+    movea.l   (A2), A2
     move.b    (A2), (A1)
 
     rts
@@ -253,11 +237,11 @@ _command_not_input:
     cmp.b     0, 4(A7)
     bne       _out_of_bounds_error
 
-    move.l    1, 20(A7)
+    move.l    1, 8(A7)
     rts
 _overflow_error:
-    move.l    0xCC, 20(A7)
+    move.l    0xCC, 8(A7)
     rts
 _out_of_bounds_error:
-    move.l    -1, 20(A7)
+    move.l    -1, 8(A7)
     rts
