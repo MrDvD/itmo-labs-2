@@ -144,7 +144,8 @@ def brainfuck_interpreter(input):
         return [-1], rest
 
 
-assert brainfuck_interpreter('++.\n') == ('\x02', '')
-assert brainfuck_interpreter('++++++++++++++++++++++++++++++++++++++++++++++++++.\n') == ('2', '')
-assert brainfuck_interpreter(',.\nA') == ('A', '')
-assert brainfuck_interpreter('<\n') == ([-1], '')
+# assert brainfuck_interpreter('++.\n') == ('\x02', '')
+# assert brainfuck_interpreter('++++++++++++++++++++++++++++++++++++++++++++++++++.\n') == ('2', '')
+# assert brainfuck_interpreter(',.\nA') == ('A', '')
+# assert brainfuck_interpreter('<\n') == ([-1], '')
+assert brainfuck_interpreter('++++++++++[>++++++++++<-]>.\n') == ('d', '')

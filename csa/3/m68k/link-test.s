@@ -16,11 +16,15 @@ _start:
     halt
 
 func_test:
-    link     A6, -4
+    link     A6, 4
 
-    jsr      func_dummy
+    move.l   0xCCDCD, -4(A6)
 
-    move.l   0xFFFFFFFF, (A6)
+    link     A6, 4
+
+    move.l   0xFFFFFFFF, -4(A6)
+
+    unlk     A6
 
     unlk     A6
     rts
