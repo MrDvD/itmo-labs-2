@@ -2,15 +2,15 @@
     .org     0x60
 mem_ptr:         .word  0x0
 line_ptr:        .word  0x150
+hash_ptr:        .word  0x200
 line_idx:        .word  0
-hash_ptr:        .word  
 
 input_addr:      .word  0x80               ; Input device address
 output_addr:     .word  0x84               ; Output device address
-stack_top:       .word  0x120              ; Stack top address
+stack_top:       .word  0x140              ; Stack top address
 
     .text
-    .org     0x200
+    .org     0x300
 _start:
     movea.l   stack_top, A7
     movea.l   (A7), A7                     ; Memory Addressing (Indirect)
@@ -38,12 +38,14 @@ _start:
 
 check_brackets:
     move.l    0, -(A7)                     ; for return code
-    movea.l   mem_ptr, A1
+    movea.l   hash_ptr, A1
+    move.l    (A1), -(A7)
+    movea.l   line_ptr, A1
     move.l    (A1), -(A7)                  ; pass-by value
 
     jsr       func_validate_brackets
 
-    link      A1, -12                      ; A7(SP) += 8
+    link      A1, -16                      ; A7(SP) += 12
     cmp.b     0, -4(A7)
     beq       start_processing
 
@@ -60,7 +62,7 @@ start_processing:
     move.l    (A1), -(A7)
 
     jsr       func_process_all_commands
-    link      A1, -16                      ; A7(SP) += 12
+    link      A1, -20                      ; A7(SP) += 16
 end:
     halt
 
@@ -91,34 +93,46 @@ _end_read:
     unlk      A6
     rts
 
-func_validate_brackets:                    ; bool validate_brackets(line_ptr)
+func_validate_brackets:                    ; bool validate_brackets(line_ptr, hash_ptr)
     link      A6, 8
     move.l    0, -4(A6)                    ; int bracket_count = 0
     move.l    0, -8(A6)                    ; int line_idx = 0
-    move.l    0, 12(A6)                    ; set return code to 0
+    move.l    0, 16(A6)                    ; set return code to 0
 _while_validate:
-    movea.l   -8(A6), A1
+    move.l    -8(A6), D1
     movea.l   8(A6), A2
 
-    cmp.b     0, (A1,A2)
+    cmp.b     0, (A2,D1)
     beq       _end_validate
-    cmp.b     83, (A1,A2)
+    cmp.b     91, (A2,D1)
     beq       _found_opening_bracket
-    cmp.b     85, (A1,A2)
+    cmp.b     93, (A2,D1)
     beq       _found_closing_bracket
 
     jmp       _rest_while
 _found_closing_bracket:
     sub.l     1, -4(A6)
     bmi       _error_validate
+
+    movea.l   12(A6), A1
+    move.l    D1, D3
+    asl.l     2, D1
+    move.l    (A7), (A1,D1)
+    move.l    (A7), D1
+    asl.l     2, D1
+    move.l    D3, (A1,D1)
+    link      A1, -8
+
     jmp       _rest_while
 _found_opening_bracket:
     add.l     1, -4(A6)
+
+    move.l    D1, -(A7)
 _rest_while:
     add.l     1, -8(A6)                    ; line_idx++
     jmp       _while_validate
 _error_validate:
-    move.l    1, 8(A6)
+    move.l    1, 16(A6)
     unlk      A6
     rts
 _end_validate:
@@ -217,34 +231,12 @@ _command_not_dec_ptr:
     rts
 
 _continue_jump_back:
-    link      A6, 4
-    move.l    1, -4(A6)                    ; int bracket_count = 1
     movea.l   line_idx, A2
     move.l    (A2), D0
-
-    movea.l   20(A6), A1
-_while_jump_back:
-    sub.l     1, D0
-    
-    cmp.b     91, (A1,D0)
-    bne       _jump_back_not_open_br
-
-    sub.l     1, -4(A6)
-
-    jmp       _check_bracket_count_back
-_jump_back_not_open_br:
-    cmp.b     93, (A1,D0)
-    bne       _while_jump_back
-
-    add.l     1, -4(A6)
-_check_bracket_count_back:
-    cmp.l     0, -4(A6)
-    beq       _exit_jump_back
-    jmp       _while_jump_back
-_exit_jump_back:
-    unlk      A6
-
-    move.l    D0, (A2)
+    asl.l     2, D0
+    movea.l   hash_ptr, A1
+    movea.l   (A1), A1
+    move.l    (A1,D0), (A2)
     rts
 _command_not_jump_back:
     cmp.b     91, 4(A7)                    ; char == '['
@@ -259,34 +251,12 @@ _command_not_jump_back:
     rts
 
 _continue_jump_forward:
-    link      A6, 4
-    move.l    1, -4(A6)                    ; int bracket_count = 1
     movea.l   line_idx, A2
     move.l    (A2), D0
-
-    movea.l   20(A6), A1
-_while_jump_forward:
-    add.l     1, D0
-    
-    cmp.b     91, (A1,D0)
-    bne       _jump_forward_not_open_br
-
-    add.l     1, -4(A6)
-
-    jmp       _check_bracket_count_forward
-_jump_forward_not_open_br:
-    cmp.b     93, (A1,D0)
-    bne       _while_jump_forward
-
-    sub.l     1, -4(A6)
-_check_bracket_count_forward:
-    cmp.l     0, -4(A6)
-    beq       _exit_jump_forward
-    jmp       _while_jump_forward
-_exit_jump_forward:
-    unlk      A6
-
-    move.l    D0, (A2)
+    asl.l     2, D0
+    movea.l   hash_ptr, A1
+    movea.l   (A1), A1
+    move.l    (A1,D0), (A2)
     rts
 _command_not_jump_forward:
     cmp.b     46, 4(A7)                    ; char == '.'
@@ -296,7 +266,7 @@ _command_not_jump_forward:
     movea.l   (A1), A1
     move.b    (A1), D0
     
-    movea.l   8(A7), A1
+    movea.l   8(A7), A1                    ; this loads 0x16
     move.b    D0, (A1)
 
     rts
