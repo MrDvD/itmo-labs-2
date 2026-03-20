@@ -41,7 +41,7 @@ def div(n, sqrt_n, divider):
   else:
       return div(n, sqrt_n, divider + 1)
 
-# assert is_prime_recursive(2) == 1
+assert is_prime_recursive(2) == 1
 assert is_prime_recursive(3) == 1
 assert is_prime_recursive(4) == 0
 assert is_prime_recursive(5) == 1
