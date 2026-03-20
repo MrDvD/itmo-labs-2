@@ -1,0 +1,13 @@
+name: "test"
+limit: 300000
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [0x7fffffff]
+  0x84: []
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+
+      {pc}:	{instruction}	{pc:label}
+      t0: {T0:hex} -- t1: {T1:hex} -- t2: {T2:hex} -- a0: {A0:hex} -- a1: {A1:hex} -- a2: {A2:hex} -- a3: {A3:hex}
