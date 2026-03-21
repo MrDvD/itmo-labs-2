@@ -105,7 +105,7 @@ class ReportGenerator:
       cond_d_2 = state.f_star > state.f2
       cond_d = cond_d_1 and cond_d_2
 
-      lines.append("Проверяем условия выбора новой тройки точек:")
+      lines.append(f"Проверяем условия выбора новой тройки точек при $f_2^{{({state.k})}} = {state.f2}$:")
       lines.append("\\begin{itemize}")
       lines.append(f"  \\item а) \\( \\tilde{{x}}_{{*}}^{{({state.k})}} \\in [x_2, x_3] \\) и \\( \\tilde{{f}}_{{*}}^{{({state.k})}} \\le f_2^{{({state.k})}} \\) --- {'Истинно' if cond_a else 'Ложно'}.")
       lines.append(f"  \\item б) \\( \\tilde{{x}}_{{*}}^{{({state.k})}} \\in [x_2, x_3] \\) и \\( \\tilde{{f}}_{{*}}^{{({state.k})}} > f_2^{{({state.k})}} \\) --- {'Истинно' if cond_b else 'Ложно'}.")

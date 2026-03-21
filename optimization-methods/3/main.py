@@ -4,7 +4,7 @@ from lib.math_utils import calc_x_star, get_true_min, calc_x2_initial
 import math
 
 def f(x: float) -> float:
-  return x ** 2 - 3 * x + x * math.log(x)
+  return x ** 4 / 4 + x ** 2 - 8 * x + 12
 
 def compile_latex(doc_content: str) -> None:
   with open("report.tex", "w", encoding="utf-8") as f_out:
@@ -12,9 +12,9 @@ def compile_latex(doc_content: str) -> None:
   print("Saved to report.tex. Please run `xelatex report.tex`.")
 
 def main() -> None:
-  func_tex = r"x^2-3x+x\ln x"
-  func_tikz = r"x^2 - 3*x + x*ln(x)"
-  a, b = 0.9, 2.0
+  func_tex = r"\frac{1}{4}x^4+x^2-8x+12"
+  func_tikz = r"0.25*x^4 + x^2 - 8*x + 12"
+  a, b = 0, 2.0
   eps = 0.0001
   
   real_min_x, real_min_f = get_true_min(a, b, f)
