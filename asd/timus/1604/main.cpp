@@ -78,7 +78,7 @@ void StepPillar(std::list<std::list<Sign>>& list) {
 void ProcessPlain(std::list<std::list<Sign>>& list) {
   auto next_list = std::next(list.begin());
   auto plain = list.begin();
-  while (plain->size() > 1) {
+  while (!plain->empty()) {
     std::cout << plain->back().type << " ";
     plain->back().count--;
     // if item is not gone yet
@@ -93,6 +93,7 @@ void ProcessPlain(std::list<std::list<Sign>>& list) {
     }
     plain->pop_back();
   }
+  list.pop_front();
 }
 }  // namespace
 
@@ -116,12 +117,11 @@ int main() {
   }
   signs.clear();
 
-  while (list.begin() != list.end()) {
-    if (std::next(list.front().begin()) == list.front().end()) {
-      StepPillar(list);
-    } else {
-      ProcessPlain(list);
-    }
+  while (!list.empty() && std::next(list.front().begin()) == list.front().end()) {
+    StepPillar(list);
+  }
+  while (!list.empty()) {
+    ProcessPlain(list);
   }
   return 0;
 }
