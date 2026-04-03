@@ -1,0 +1,9 @@
+*.dat
+*.lua
+*.table
+*.aux
+*.log
+*.out
+*.toc
+__pycache__/
+*.md
