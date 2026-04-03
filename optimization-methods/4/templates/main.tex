@@ -1,0 +1,342 @@
+\documentclass[12pt]{article}
+\usepackage{fontspec}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usepackage{float}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{arrows.meta}
+
+\setmainfont{CMU Serif}
+\setsansfont{CMU Sans Serif}
+\setmonofont{CMU Typewriter Text}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,        % цветные ссылки (false - черные рамки)
+    linkcolor=black,        % цвет ссылок на разделы
+    urlcolor=blue,          % цвет URL-ссылок
+    citecolor=green,        % цвет ссылок на литературу
+    pdfborder={0 0 0}       % убрать рамки вокруг ссылок
+}
+
+\usepackage[a4paper,
+            left=3cm,
+            right=3cm,
+            top=2cm,
+            bottom=3cm]{geometry}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \large
+        \textsc{ФГАОУ ВО «НИУ ИТМО»\\
+        Факультет программной инженерии и~компьютерной~техники}
+        \vspace*{4cm}
+            
+        \LARGE
+        \textbf{Лабораторная работа №4}
+
+        \vspace{0.5cm}
+        \LARGE
+
+        Численные методы безусловной оптимизации функции нескольких переменных
+            
+        \vspace{0.5cm}
+        \large
+        (по дисциплине «Методы оптимизации»)
+
+        \vspace{1.5cm}
+
+        \hfill\large
+        \begin{tabular}{@{}l@{}}
+        \textbf{Выполнили:}\\[2mm]
+        Лабин Макар Андреевич,\\
+        МОПТ 3.3, P3231, 466449;\\
+        Ожеховский Александр Сергеевич,\\
+        МОПТ 3.3, P3231, 466944.\\[2mm]
+        \textbf{Проверил:}\\[2mm]
+        Запорожцев Иван Федорович
+        \end{tabular}
+            
+        \vfill
+            
+        \vspace{0.8cm}
+            
+        \includegraphics[width=0.4\textwidth]{itmo}
+            
+        \Large
+        г. Санкт-Петербург, Россия\\
+        2026
+            
+    \end{center}
+\end{titlepage}
+
+\renewcommand{\thefootnote}{[\arabic{footnote}]}
+
+\tableofcontents
+\newpage
+
+\section{Постановка задач}
+
+В рамках выполнения лабораторной работы \textit{по варианту №[[VARIANT]]} необходимо исследовать следующую функцию на наличие экстремумов:
+\[
+  f(x, y) = [[A]]x^2 + [[B]]y^2 + [[C]]xy + [[D]]x + [[E]]y + [[F]]
+\]
+
+Исследования необходимо производить двумя способами:
+\begin{itemize}
+  \item аналитически;
+  \item численно:
+  \begin{itemize}
+    \item методом циклического покоординатного спуска;
+    \item методом градиентного спуска;
+    \item методом наискорейшего спуска.
+  \end{itemize}
+\end{itemize}
+
+Для численных методов необходимо использовать следующие параметры:
+\begin{itemize}
+  \item Начальное приближение: \( x^{(0)}=[[X0]] \).
+  \item Для критерия останова: \( \varepsilon = [[EPSILON]] \).
+\end{itemize}
+
+\newpage
+
+\section{Аналитический метод}
+
+Данная функция \( f(x,y) \) --- квадратичная форма. Для поиска её экстремумов воспользуемся необходимым и достаточным условиями экстремума функции нескольких переменных.
+
+\subsection{Необходимое условие экстремума}
+
+Найдём частные производные первого порядка и приравняем их к нулю, чтобы определить координаты стационарных точек:
+\[
+  \begin{cases}
+    \frac{\partial f}{\partial x} = 2 \cdot [[A]]x + [[C]]y + [[D]] = 0 \\
+    \frac{\partial f}{\partial y} = 2 \cdot [[B]]y + [[C]]x + [[E]] = 0
+  \end{cases}
+\]
+
+Решая данную систему, находим координаты единственной стационарной точки:
+\[
+x^* = [[X_STAR]], \quad y^* = [[Y_STAR]]
+\]
+
+\subsection{Достаточное условие экстремума}
+
+Для проверки характера найденной точки составим матрицу Гессе:
+\begin{equation*}
+H(x, y) = \begin{pmatrix}
+    \frac{\partial^2 f}{\partial x^2} & \frac{\partial^2 f}{\partial x \partial y} \\[1ex]
+    \frac{\partial^2 f}{\partial y \partial x} & \frac{\partial^2 f}{\partial y^2}
+\end{pmatrix}
+=
+\begin{pmatrix}
+    2 \cdot [[A]] & [[C]] \\
+    [[C]] & 2 \cdot [[B]]
+\end{pmatrix}
+\end{equation*}
+
+Исследуем знаки главных миноров гессиана:
+\begin{itemize}
+    \item \( \Delta_1 = \frac{\partial^2 f}{\partial x^2} = 2 \cdot [[A]] = [[DELTA_1]]>0 \).
+    \item \( \Delta_2 = \det(H) = 4 \cdot [[A]] \cdot [[B]] - [[C]]^2 = [[DELTA_2]]>0 \).
+\end{itemize}
+
+По критерию Сильвестра, матрица Гессе положительно определена, то есть \( f(x,y) \) строго выпукла вниз.
+
+Следовательно, стационарная точка есть \textit{точка глобального минимума}:
+\[
+x^* = ([[X_STAR]], [[Y_STAR]])^T
+\]
+
+Значение функции в точке минимума:
+\[
+f(x^*, y^*) = [[F_STAR]]
+\]
+
+\newpage
+\section{Метод покоординатного спуска}
+
+\subsection{Применимость метода}
+
+Целевая функция ограничена снизу, что гарантирует сходимость метода. Задачи одномерной минимизации решаются аналитически за константное время путём поиска вершины параболы для данного направления.
+
+\subsection{Подробный расчет итераций}
+[[CYCLIC_ITERATIONS]]
+
+\subsection{Сводная таблица итераций}
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$k$ & $x^{(k-1)}$ & $\alpha^{(k)}$ & $x^{(k)}$ & $|x^{(k)} - x^{(k-1)}|$ \\
+\hline
+[[CYCLIC_TABLE]]
+\end{tabular}
+\end{table}
+
+Итого имеем:
+\[
+  \tilde{x}^{\ast}=[[FINAL_CYCLIC]]
+\]
+
+\subsection{График спусков}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=10cm, height=10cm,
+      axis lines=middle,
+      xlabel={$x$},
+      ylabel={$y$},
+      xlabel style={right},
+      ylabel style={above},
+      colormap={blackwhite}{gray(0cm)=(0.4); gray(1cm)=(0.9)},
+      view={0}{90}
+    ]
+      \addplot3[
+        contour lua={
+          number=10,
+          labels=false,
+        },
+        samples=30,
+        domain=[[X_MIN_CYCLIC]]:[[X_MAX_CYCLIC]],
+        domain y=[[Y_MIN_CYCLIC]]:[[Y_MAX_CYCLIC]],
+      ] {[[A]]*x^2 + [[B]]*y^2 + [[C]]*x*y + [[D]]*x + [[E]]*y + [[F]]};
+
+      [[CYCLIC_PATH]]
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Все итерации метода циклического покоординатного спуска.}
+\end{figure}
+
+\newpage
+
+\section{Метод градиентного спуска}
+
+\subsection{Применимость метода}
+
+Целевая функция ограничена снизу, что гарантирует сходимость метода. Также она непрерывно дифференцируема на \( \mathbb{R}^2 \), что позволяет считать антиградиенты в любой точке плоскости.
+
+Установим скорость обучения постоянной, независимой от номера итерации:
+\[
+  \eta = [[GD_ETA]]
+\]
+
+\subsection{Подробный расчет итераций}
+[[GD_ITERATIONS]]
+
+\subsection{Сводная таблица итераций}
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$k$ & $x^{(k-1)}$ & $\omega^{(k)}$ & $x^{(k)}$ & $|\omega^{(k)}|$ \\
+\hline
+[[GD_TABLE]]
+\end{tabular}
+\end{table}
+
+Итого имеем:
+\[
+  \tilde{x}^{\ast}=[[FINAL_GD]]
+\]
+
+\subsection{График спусков}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=10cm, height=10cm,
+      axis lines=middle,
+      xlabel={$x$},
+      ylabel={$y$},
+      xlabel style={right},
+      ylabel style={above},
+      colormap={blackwhite}{gray(0cm)=(0.4); gray(1cm)=(0.9)},
+      view={0}{90}
+    ]
+      \addplot3[
+        contour lua={
+          number=10,
+          labels=false,
+        },
+        samples=30,
+        domain=[[X_MIN_GD]]:[[X_MAX_GD]],
+        domain y=[[Y_MIN_GD]]:[[Y_MAX_GD]],
+      ] {[[A]]*x^2 + [[B]]*y^2 + [[C]]*x*y + [[D]]*x + [[E]]*y + [[F]]};
+
+      [[GD_PATH]]
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Все итерации метода градиентного спуска.}
+  \end{figure}
+
+\newpage
+
+\section{Метод наискорейшего спуска}
+
+\subsection{Применимость метода}
+
+Целевая функция ограничена снизу, что гарантирует сходимость метода. Также она непрерывно дифференцируема на \( \mathbb{R}^2 \), что позволяет считать антиградиенты в любой точке плоскости. Задачи одномерной минимизации решаются аналитически за константное время путём поиска вершины параболы для данного направления.
+
+\subsection{Подробный расчет итераций}
+[[STEEPEST_ITERATIONS]]
+
+\subsection{Сводная таблица итераций}
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$k$ & $x^{(k-1)}$ & $u^{(k)}$ & $\beta^{(k)}$ & $x^{(k)}$ & $|\omega^{(k)}|$ \\
+\hline
+[[STEEPEST_TABLE]]
+\end{tabular}
+\end{table}
+
+Итого имеем:
+\[
+  \tilde{x}^{\ast}=[[FINAL_STEEPEST]]
+\]
+
+\subsection{График спусков}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=10cm, height=10cm,
+      axis lines=middle,
+      xlabel={$x$},
+      ylabel={$y$},
+      xlabel style={right},
+      ylabel style={above},
+      colormap={blackwhite}{gray(0cm)=(0.4); gray(1cm)=(0.9)},
+      view={0}{90}
+    ]
+      \addplot3[
+        contour lua={
+          number=10,
+          labels=false,
+        },
+        samples=30,
+        domain=[[X_MIN_STEEPEST]]:[[X_MAX_STEEPEST]],
+        domain y=[[Y_MIN_STEEPEST]]:[[Y_MAX_STEEPEST]],
+      ] {[[A]]*x^2 + [[B]]*y^2 + [[C]]*x*y + [[D]]*x + [[E]]*y + [[F]]};
+
+      [[STEEPEST_PATH]]
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Все итерации метода наискорейшего спуска.}
+  \end{figure}
+
+\end{document}
