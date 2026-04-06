@@ -33,7 +33,7 @@ def main():
     "variant": config.variant,
     "epsilon": config.epsilon,
     "x0": x0,
-    # "target_point": config.target_point,
+    "target_point": func.get_extremum(),
     "cyclic_data": cyclic_res,
     "gd_data": gd_res,
     "gd_eta": config.gd_learning_rate,

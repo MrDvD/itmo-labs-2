@@ -18,6 +18,20 @@ class QuadraticFunction:
     dx = 2 * self.a * x + self.c * y + self.d
     dy = 2 * self.b * y + self.c * x + self.e
     return Vector(dx, dy)
+  
+  def get_extremum(self):
+    x_star = (self.e * self.c - 2 * self.b * self.d) / (4 * self.a * self.b - self.c ** 2)
+    y_star = -(self.c * x_star + self.e) / (2 * self.b)
+    return Vector(x_star, y_star)
+  
+  def minor(self, number: int):
+    match number:
+      case 1:
+        return 2 * self.a
+      case 2:
+        return 4 * self.a * self.b - self.c ** 2
+      case _:
+        raise ValueError
     
   def minimize_1d(self, origin: Vector, direction: Vector):
     x0, y0 = origin[0], origin[1]
