@@ -38,6 +38,8 @@ class CyclicCoordinateDescent(Optimizer):
       
       if diff < self.epsilon:
         break
+    else:
+      raise ValueError
         
     return history
 
@@ -67,6 +69,8 @@ class GradientDescent(Optimizer):
       
       if grad_norm < self.epsilon:
         break
+    else:
+      raise ValueError
         
     return history
 
@@ -97,5 +101,7 @@ class SteepestDescent(Optimizer):
 
       if grad_norm < self.epsilon:
         break
+    else:
+      raise ValueError
       
     return history

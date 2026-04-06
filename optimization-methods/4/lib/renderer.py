@@ -59,7 +59,7 @@ class ReportRenderer:
       if break_info < self.config.epsilon:
         tags["BREAKPOINT_CHECK"] = f"|x^{{({tags['K']})}}-x^{{({tags['K_PREV']})}}|={self.format_val(break_info)}<{self.config.epsilon}\\implies\\tilde{{x}}^\\ast={row['new_x'].to_latex(self.config.precision)}"
       else:
-        tags["BREAKPOINT_CHECK"] = f"|x^{{({tags['K']})}}-x^{{({tags['K_PREV']})}}|={self.format_val(break_info)}<{self.config.epsilon}\\implies\\text{{продолжаем алгоритм.}}"
+        tags["BREAKPOINT_CHECK"] = f"|x^{{({tags['K']})}}-x^{{({tags['K_PREV']})}}|={self.format_val(break_info)}\\geq {self.config.epsilon}\\implies\\text{{продолжаем алгоритм.}}"
       steps += self.replace_tags(cyclic_template, tags)
     return steps
 
@@ -99,7 +99,7 @@ class ReportRenderer:
       if break_info < self.config.epsilon:
         tags["BREAKPOINT_CHECK"] = f"|\omega^{{({row['k']})}}|={self.format_val(break_info)}<{self.config.epsilon}\\implies\\tilde{{x}}^\\ast={row['new_x'].to_latex(self.config.precision)}"
       else:
-        tags["BREAKPOINT_CHECK"] = f"|\omega^{{({row['k']})}}|={self.format_val(break_info)}<{self.config.epsilon}\\implies\\text{{продолжаем алгоритм.}}"
+        tags["BREAKPOINT_CHECK"] = f"|\omega^{{({row['k']})}}|={self.format_val(break_info)}\\geq {self.config.epsilon}\\implies\\text{{продолжаем алгоритм.}}"
       steps += self.replace_tags(gd_template, tags)
     return steps
 
@@ -143,7 +143,7 @@ class ReportRenderer:
       if break_info < self.config.epsilon:
         tags["BREAKPOINT_CHECK"] = f"|\omega^{{({row['k']})}}|={self.format_val(break_info)}<{self.config.epsilon}\\implies\\tilde{{x}}^\\ast={row['new_x'].to_latex(self.config.precision)}"
       else:
-        tags["BREAKPOINT_CHECK"] = f"|\omega^{{({row['k']})}}|={self.format_val(break_info)}<{self.config.epsilon}\\implies\\text{{продолжаем алгоритм.}}"
+        tags["BREAKPOINT_CHECK"] = f"|\omega^{{({row['k']})}}|={self.format_val(break_info)}\\geq {self.config.epsilon}\\implies\\text{{продолжаем алгоритм.}}"
       steps += self.replace_tags(gd_template, tags)
     return steps
 
@@ -214,7 +214,11 @@ class ReportRenderer:
       "VARIANT": context["variant"],
       "EPSILON": context["epsilon"],
       "X0": context["x0"].to_latex(self.config.precision),
-      # "TARGET_POINT": f"({context['target_point'][0]}, {context['target_point'][1]})",
+      "X_STAR": self.format_val(context['target_point'][0]),
+      "Y_STAR": self.format_val(context['target_point'][1]),
+      "F_STAR": self.format_val(self.func.evaluate(context['target_point'])),
+      "DELTA_1": self.format_val(self.func.minor(1)),
+      "DELTA_2": self.format_val(self.func.minor(2)),
       "A": self.func.a,
       "B": self.func.b,
       "C": self.func.c,

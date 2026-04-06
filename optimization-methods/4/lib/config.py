@@ -15,7 +15,7 @@ class Config:
     
     self.initial_x = (-1.0, -2.0)
     
-    self.gd_learning_rate = 0.5
+    self.gd_learning_rate = 0.225
     
     self.output_file = "report.tex"
     self.templates_dir = "templates"
