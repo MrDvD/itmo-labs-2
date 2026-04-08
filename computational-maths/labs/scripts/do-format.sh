@@ -1,0 +1,2 @@
+source_files=$(find . -type d -name "src" -exec find {} -type f -regex ".*.[cpp|h(pp)?|h|cc]" \; | sed 's/^/\/project\//')
+docker run --user $(id -u):$(id -g) -v .:/project xianpengshen/clang-tools:21-alpine clang-format --style=file:/project/scripts/.clang-format -i $source_files

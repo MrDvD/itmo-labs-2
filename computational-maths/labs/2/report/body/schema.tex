@@ -1,0 +1,126 @@
+\subsection{Блок-схема численного метода}
+
+На вход реализуемого метода подаются следующие данные:
+
+\begin{itemize}
+  \item \( n \) --- размерность системы; является целым числом.
+  \item \( A \) --- расширенная матрица системы; является двумерным массивом вещественных чисел двойной точности.
+\end{itemize}
+
+На выходе метода ожидается вектор над вещественными числами двойной точности --- решение системы, которое совмещено с таким же вектором невязки для данного решения.
+
+В случае, если система не имеет единственного решения, метод должен выбросить соответствующую ошибку.
+
+Далее приводятся блок-схемы, реализующие численный метод.
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [data, on chain, join] (input1) {Input: $n, A$};
+      \node [terminator, left=of input1] (start1) {Start};
+
+      \node [preparation, on chain, join] (init) {$k := 0$\\ Copy $A$ to $U$};
+
+      \node [preparation, on chain, join] {$i := k$};
+      \node [decision, on chain, join] (is_n) {$i = n?$};
+      \node [terminator, right=of is_n] (error) {Error};
+      \node [process, left=of is_n] (inc_i) {$i := i + 1$};
+      \node [decision, on chain] (is_zero) {$U_{i,k} = 0?$};
+  
+      \node [process, on chain] (swap) {Swap rows $i$ and $k$ of $U$};
+
+      \node [preparation, on chain, join] {$i := k$};
+      \node [decision, on chain, join] (i_is_n_second) {$i = n?$};
+      \node [process, left=of i_is_n_second] (inc_i_second) {$i := i + 1$};
+      \node [connector, above=of inc_i_second] (to_increment_output) {B};
+      \node [connector, right=of i_is_n_second] (to_exit_i) {A};
+      \node [preparation, on chain] (set_j_second) {$j := k$};
+      \node [decision, on chain, join] (j_is_n_second) {$j = n + 1?$};
+      \node [connector, right=of j_is_n_second] (to_increment_input) {B};
+      \node [process, left=of j_is_n_second] (inc_j_second) {$j := j + 1$};
+
+      \node [process, on chain] (reduce) {$U_{i,n-j}:=U_{i,n-j}-\dfrac{U_{i,k}}{U_{k,k}}\cdot U_{k,j}$};
+    \end{scope}
+
+    \draw [thick, -Stealth] (is_zero) -- node[right] {No} (swap);
+    \draw [thick, -Stealth] (is_n) -- node[right] {No} (is_zero);
+    \draw [thick, -Stealth] (is_n) -- node[above] {Yes} (error);
+    \draw [thick, -Stealth] (is_zero.west) -| node[near start, above] {Yes} (inc_i.south);
+    \draw [thick, -Stealth] (j_is_n_second) -- node[right] {No} (reduce);
+    \draw [thick, -Stealth] (i_is_n_second) -- node[right] {No} (set_j_second);
+    \draw [thick, -Stealth] (i_is_n_second) -- node[above] {Yes} (to_exit_i);
+    \draw [thick, -Stealth] (j_is_n_second) -- node[above] {Yes} (to_increment_input);
+
+    \draw [thick, -Stealth] (inc_i.east) -- (is_n.west);
+    \draw [thick, -Stealth] (inc_j_second) -- (j_is_n_second);
+    \draw [thick, -Stealth] (to_increment_output) -- (inc_i_second);
+    \draw [thick, -Stealth] (start1) -- (input1);
+    \draw [thick, -Stealth] (inc_i_second) -- (i_is_n_second);
+    \draw [thick, -Stealth] (reduce.west) -| (inc_j_second.south);
+
+    \node [annotation, right = of input1] (input-note) {$n$ matches the~size of $A$};
+    \draw [dashed, thick] (input1) -- (input-note.west);
+  \end{tikzpicture}
+  \captionof{scheme}{Прямой ход метода Гаусса.}
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [connector, on chain] (from_start2) {A};
+      \node [preparation, on chain, join] (init_x) {Fill vector $x(2n)$ with zeros};
+
+      \node [preparation, on chain, join] (prep_i) {$i := n - 1$};
+      \node [process, left=of prep_i] (final_step) {$x_i:=\dfrac{1}{U_{i,i}}\left(U_{i,n}-x_i\right)$};
+      \node [connector, above=of final_step] (output_teleport) {C};
+      \node [decision, on chain, join] (is_zero) {$i \geq 0?$};
+      \node [connector, right= of is_zero] (input_residue) {D};
+      \node [process, below=of final_step] (dec_i) {$i := i - 1$};
+      \node [preparation, on chain] (init_j) {$j := i + 1$};
+      \node [decision, on chain, join] (is_n) {$j < n?$};
+      \node [process, left=of is_n] (inc_j) {$j := j + 1$};
+      \node [process, on chain] (inner_sum) {$x_i:=x_i+U_{i,j}\cdot x_j$};
+      \node [connector, right= of is_n] (input_teleport) {C};
+
+      \node [preparation, on chain] (prep_i_second) {$i := 0$};
+      \node [connector, left= of prep_i_second] (output_residue) {D};
+      \node [decision, on chain, join] (i_is_n_second) {$i < n?$};
+      \node [process, left=of i_is_n_second] (inc_i_second) {$i:=i+1$};
+      \node [connector, above= of inc_i_second] (output_teleport_second) {E};
+      \node [preparation, on chain] (prep_j_second) {$j := 0$};
+      \node [decision, on chain, join] (j_is_n_second) {$j < n?$};
+      \node [process, left=of j_is_n_second] (inc_j_second) {$j:=j+1$};
+      \node [process, on chain] (inner_sum_second) {$x_{n+i}:=x_{n+i}+A_{i,j}x_j$};
+      \node [process, right=of j_is_n_second] (final_step_second) {$x_{n+i}:=\abs{x_{n+i}-A_{i,n}}$};
+      \node [connector, below= of final_step_second] (input_teleport_second) {E};
+      
+      \node [data, right=of i_is_n_second] (output) {Output: $x$};
+      \node [terminator, below=of output] (end) {End};
+    \end{scope}
+
+    \draw [thick, -Stealth] (is_n) -- node[right] {Yes} (inner_sum);
+    \draw [thick, -Stealth] (is_n) -- node[above] {No} (input_teleport);
+    \draw [thick, -Stealth] (is_zero) -- node[right] {Yes} (init_j);
+    \draw [thick, -Stealth] (is_zero) -- node[above] {No} (input_residue);
+    \draw [thick, -Stealth] (j_is_n_second) -- node[right] {Yes} (inner_sum_second);
+    \draw [thick, -Stealth] (j_is_n_second) -- node[above] {No} (final_step_second);
+    \draw [thick, -Stealth] (i_is_n_second) -- node[right] {Yes} (prep_j_second);
+    \draw [thick, -Stealth] (i_is_n_second) -- node[above] {No} (output);
+
+    \draw [thick, -Stealth] (dec_i) -- (is_zero);
+    \draw [thick, -Stealth] (inc_j) -- (is_n);
+    \draw [thick, -Stealth] (final_step) -- (dec_i);
+    \draw [thick, -Stealth] (output_teleport) -- (final_step);
+    \draw [thick, -Stealth] (inc_j_second) -- (j_is_n_second);
+    \draw [thick, -Stealth] (inc_i_second) -- (i_is_n_second);
+    \draw [thick, -Stealth] (output_residue) -- (prep_i_second);
+    \draw [thick, -Stealth] (output) -- (end);
+    \draw [thick, -Stealth] (final_step_second) -- (input_teleport_second);
+    \draw [thick, -Stealth] (output_teleport_second) -- (inc_i_second);
+    \draw [thick, -Stealth] (inner_sum) -| (inc_j);
+    \draw [thick, -Stealth] (inner_sum_second.west) -| (inc_j_second.south);
+  \end{tikzpicture}
+  \captionof{scheme}{Обратный ход метода Гаусса.}
+\end{center}
