@@ -1,0 +1,112 @@
+\subsection{Результаты работы программы}
+
+\subsubsection{Внешний ввод данных}
+
+Для тестирования программы используем предложенные наборы данных:
+\begin{enumerate}
+  \item Нулевые матрицы разных размерностей с ненулевым вектором \( f \):
+  \[
+    A_1=\begin{pmatrix} 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 \end{pmatrix}_{5 \times 5}, \quad f_1=\begin{pmatrix} 1 \\ 2 \\ 3 \\ 4 \\ 5 \end{pmatrix}
+  \]
+  \[
+    A_2=\begin{pmatrix} 0 & \cdots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \cdots & 0 \end{pmatrix}_{10 \times 10}, \quad f_2=\begin{pmatrix} 1 \\ 2 \\ \vdots \\ 10 \end{pmatrix}
+  \]
+  \[
+    A_3=\begin{pmatrix} 0 & \cdots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \cdots & 0 \end{pmatrix}_{20 \times 20}, \quad f_3=\begin{pmatrix} 1 \\ 2 \\ \vdots \\ 20 \end{pmatrix}
+  \]
+  
+  \item Матрицы со всеми элементами единицами разных размерностей, \( f \) также ненулевой:
+  \[
+    A_4=\begin{pmatrix} 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 1 & 1 \end{pmatrix}_{5 \times 5}, \quad f_4=\begin{pmatrix} 1 \\ 2 \\ 3 \\ 4 \\ 5 \end{pmatrix}
+  \]
+  \[
+    A_5=\begin{pmatrix} 1 & \cdots & 1 \\ \vdots & \ddots & \vdots \\ 1 & \cdots & 1 \end{pmatrix}_{10 \times 10}, \quad f_5=\begin{pmatrix} 1 \\ 2 \\ \vdots \\ 10 \end{pmatrix}
+  \]
+  \[
+    A_6=\begin{pmatrix} 1 & \cdots & 1 \\ \vdots & \ddots & \vdots \\ 1 & \cdots & 1 \end{pmatrix}_{20 \times 20}, \quad f_6=\begin{pmatrix} 1 \\ 2 \\ \vdots \\ 20 \end{pmatrix}
+  \]
+  
+  \item Матрицы разных размерностей, у которых легко рассчитать определитель:
+  \[
+    A_7=\begin{pmatrix} 2 & 0 & 0 & 0 & 0 \\ 0 & 4 & 0 & 0 & 0 \\ 0 & 0 & 6 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 10 \end{pmatrix}_{5 \times 5}, \quad f_7=\begin{pmatrix} 1 \\ 2 \\ 3 \\ 0 \\ 5 \end{pmatrix}
+  \]
+  \[
+    A_8=\begin{pmatrix} 3 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ 0 & 3 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ 0 & 0 & 3 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ 0 & 0 & 0 & 3 & 1 & 1 & 1 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 & 3 & 1 & 1 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 & 0 & 3 & 1 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 & 0 & 0 & 3 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 1 & 1 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 1 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 3 \end{pmatrix}_{10 \times 10}, \quad f_8=\begin{pmatrix} 1 \\ 2 \\ \vdots \\ 10 \end{pmatrix}
+  \]
+  \[
+    A_9=\begin{pmatrix} 5 & 1 & 0 & \cdots & 0 \\ 1 & 5 & 1 & \ddots & \vdots \\ 0 & 1 & 5 & \ddots & 0 \\ \vdots & \ddots & \ddots & \ddots & 1 \\ 0 & \cdots & 0 & 1 & 5 \end{pmatrix}_{20 \times 20}, \quad f_9=\begin{pmatrix} 1 \\ 1 \\ \vdots \\ 1 \end{pmatrix}
+  \]
+\end{enumerate}
+
+Проверим вывод для каждого набора данных:
+
+\begin{longtblr}[
+  caption = {Результаты тестирования},
+  label = {tab:results},
+]{
+  colspec = {Q[c, m] X[l, m]},
+  row{1} = {font=\bfseries},
+  rowhead = 1,
+  hlines,
+  vlines,
+}
+Матрица & Результат \\
+$A_1$ & Ошибка: система не имеет решений \\
+$A_2$ & Ошибка: система не имеет решений \\
+$A_3$ & Ошибка: система не имеет решений \\
+$A_4$ & Ошибка: система не имеет решений \\
+$A_5$ & Ошибка: система не имеет решений \\
+$A_6$ & Ошибка: система не имеет решений \\
+$A_7$ & Ошибка: система имеет бесконечно много решений \\
+$A_8$ & Нулевая невязка \\
+$A_9$ & Нулевая невязка \\
+\end{longtblr}
+
+\subsubsection{Случайные матрицы}
+
+Для тестирования программы на случайных данных сгенерируем пять примеров разных размерностей. Укажем входные данные в их исходном формате.
+
+\begin{lstlisting}[caption=Расширенная матрица пяти переменных.]
+...
+\end{lstlisting}
+
+Результирующий вектор невязки:
+\[
+  \dots
+\]
+
+\begin{lstlisting}[caption=Расширенная матрица семи переменных.]
+...
+\end{lstlisting}
+
+Результирующий вектор невязки:
+\[
+  \dots
+\]
+
+\begin{lstlisting}[caption=Расширенная матрица десяти переменных.]
+...
+\end{lstlisting}
+
+Результирующий вектор невязки:
+\[
+  \dots
+\]
+
+\begin{lstlisting}[caption=Расширенная матрица четырнадцати переменных.]
+...
+\end{lstlisting}
+
+Результирующий вектор невязки:
+\[
+  \dots
+\]
+
+\begin{lstlisting}[caption=Расширенная матрица двадцати переменных.]
+...
+\end{lstlisting}
+
+Результирующий вектор невязки:
+\[
+  \dots
+\]
