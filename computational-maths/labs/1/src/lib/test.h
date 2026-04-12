@@ -1,6 +1,6 @@
-#include <vector>
-#include <random>
 #include <algorithm>
+#include <random>
+#include <vector>
 
 struct test_case {
   int function_number;

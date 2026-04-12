@@ -1,12 +1,10 @@
+#include "lib/preamble.h"
 #include "lib/gauss.h"
 #include "lib/input.h"
 #include "lib/output.h"
-#include "lib/preamble.h"
 #include "lib/random.h"
 
 int main() {
-  cout << "=== LINEAR SYSTEM SOLVER TEST ===\n" << endl;
-
   int source = InputModule::getInputSource();
   vector<vector<double>> augmented;
   int n = 0;
@@ -28,7 +26,7 @@ int main() {
     cout << "\nGenerating random system..." << endl;
     vector<vector<double>> A = generateMatrixA(n);
     vector<double> x_original = generateUnknowns(n);
-    vector<double> b = calculateRHS(A, x_original);
+    vector<double> b = calculateF(A, x_original);
 
     augmented = A;
     for (int i = 0; i < n; i++) {

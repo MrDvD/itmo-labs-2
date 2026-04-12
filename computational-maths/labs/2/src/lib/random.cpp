@@ -39,7 +39,7 @@ vector<double> generateUnknowns(int n) {
   return x;
 }
 
-vector<double> calculateRHS(const vector<vector<double>>& A, const vector<double>& x) {
+vector<double> calculateF(const vector<vector<double>>& A, const vector<double>& x) {
   int n = A.size();
   vector<double> b(n, 0.0);
 
@@ -50,34 +50,4 @@ vector<double> calculateRHS(const vector<vector<double>>& A, const vector<double
   }
 
   return b;
-}
-
-void compareSolutions(
-    const vector<double>& original, const vector<double>& calculated, double epsilon
-) {
-  cout << "\n=== COMPARISON OF SOLUTIONS ===\n";
-  cout << setw(10) << "Variable" << setw(15) << "Original" << setw(15) << "Calculated" << setw(15)
-       << "Difference" << setw(15) << "Status" << endl;
-  cout << string(70, '-') << endl;
-
-  bool allMatch = true;
-  double maxDiff = 0.0;
-
-  for (int i = 0; i < original.size(); i++) {
-    double diff = abs(original[i] - calculated[i]);
-    maxDiff = max(maxDiff, diff);
-    bool match = (diff < epsilon);
-    if (!match)
-      allMatch = false;
-
-    cout << setw(10) << "x" + to_string(i + 1) << setw(15) << fixed << setprecision(6)
-         << original[i] << setw(15) << fixed << setprecision(6) << calculated[i] << setw(15)
-         << scientific << setprecision(6) << diff << setw(15) << (match ? "MATCH" : "MISMATCH")
-         << endl;
-  }
-
-  cout << string(70, '-') << endl;
-  cout << "Maximum difference: " << scientific << maxDiff << endl;
-  cout << "Overall result: "
-       << (allMatch ? "✓ SUCCESS - Solutions match!" : "✗ FAILURE - Solutions differ!") << endl;
 }

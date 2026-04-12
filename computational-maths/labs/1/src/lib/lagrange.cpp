@@ -1,8 +1,9 @@
-#include <numbers>
+#include <lagrange.h>
+
 #include <cmath>
+#include <numbers>
 #include <random>
 #include <stdexcept>
-#include <lagrange.h>
 
 std::function<double(double)> get_function(int n, bool add_noise) {
   std::random_device rd;
@@ -11,9 +12,7 @@ std::function<double(double)> get_function(int n, bool add_noise) {
 
   switch (n) {
     case 1:
-      return [](double x) {
-        return std::sin(x) - std::cos(2 * x);
-      };
+      return [](double x) { return std::sin(x) - std::cos(2 * x); };
     case 2:
       return [add_noise, noise_dist, gen](double x) mutable {
         double noise = add_noise ? noise_dist(gen) : 0.0;
@@ -30,13 +29,9 @@ std::function<double(double)> get_function(int n, bool add_noise) {
         }
       };
     case 4:
-      return [](double x) {
-        return 2 / x;
-      };
+      return [](double x) { return 2 / x; };
     case 5:
-      return [](double x) {
-        return std::pow(x, 2);
-      };
+      return [](double x) { return std::pow(x, 2); };
     default:
       throw std::runtime_error("function not found");
   }
@@ -52,13 +47,17 @@ void fill_chebyshev_polynomial_roots(const int n, const double a, const double b
   }
 }
 
-void fill_function_values(const std::function<double(double)> func, std::size_t n, double values[], const double roots[]) {
+void fill_function_values(
+    const std::function<double(double)> func, std::size_t n, double values[], const double roots[]
+) {
   for (int i = 0; i < n; i++) {
     values[i] = func(roots[i]);
   }
 }
 
-std::function<double(double)> generate_lagrange_polynomial(const int n, const double values[], const double grid[]) {
+std::function<double(double)> generate_lagrange_polynomial(
+    const int n, const double values[], const double grid[]
+) {
   return [n, values, grid](double x) {
     double result = 0;
     for (int i = 0; i < n; i++) {
@@ -81,17 +80,16 @@ debug_result interpolate_by_lagrange(int f, double a, double b, double x) {
   std::vector<double> roots(n), values(n);
   fill_chebyshev_polynomial_roots(n, a, b, roots.data());
   fill_function_values(func, n, values.data(), roots.data());
-  double lagrange_old, lagrange_current = generate_lagrange_polynomial(n, values.data(), roots.data())(x);
+  double lagrange_old,
+      lagrange_current = generate_lagrange_polynomial(n, values.data(), roots.data())(x);
   do {
     n++;
     lagrange_old = lagrange_current;
-    roots.reserve(n); values.reserve(n);
+    roots.reserve(n);
+    values.reserve(n);
     fill_chebyshev_polynomial_roots(n, a, b, roots.data());
     fill_function_values(func, n, values.data(), roots.data());
     lagrange_current = generate_lagrange_polynomial(n, values.data(), roots.data())(x);
   } while (abs(lagrange_current - lagrange_old) > 1e-4 && n < 100);
-  return {
-    lagrange_current,
-    n
-  };
+  return {lagrange_current, n};
 }

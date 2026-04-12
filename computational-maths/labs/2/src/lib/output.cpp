@@ -7,12 +7,12 @@ void outputTrace(const vector<vector<double>>& t_matrix, const vector<double>& a
   for (int i = 0; i < n; ++i) {
     det *= t_matrix[i][i];
   }
-  cout << "Determinant: " << det << endl;
-  cout << "Triangular matrix:" << endl;
+  cout << "1. Determinant: " << det << endl;
+  cout << "2. Triangular matrix:" << endl;
   output2DVector(t_matrix);
-  cout << "Root:" << endl;
+  cout << "3. Root:" << endl;
   outputVector(answer.begin(), next(answer.begin(), n));
-  cout << "Residuals:" << endl;
+  cout << "4. Residuals:" << endl;
   outputVector(next(answer.begin(), n), answer.end());
 }
 
@@ -23,12 +23,4 @@ void output2DVector(const vector<vector<double>>& arr) {
     }
     cout << endl;
   }
-}
-
-template <typename Iterator>
-void outputVector(Iterator begin, Iterator end) {
-  for (Iterator it = begin; it != end; ++it) {
-    cout << *it << (next(it) == end ? "" : " ");
-  }
-  cout << endl;
 }
