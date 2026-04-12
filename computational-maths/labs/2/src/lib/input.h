@@ -250,7 +250,7 @@ public:
   static int getInputSource() {
     string choice;
     while (true) {
-      cout << "\n=== INPUT SOURCE SELECTION ===" << endl;
+      cout << "### INPUT SOURCE SELECTION" << endl;
       cout << "1. Console input" << endl;
       cout << "2. File input" << endl;
       cout << "3. Generate random system" << endl;

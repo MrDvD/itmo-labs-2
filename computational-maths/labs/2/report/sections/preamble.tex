@@ -80,3 +80,29 @@
   \addvspace{9pt}
   \UseTblrTemplate{caption}{default}
 }
+\DeclareTblrTemplate{contfoot-text}{default}{См. далее}
+
+\usepackage{seqsplit}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+
+\newenvironment{MatrixBox}{%
+  \begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=black,
+    width=\textwidth,
+    sharp corners,
+    boxrule=0.4pt,
+    segmentation style={solid}, 
+    break at=-0pt,
+    bottomrule at break=0pt,
+    toprule at break=0pt,
+    bottomrule at break=0pt,
+    fontupper=\ttfamily,
+    toprule at break=0pt,
+  ]
+}{%
+  \end{tcolorbox}
+}

@@ -1,8 +1,8 @@
-#include <fstream>
-#include <cmath>
-
 #include <lib/lagrange.h>
 #include <lib/test.h>
+
+#include <cmath>
+#include <fstream>
 
 int main() {
   std::ofstream interpolation_file("pgf/interpolation_results.csv");
@@ -19,19 +19,14 @@ int main() {
       current_func_num = c.function_number;
     }
     std::function<double(double)> func = get_function(c.function_number);
-    
-    plots_file << c.function_number << "," 
-               << c.x << "," 
-               << func(c.x) << "\n";
+
+    plots_file << c.function_number << "," << c.x << "," << func(c.x) << "\n";
     if (c.calc) {
       debug_result debug = interpolate_by_lagrange(c.function_number, c.a, c.b, c.x);
       double y_actual = func(c.x);
       double error = y_actual - debug.result;
-      interpolation_file << c.function_number << ","
-                         << c.x << ","
-                         << debug.result << "," 
-                         << error << ","
-                         << debug.end_iteration << "\n";
+      interpolation_file << c.function_number << "," << c.x << "," << debug.result << "," << error
+                         << "," << debug.end_iteration << "\n";
     }
   }
 
