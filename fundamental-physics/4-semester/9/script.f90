@@ -17,7 +17,7 @@ PROGRAM lab_9
   CHARACTER(LEN=32)  :: dist_str
   REAL  :: bottom_tol, min_dist_val
   INTEGER :: num_contours, i, j, stat, current_bc
-  REAL  :: y_min, y_max, x_min, x_max, center_x, center_y, dx, dy, y, x, area, total_mass, x1, y1, x2, y2
+  REAL  :: y_min, y_max, x_min, x_max, center_x, center_y, dx, dy, y, x, total_mass
 
   OPEN(UNIT=5, FILE='config.txt', STATUS='OLD', IOSTAT=stat)
   IF (stat /= 0) STOP "config.txt not found"
