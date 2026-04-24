@@ -1,0 +1,81 @@
+\subsection{Листинг численного метода}
+
+Для реализации блок-схем воспользуемся языком программирования C++.
+
+\begin{lstlisting}[caption=Прямой шаг метода Гаусса.]
+bool triangulateMatrix(const int n, vector<vector<double>>& matrix) {
+  bool isSingular = false;
+  for (size_t i = 0; i < n - 1; i++) {
+    size_t idx = n;
+    for (size_t j = i; j < n; j++) {
+      if (matrix[j][i] != 0) {
+        idx = j;
+        break;
+      }
+    }
+    if (idx == n) {
+      isSingular = true;
+      continue;
+    }
+    // apply P operator
+    if (idx != i) {
+      vector<double> temp_row = matrix[idx];
+      matrix[idx] = matrix[i];
+      matrix[i] = temp_row;
+    }
+    // apply M operator
+    for (size_t j = i + 1; j < n; j++) {
+      double factor = matrix[j][i] / matrix[i][i];
+      for (size_t k = i; k <= n; k++) {
+        matrix[j][k] -= factor * matrix[i][k];
+      }
+    }
+  }
+  if (isSingular) {
+    errorMessage = "The system has no single solution.";
+    isSolutionExists = !hasContradiction(n, matrix);
+    return false;
+  }
+  return true;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Проверка системы на совместность.]
+bool hasContradiction(const int n, vector<vector<double>>& matrix) {
+  vector<double> zeroes(n, 0);
+  for (size_t i = 0; i < n; i++) {
+    vector<double> curr_row = matrix[i];
+    curr_row.pop_back();
+    if (curr_row == zeroes && matrix[i][n] != 0) {
+      return true;
+    }
+  }
+  return false;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Обратный шаг метода Гаусса.]
+vector<double> solveByGauss(int n, vector<vector<double>> matrix) {
+  vector<double> answer(2 * n, 0);
+  vector<vector<double>> matrix_triangle = matrix;
+  if (!triangulateMatrix(n, matrix_triangle)) {
+    return answer;
+  }
+  for (size_t i = 0; i < n; i++) {
+    const size_t idx = n - i - 1;
+    for (size_t j = idx + 1; j < n; j++) {
+      answer[idx] -= matrix_triangle[idx][j] * answer[j]; 
+    }
+    answer[idx] += matrix_triangle[idx][n];
+    answer[idx] /= matrix_triangle[idx][idx];
+  }
+  // calculate residuals
+  for (size_t i = 0; i < n; i++) {
+    for (size_t j = 0; j < n; j++) {
+      answer[n + i] += matrix[i][j] * answer[j];
+    }
+    answer[n + i] -= matrix[i][n];
+  }
+  return answer;
+}
+\end{lstlisting}
