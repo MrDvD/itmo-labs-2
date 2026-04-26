@@ -49,6 +49,7 @@ if __name__ == "__main__":
   res_gauss = gauss_opt.optimize(params_start=start_params_gauss)
   plot.plot_learning_curve(gauss_opt, filename="learning_curve_gauss.pdf")
   plot.plot_model(gauss_opt.get_model(res_gauss.x), pts[:, 0], pts[:, 1], targets, filename="model_plot_gauss.pdf")
+  plot.plot_contour_lines(gauss_opt.get_model(res_gauss.x), pts[:, 0], pts[:, 1], targets, filename="contour_lines_gauss.pdf")
 
   # Elliptic
   elliptic_opt = EllipticOptimizer(
@@ -62,6 +63,7 @@ if __name__ == "__main__":
   res_elliptic = elliptic_opt.optimize(params_start=start_params_elliptic)
   plot.plot_learning_curve(elliptic_opt, filename="learning_curve_elliptic.pdf")
   plot.plot_model(elliptic_opt.get_model(res_elliptic.x), pts[:, 0], pts[:, 1], targets, filename="model_plot_elliptic.pdf")
+  plot.plot_contour_lines(elliptic_opt.get_model(res_elliptic.x), pts[:, 0], pts[:, 1], targets, filename="contour_lines_elliptic.pdf")
 
   # Constant
   constant_opt_mse = ConstantOptimizer(
@@ -84,13 +86,14 @@ if __name__ == "__main__":
   res_rbf = rbf_opt.optimize(params_start=start_params_rbf)
   plot.plot_learning_curve(rbf_opt, filename="learning_curve_rbf.pdf")
   plot.plot_model(rbf_opt.get_model(res_rbf.x), pts[:, 0], pts[:, 1], targets, filename="model_plot_rbf.pdf")
+  plot.plot_contour_lines(rbf_opt.get_model(res_rbf.x), pts[:, 0], pts[:, 1], targets, filename="contour_lines_rbf.pdf")
 
   report = ReportFiller({
     'variant_number': cfg['variant_number'],
     'input_table_data': input_table_data,
     'gauss_loss': f"{gauss_opt.loss_history[-1]:.6f}",
     'elliptic_loss': f"{elliptic_opt.loss_history[-1]:.6f}",
-    # 'rbf_loss': f"{rbf_opt.loss_history[-1]:.6f}",
+    'rbf_loss': f"{rbf_opt.loss_history[-1]:.6f}",
   }, cfg['report_dir'])
   
   report.compile_patterns()
