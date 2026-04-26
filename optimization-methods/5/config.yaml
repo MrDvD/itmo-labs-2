@@ -1,0 +1,5 @@
+variant_number: 6
+report_dir: './report'
+table_file: './resources/table.txt'
+bounds_file: './resources/bounds.txt'
+output_dir: './output'

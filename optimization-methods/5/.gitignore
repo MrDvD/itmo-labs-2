@@ -1,0 +1,8 @@
+task/
+venv/
+alex/
+__pycache__/
+
+*.aux
+*.log
+*.toc
