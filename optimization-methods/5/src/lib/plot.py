@@ -24,6 +24,31 @@ class Visualizer:
     plt.tight_layout()
     plt.savefig(os.path.join(self.output_dir, filename))
     plt.close()
+  
+  def plot_contour_lines(
+    self,
+    predict_func: Callable[[np.ndarray, np.ndarray], np.ndarray],
+    X_orig: np.ndarray,
+    Y_orig: np.ndarray,
+    Z_orig: np.ndarray,
+    filename: str = "model_visualization.png"
+  ) -> None:
+    Z_pred_grid = predict_func(self.X_grid, self.Y_grid)
+    
+    plt.figure(figsize=(8, 6))
+    
+    contour = plt.contourf(self.X_grid, self.Y_grid, Z_pred_grid, levels=25, cmap='viridis', alpha=0.9)
+    plt.scatter(X_orig, Y_orig, c=Z_orig, s=120, edgecolors='black', cmap='viridis')
+    plt.contour(self.X_grid, self.Y_grid, Z_pred_grid, levels=10, colors='white', alpha=0.3, linewidths=0.5)
+    plt.xlabel('X', fontsize=10)
+    plt.ylabel('Y', fontsize=10)
+    plt.grid(True, alpha=0.3)
+    cbar = plt.colorbar(contour, label='Z')
+    cbar.ax.tick_params(labelsize=9)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(self.output_dir, filename))
+    plt.close()
 
   def plot_model(
     self,
@@ -35,28 +60,15 @@ class Visualizer:
   ) -> None:
     Z_pred_grid = predict_func(self.X_grid, self.Y_grid)
     
-    fig = plt.figure(figsize=(14, 6))
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
     
-    ax1 = fig.add_subplot(121, projection='3d')
-    ax1.plot_surface(self.X_grid, self.Y_grid, Z_pred_grid, cmap='viridis', alpha=0.7)
-    ax1.scatter(X_orig, Y_orig, Z_orig, c='red', s=50, label='Original')
-    ax1.set_xlabel('X')
-    ax1.set_ylabel('Y')
-    ax1.set_zlabel('Z')
-    ax1.legend()
-    
-    ax2 = fig.add_subplot(122)
-    contour = ax2.contourf(self.X_grid, self.Y_grid, Z_pred_grid, levels=25, cmap='viridis', alpha=0.9)
-    ax2.scatter(X_orig, Y_orig, c=Z_orig, s=120, edgecolors='black', cmap='viridis')
-    ax2.contour(self.X_grid, self.Y_grid, Z_pred_grid, levels=10, colors='white', alpha=0.3, linewidths=0.5)
-    ax2.set_xlabel('X', fontsize=10)
-    ax2.set_ylabel('Y', fontsize=10)
-    ax2.set_title('Линии уровня модельной функции и точки области задания исходной', fontsize=12, fontweight='bold')
-    ax2.grid(True, alpha=0.3)
-    cbar = plt.colorbar(contour, ax=ax2, label='Z')
-    cbar.ax.tick_params(labelsize=9)
-    ax2.grid(True, alpha=0.3)
-    
+    ax.plot_surface(self.X_grid, self.Y_grid, Z_pred_grid, cmap='viridis', alpha=0.7)
+    ax.scatter(X_orig, Y_orig, Z_orig, c='red', s=50)
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
     plt.tight_layout()
     plt.savefig(os.path.join(self.output_dir, filename))
     plt.close()
