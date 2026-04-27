@@ -93,7 +93,6 @@ module lab_functions
 
     call pgpage()
     call pgvstd()
-    ! Устанавливаем масштаб по Y с запасом для импульсных режимов
     call pgwnad(-0.1 * L, 1.1 * L, -1.5 * h, 1.5 * h)
     
     call pgsci(1)
@@ -116,12 +115,15 @@ program lab_10
   implicit none
 
   real :: L, x0, h_amp, T0, lambda, t_max, width, v0
-  integer :: Nx, Nt, j, status, pgopen, current_step, mode
+  integer :: Nx, Nt, j, status, pgopen, current_step, mode, i_frame
   real :: dx, dt, c_wave, C_sq, px, py
   real, allocatable :: history(:,:), init_v(:)
   character(len=64) :: filename
+  character(len=100) :: frame_name
   character(len=1) :: key
   logical :: do_render
+  real :: period
+  integer :: frames_per_period, step_stride, max_gif_step, do_gif
 
   write(*, '(A)', advance='no') "Input file: "
   read(*, *) filename
@@ -138,11 +140,11 @@ program lab_10
   read(10, *) mode     ! Режим (1-5)
   read(10, *) width    ! Ширина области dx (для режимов 1, 3, 4)
   read(10, *) v0       ! Начальная скорость (для режимов 4, 5)
+  read(10, *) do_gif   ! Генерировать GIF?
   close(10)
 
   c_wave = sqrt(T0 / lambda)
   dx = L / Nx
-  ! Условие устойчивости Куранта (C <= 1)
   dt = dx / c_wave 
   C_sq = (c_wave * dt / dx)**2
   Nt = int(t_max / dt)
@@ -150,20 +152,44 @@ program lab_10
   allocate(history(0:Nx, 0:Nt))
   allocate(init_v(0:Nx))
 
-  ! Инициализация начального состояния
   call init_conditions(history(:,0), init_v, Nx, L, x0, h_amp, dx, mode, width, v0)
 
-  ! Расчет первого шага (с учетом начальной скорости)
   if (Nt >= 1) then
     call compute_first_step(history(:,1), history(:,0), init_v, Nx, C_sq, dt)
   end if
 
-  ! Итерационный расчет по времени
   do j = 1, Nt - 1
     call compute_step(history(:,j+1), history(:,j), history(:,j-1), Nx, C_sq)
   end do
 
-  ! Визуализация
+  period = 2.0 * L / c_wave
+  frames_per_period = 50 
+  step_stride = max(1, int((period / dt) / frames_per_period))
+  max_gif_step = min(Nt, int(period / dt))
+
+  write(*, '("Period: ", F8.4, " s")') period
+  
+  if (do_gif == 1) then
+    call EXECUTE_COMMAND_LINE("mkdir -p frames")
+    
+    j = 0
+    do i_frame = 0, max_gif_step, step_stride
+      write(frame_name, '(A, I4.4, A)') 'frames/frame_', j, '.ps/CPS'
+      if (pgopen(trim(frame_name)) > 0) then
+        call pgscr(0, 1.0, 1.0, 1.0)
+        call pgscr(1, 0.0, 0.0, 0.0)
+        call pgscr(2, 0.0, 0.4, 0.8)
+        call draw_string(history(:,i_frame), Nx, L, h_amp, i_frame * dt)
+        call pgend()
+      end if
+      j = j + 1
+    end do
+
+    call EXECUTE_COMMAND_LINE("python3 make_gif.py")
+  end if
+
+  write(*, *) "Starting interactive mode..."
+
   if (pgopen('/XSERVE') <= 0) stop
 
   call pgask(.false.)
