@@ -1,0 +1,89 @@
+\subsection{Двумерная гауссиана}
+
+\subsubsection{Алгоритм}
+
+\textit{Двумерная гауссиана} --- это нелинейная функция следующего вида:
+\[
+z(x, y) = A \cdot \exp \left( - \left[ \frac{\tilde{x}^2}{2\sigma_x^2} + \frac{\tilde{y}^2}{2\sigma_y^2} \right] \right) + z_0
+\]
+где:
+\[
+\begin{pmatrix}
+\tilde{x} \\
+\tilde{y}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\cos\theta & \sin\theta \\
+-\sin\theta & \cos\theta
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+x - x_0 \\
+y - y_0
+\end{pmatrix}
+\]
+
+Параметры функции:
+\begin{itemize}
+  \item $A$ --- амплитуда \textit{(высота пика относительно уровня смещения)};
+  \item $x_0, y_0$ --- координаты центра функции;
+  \item $\sigma_x, \sigma_y$ --- среднеквадратичные отклонения вдоль повёрнутых осей;
+  \item $\theta$ --- угол поворота гауссианы относительно осей $x$ и $y$;
+  \item $z_0$ --- константное смещение поверхности.
+\end{itemize}
+
+Имеем задачу регрессии, которая заключается в минимизации среднеквадратичной ошибки:
+\[
+\begin{gathered}
+  Loss = L(\{x_i,y_i,z_i\}^N_{i=1},A,z_0,\sigma_x,\sigma_y,x_0,y_0,\theta) = MSE = \\
+  =\frac{1}{2\cdot N} \sum_{i=1}^{N} (z_i - z(x_i,y_i))^2 \to \min_{A,x_0,y_0,\sigma_x,\sigma_y,z_0,\theta}
+\end{gathered}
+\]
+
+Можно заметить, что перед нами также нелинейная регрессия. Аналогично воспользуемся алгоритмом L-BFGS-B.
+
+\subsubsection{Кривая обучения}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/learning_curve_gauss.pdf}
+  \end{adjustbox}
+  \caption{Кривая обучения для двумерной гауссианы \textit{(L-BFGS-B)}.}
+\end{figure}
+
+\subsubsection{Вектор невязки}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/residuals_gauss.pdf}
+  \end{adjustbox}
+  \caption{Невязки исходных объектов для двумерной гауссианы.}
+\end{figure}
+
+\subsubsection{Графики модели}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/model_plot_gauss.pdf}
+  \end{adjustbox}
+  \caption{Модельная поверхность двумерной гауссианы после обучения.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/contour_lines_gauss.pdf}
+  \end{adjustbox}
+  \caption{Линии уровня двумерной гауссианы после обучения.}
+\end{figure}
+
+\subsection{Аналитический вид}
+
+В результате обучения модель имеет следующий вид:
+\[
+  \dots
+\]
