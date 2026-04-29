@@ -39,6 +39,10 @@ module lab_functions
         end if
       case (5) ! Глобальный импульс скорости
         v(i) = v0
+      case (6) ! Локальный прямоугольный щипок
+        if (dist <= width) then
+          u(i) = h
+        end if
       end select
     end do
     ! Закрепленные концы
