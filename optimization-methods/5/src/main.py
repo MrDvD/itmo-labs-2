@@ -46,10 +46,11 @@ if __name__ == "__main__":
   )
   max_idx = np.argmax(targets)
   start_params_gauss = np.array([targets[max_idx] + 0.1, pts[max_idx, 0], pts[max_idx, 1], np.std(pts[:, 0]) * 0.5, np.std(pts[:, 1]) * 0.5, 0.0, 0.0])
-  res_gauss = gauss_opt.optimize(params_start=start_params_gauss)
+  res_gauss = np.array(gauss_opt.optimize(params_start=start_params_gauss))
   plot.plot_learning_curve(gauss_opt, filename="learning_curve_gauss.pdf")
-  plot.plot_model(gauss_opt.get_model(res_gauss.x), pts[:, 0], pts[:, 1], targets, filename="model_plot_gauss.pdf")
-  plot.plot_contour_lines(gauss_opt.get_model(res_gauss.x), pts[:, 0], pts[:, 1], targets, filename="contour_lines_gauss.pdf")
+  plot.plot_model(gauss_opt.get_model(res_gauss), pts[:, 0], pts[:, 1], targets, filename="model_plot_gauss.pdf")
+  plot.plot_contour_lines(gauss_opt.get_model(res_gauss), pts[:, 0], pts[:, 1], targets, filename="contour_lines_gauss.pdf")
+  plot.plot_residuals(gauss_opt.get_model(res_gauss), pts[:, 0], pts[:, 1], targets, filename="residuals_gauss.pdf")
 
   # Elliptic
   elliptic_opt = EllipticOptimizer(
@@ -60,10 +61,11 @@ if __name__ == "__main__":
     ]
   )
   start_params_elliptic = np.array([pts[max_idx, 0], pts[max_idx, 1], targets[max_idx], 0.3, 0.3, 0.0])
-  res_elliptic = elliptic_opt.optimize(params_start=start_params_elliptic)
+  res_elliptic = np.array(elliptic_opt.optimize(params_start=start_params_elliptic))
   plot.plot_learning_curve(elliptic_opt, filename="learning_curve_elliptic.pdf")
-  plot.plot_model(elliptic_opt.get_model(res_elliptic.x), pts[:, 0], pts[:, 1], targets, filename="model_plot_elliptic.pdf")
-  plot.plot_contour_lines(elliptic_opt.get_model(res_elliptic.x), pts[:, 0], pts[:, 1], targets, filename="contour_lines_elliptic.pdf")
+  plot.plot_model(elliptic_opt.get_model(res_elliptic), pts[:, 0], pts[:, 1], targets, filename="model_plot_elliptic.pdf")
+  plot.plot_contour_lines(elliptic_opt.get_model(res_elliptic), pts[:, 0], pts[:, 1], targets, filename="contour_lines_elliptic.pdf")
+  plot.plot_residuals(elliptic_opt.get_model(res_elliptic), pts[:, 0], pts[:, 1], targets, filename="residuals_elliptic.pdf")
 
   # Constant
   constant_opt_mse = ConstantOptimizer(
@@ -83,10 +85,11 @@ if __name__ == "__main__":
     targets=targets
   )
   start_params_rbf = rbf_opt.get_initial_params()
-  res_rbf = rbf_opt.optimize(params_start=start_params_rbf)
+  res_rbf = np.array(rbf_opt.optimize(params_start=start_params_rbf))
   plot.plot_learning_curve(rbf_opt, filename="learning_curve_rbf.pdf")
-  plot.plot_model(rbf_opt.get_model(res_rbf.x), pts[:, 0], pts[:, 1], targets, filename="model_plot_rbf.pdf")
-  plot.plot_contour_lines(rbf_opt.get_model(res_rbf.x), pts[:, 0], pts[:, 1], targets, filename="contour_lines_rbf.pdf")
+  plot.plot_model(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="model_plot_rbf.pdf")
+  plot.plot_contour_lines(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="contour_lines_rbf.pdf")
+  plot.plot_residuals(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="residuals_rbf.pdf")
 
   report = ReportFiller({
     'variant_number': cfg['variant_number'],

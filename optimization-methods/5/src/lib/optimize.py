@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 class OptimizerProtocol(Protocol):
   loss_history: List[float]
   def loss_function(self, params: np.ndarray) -> float: ...
-  def optimize(self, params_start: np.ndarray) -> OptimizeResult: ...
+  def optimize(self, params_start: np.ndarray) -> List[float]: ...
   def get_model(self, params: np.ndarray) -> Callable[[np.ndarray, np.ndarray], np.ndarray]: ...
 
 class BaseOptimizer(ABC):
@@ -61,7 +61,7 @@ class GaussOptimizer(BaseOptimizer):
   def loss_function(self, params: np.ndarray) -> float:
     return float(np.mean((self.predict(params, self.X_data) - self.targets)**2))
 
-  def optimize(self, params_start: np.ndarray, bounds: Optional[List[Tuple[float, float]]] = None) -> OptimizeResult:
+  def optimize(self, params_start: np.ndarray, bounds: Optional[List[Tuple[float, float]]] = None) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
     return minimize(
       self.loss_function,
@@ -69,7 +69,7 @@ class GaussOptimizer(BaseOptimizer):
       method='L-BFGS-B',
       bounds=bounds,
       callback=self._callback
-    )
+    ).x
 
 class EllipticOptimizer(BaseOptimizer):
   def __init__(self, X_data: np.ndarray, targets: np.ndarray, bounds: Optional[List[Tuple[float, float]]]) -> None:
@@ -86,7 +86,7 @@ class EllipticOptimizer(BaseOptimizer):
   def loss_function(self, params: np.ndarray) -> float:
     return float(np.mean((self.predict(params, self.X_data) - self.targets)**2))
 
-  def optimize(self, params_start: np.ndarray) -> OptimizeResult:
+  def optimize(self, params_start: np.ndarray) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
     return minimize(
       self.loss_function,
@@ -94,7 +94,7 @@ class EllipticOptimizer(BaseOptimizer):
       method='L-BFGS-B',
       bounds=self.bounds,
       callback=self._callback
-    )
+    ).x
 
 class ConstantOptimizer(BaseOptimizer):
   def __init__(self, targets: np.ndarray, metric: str = 'MSE') -> None:
@@ -116,7 +116,7 @@ class ConstantOptimizer(BaseOptimizer):
       return np.full(x_grid.shape, params[0])
     return model
 
-  def optimize(self, params_start: np.ndarray) -> OptimizeResult:
+  def optimize(self, params_start: np.ndarray) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
     if self.metric == 'MSE':
       avg_value = np.mean(self.targets)
@@ -129,7 +129,7 @@ class ConstantOptimizer(BaseOptimizer):
         success=True,
         nit=0,
         nfev=1
-      )
+      ).x
     median_value = np.median(self.targets)
     constant_params = np.zeros_like(params_start)
     constant_params[0] = median_value
@@ -140,7 +140,7 @@ class ConstantOptimizer(BaseOptimizer):
       success=True,
       nit=0,
       nfev=1
-    )
+    ).x
 
 class RBFOptimizer(BaseOptimizer):
   def __init__(self,
@@ -248,7 +248,7 @@ class RBFOptimizer(BaseOptimizer):
     weights = np.random.randn(self.n_centers + 1) * 0.1
     return np.concatenate([weights, centers.flatten(), widths])
 
-  def optimize(self, params_start: np.ndarray) -> OptimizeResult:
+  def optimize(self, params_start: np.ndarray) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
     params = params_start.copy()
     
@@ -259,6 +259,4 @@ class RBFOptimizer(BaseOptimizer):
       w_c_offset = self.w_len + self.c_len
       params[w_c_offset:] = np.maximum(params[w_c_offset:], 1e-3)
       self._callback(params)
-
-    final_loss = self.loss_function(params)
-    return OptimizeResult(x=params, fun=final_loss, success=True, nit=self.n_iterations)
+    return params

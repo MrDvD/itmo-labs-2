@@ -2,7 +2,9 @@ task/
 venv/
 alex/
 __pycache__/
+pics/
 
 *.aux
 *.log
+*.out
 *.toc
