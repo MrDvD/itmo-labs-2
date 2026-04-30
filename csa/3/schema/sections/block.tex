@@ -1,0 +1,120 @@
+\usetikzlibrary{calc, positioning, arrows.meta, shapes.misc, shapes.geometric}
+
+\tikzset{
+  % Base layout style - Adjusted for vertical flow
+  processor arch/.style = {
+    node distance = 10mm and 15mm,
+    every join/.style = {thick, -Stealth}
+  },
+  % 1. Simple Register (Single register, as requested)
+  register/.style = {
+    draw, thick,
+    rectangle,
+    minimum width = 1.5cm,
+    minimum height = 1.5cm,
+    inner sep = 4pt,
+    align = center,
+  },
+  % 2. Clocked Register (Edge-triggered triangle at bottom left)
+  clocked register/.style = {
+    draw, thick,
+    rectangle,
+    minimum width = 2.5cm,
+    minimum height = 1.5cm,
+    inner sep = 4pt,
+    align = center,
+    path picture = {
+      \draw[thick] 
+        ($(path picture bounding box.south west) + (0.2,0)$) -- 
+        ($(path picture bounding box.south west) + (0.4,0.3)$) -- 
+        ($(path picture bounding box.south west) + (0.6,0)$);
+    }
+  },
+  % 3. Memory Block
+  memory/.style = {
+    draw, thick,
+    rectangle,
+    minimum width = 3cm,
+    minimum height = 2cm,
+    inner sep = 5pt,
+    align = center,
+  },
+  % 4. ALU (Top-to-Bottom: Inputs on top, output on bottom, notch on top edge)
+  alu/.style = {
+    draw = none, 
+    minimum width = 3cm,
+    minimum height = 2.5cm,
+    align = center,
+    inner sep = 5pt,
+    path picture = {
+      \draw[thick]
+        (path picture bounding box.north west) --
+        ($(path picture bounding box.north west)!0.4!(path picture bounding box.north east)$) --
+        ($(path picture bounding box.north)!0.25!(path picture bounding box.south)$) -- % Notch depth
+        ($(path picture bounding box.north west)!0.6!(path picture bounding box.north east)$) --
+        (path picture bounding box.north east) --
+        ($(path picture bounding box.south east)!0.2!(path picture bounding box.south west)$) --
+        ($(path picture bounding box.south west)!0.2!(path picture bounding box.south east)$) --
+        cycle;
+    }
+  },
+  % 5. Multiplexer (Top-to-Bottom: Wide top, narrow bottom)
+  mux/.style = {
+    draw = none,
+    minimum width = 2.5cm,
+    minimum height = 1.2cm,
+    align = center,
+    inner sep = 3pt,
+    path picture = {
+      \draw[thick]
+        (path picture bounding box.north west) --
+        (path picture bounding box.north east) --
+        ($(path picture bounding box.south east)!0.15!(path picture bounding box.south west)$) --
+        ($(path picture bounding box.south west)!0.15!(path picture bounding box.south east)$) --
+        cycle;
+    }
+  },
+  % 6. Adder
+  adder/.style = {
+    draw, thick,
+    circle,
+    minimum size = 1.2cm,
+    align = center,
+    path picture = {
+      \draw[thick] 
+        ([xshift=-3mm]path picture bounding box.center) -- 
+        ([xshift=3mm]path picture bounding box.center)
+        ([yshift=-3mm]path picture bounding box.center) -- 
+        ([yshift=3mm]path picture bounding box.center);
+    }
+  },
+  % 7. Connection Bus (Thick line)
+  data bus/.style = {
+    thick,
+    -Stealth
+  },
+  % 8. Control Bus (Dashed line)
+  control bus/.style = {
+    thick,
+    dashed,
+    -Stealth
+  },
+  % 9. Bus Width Marker
+  bus width/.style = {
+    minimum size = 10pt,
+    inner sep = 0pt,
+    label = {[font=\scriptsize, inner sep=1pt]right:#1}, % Shifted label to the right for vertical lines
+    path picture = {
+      \draw[thick] 
+        ([xshift=-3.5pt, yshift=-2.5pt]path picture bounding box.center) -- 
+        ([xshift=3.5pt, yshift=2.5pt]path picture bounding box.center);
+    }
+  },
+  % 10. Junction Dot
+  dot/.style = {
+    fill,
+    circle,
+    inner sep = 1.5pt,
+    minimum size = 0pt
+  }
+}

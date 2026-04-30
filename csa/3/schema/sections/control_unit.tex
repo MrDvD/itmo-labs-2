@@ -1,0 +1,45 @@
+\section{Control Unit}
+
+\dots
+
+* счётчик тактов (для инструкций, которые выполняются за несколько тактов)
+* это у меня с состоянием или без него? (в данном процессоре)
+
+Комбинационная схема для CISC (т.к. Пенской считает, что микрокодом будет долго)
+
+Непрямое отображение кода операции на адрес микроинструкции (см. 8:12-5)
+
+\begin{tikzpicture}[processor arch]
+
+  % Place nodes vertically
+  \node[clocked register] (pc) {PC};
+  \node[memory, below=of pc] (imem) {Instruction\\Memory};
+  \node[register, below=of imem] (reg) {Register};
+  \node[mux, below=of reg, xshift=1.5cm] (mux) {MUX};
+  \node[alu, below=of mux, xshift=-1.5cm] (alu) {ALU};
+  
+  % Branching Adder placed to the side
+  \node[adder, right=of pc, xshift=1cm] (add) {};
+
+  % Draw vertical datapath buses
+  \draw[data bus] (pc) -- node[bus width=32] {} (imem);
+  \draw[data bus] (imem) -- node[bus width=32] {} (reg);
+  
+  % Branching a bus horizontally then vertically
+  \draw[data bus] (pc.east) -- node[dot] {} (add.west);
+  
+  % Connections into MUX and ALU
+  % Register has two outputs going down
+  \draw[data bus] ([xshift=-1cm]reg.south) -- ([xshift=-1cm, yshift=0.5cm]alu.north) -- ([xshift=-1cm]alu.north);
+  \draw[data bus] ([xshift=1cm]reg.south) -- ([xshift=0cm]mux.north);
+  
+  % MUX output to ALU right input
+  \draw[data bus] (mux.south) |- ([yshift=0.5cm, xshift=1cm]alu.north) -- ([xshift=1cm]alu.north);
+  
+  % ALU Output
+  \draw[data bus] (alu.south) -- +(0,-1) node[below] {Result};
+
+  % Control signal (dashed) coming in from the side
+  \draw[control bus] ([xshift=2cm]mux.east) node[right, font=\scriptsize] {Control} -- (mux.east);
+
+\end{tikzpicture}
