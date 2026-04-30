@@ -7,7 +7,6 @@ class ReportFiller:
   def __init__(self, context: Dict[str, str], report_dir: str):
     self.context: Dict[str, str] = context
     self.report_dir = report_dir
-    self.env = Environment(loader=FileSystemLoader(report_dir))
     self.section_regex = re.compile(r"## (.+)\n([\s\S]*?)(?=\n## |$)")
 
   def parse_artifact(self, artifact_path: str):
@@ -32,28 +31,29 @@ class ReportFiller:
     if not os.path.isdir(self.report_dir):
       raise NotADirectoryError(f"Invalid report directory: {self.report_dir}")
 
-    self.env.loader = FileSystemLoader(self.report_dir)
+    env = Environment(loader=FileSystemLoader(self.report_dir))
 
     for root, _, files in os.walk(self.report_dir):
       for filename in files:
         if filename.endswith(".jinja"):
           rel_path = os.path.relpath(os.path.join(root, filename), self.report_dir)
-          output_path = os.path.join(self.report_dir, rel_path).replace(".jinja", ".tex")
+          base, ext, _ = os.path.join(self.report_dir, rel_path).rsplit('.', 2)
+          output_path = base + '.compiled.' + ext
           
-          rendered_content = self._render_template(rel_path)
+          rendered_content = self._render_template(env, rel_path)
           
           os.makedirs(os.path.dirname(output_path), exist_ok=True)
           with open(output_path, "w") as f:
             f.write(rendered_content)
 
-  def _render_template(self, template_name: str) -> str:
-    if self.env.loader is None:
+  def _render_template(self, env: Environment, template_name: str) -> str:
+    if env.loader is None:
       raise RuntimeError("Jinja loader not initialized. Provide self.report_dir.")
-    template_source, _, _ = self.env.loader.get_source(self.env, template_name)
-    ast = self.env.parse(template_source)
+    template_source, _, _ = env.loader.get_source(env, template_name)
+    ast = env.parse(template_source)
     required_vars = meta.find_undeclared_variables(ast)
 
     render_kwargs = {v: self.context.get(v, "") for v in required_vars}
     
-    template = self.env.get_template(template_name)
+    template = env.get_template(template_name)
     return template.render(**render_kwargs)

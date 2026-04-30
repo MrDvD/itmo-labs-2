@@ -51,6 +51,7 @@ if __name__ == "__main__":
   plot.plot_model(gauss_opt.get_model(res_gauss), pts[:, 0], pts[:, 1], targets, filename="model_plot_gauss.pdf")
   plot.plot_contour_lines(gauss_opt.get_model(res_gauss), pts[:, 0], pts[:, 1], targets, filename="contour_lines_gauss.pdf")
   plot.plot_residuals(gauss_opt.get_model(res_gauss), pts[:, 0], pts[:, 1], targets, filename="residuals_gauss.pdf")
+  A_GAUSS, X0_GAUSS, Y0_GAUSS, SIGMAX_GAUSS, SIGMAY_GAUSS, THETA_GAUSS, Z0_GAUSS = map(lambda x: f"{x:.3f}", res_gauss)
 
   # Elliptic
   elliptic_opt = EllipticOptimizer(
@@ -66,6 +67,7 @@ if __name__ == "__main__":
   plot.plot_model(elliptic_opt.get_model(res_elliptic), pts[:, 0], pts[:, 1], targets, filename="model_plot_elliptic.pdf")
   plot.plot_contour_lines(elliptic_opt.get_model(res_elliptic), pts[:, 0], pts[:, 1], targets, filename="contour_lines_elliptic.pdf")
   plot.plot_residuals(elliptic_opt.get_model(res_elliptic), pts[:, 0], pts[:, 1], targets, filename="residuals_elliptic.pdf")
+  X0_ELLIPTIC, Y0_ELLIPTIC, Z0_ELLIPTIC, A_ELLIPTIC, B_ELLIPTIC, C_ELLIPTIC = map(lambda x: f"{x:.3f}", res_elliptic)
 
   # Constant
   constant_opt_mse = ConstantOptimizer(
@@ -76,8 +78,12 @@ if __name__ == "__main__":
     targets=targets,
     metric="MAE",
   )
-  res_constant_mse = constant_opt_mse.optimize(params_start=np.array([np.mean(targets)]))
-  res_constant_mae = constant_opt_mae.optimize(params_start=np.array([np.median(targets)]))
+  res_constant_mse = np.array(constant_opt_mse.optimize(params_start=np.array([np.mean(targets)])))
+  MSE_CONSTANT = f"{res_constant_mse[0]:.6f}"
+  plot.plot_residuals(constant_opt_mse.get_model(res_constant_mse), pts[:, 0], pts[:, 1], targets, filename="residuals_mse.pdf")
+  res_constant_mae = np.array(constant_opt_mae.optimize(params_start=np.array([np.median(targets)])))
+  MAE_CONSTANT = f"{res_constant_mae[0]:.6f}"
+  plot.plot_residuals(constant_opt_mae.get_model(res_constant_mae), pts[:, 0], pts[:, 1], targets, filename="residuals_mae.pdf")
 
   # RBF
   rbf_opt = RBFOptimizer(
@@ -90,13 +96,35 @@ if __name__ == "__main__":
   plot.plot_model(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="model_plot_rbf.pdf")
   plot.plot_contour_lines(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="contour_lines_rbf.pdf")
   plot.plot_residuals(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="residuals_rbf.pdf")
+  W0_RBF, W1_RBF, W2_RBF, C1X_RBF, C1Y_RBF, C2X_RBF, C2Y_RBF, SIGMA1_RBF, SIGMA2_RBF = map(lambda x: f"{x:.3f}", res_rbf)
 
   report = ReportFiller({
     'variant_number': cfg['variant_number'],
     'input_table_data': input_table_data,
-    'gauss_loss': f"{gauss_opt.loss_history[-1]:.6f}",
-    'elliptic_loss': f"{elliptic_opt.loss_history[-1]:.6f}",
-    'rbf_loss': f"{rbf_opt.loss_history[-1]:.6f}",
+    'A_ELLIPTIC': A_ELLIPTIC,
+    'B_ELLIPTIC': B_ELLIPTIC,
+    'C_ELLIPTIC': C_ELLIPTIC,
+    'X0_ELLIPTIC': X0_ELLIPTIC,
+    'Y0_ELLIPTIC': Y0_ELLIPTIC,
+    'Z0_ELLIPTIC': Z0_ELLIPTIC,
+    'A_GAUSS': A_GAUSS,
+    'X0_GAUSS': X0_GAUSS,
+    'Y0_GAUSS': Y0_GAUSS,
+    'SIGMAX_GAUSS': SIGMAX_GAUSS,
+    'SIGMAY_GAUSS': SIGMAY_GAUSS,
+    'THETA_GAUSS': THETA_GAUSS,
+    'Z0_GAUSS': Z0_GAUSS,
+    'MSE_CONSTANT': MSE_CONSTANT,
+    'MAE_CONSTANT': MAE_CONSTANT,
+    'W0_RBF': W0_RBF,
+    'W1_RBF': W1_RBF,
+    'W2_RBF': W2_RBF,
+    'C1X_RBF': C1X_RBF,
+    'C2X_RBF': C2X_RBF,
+    'C1Y_RBF': C1Y_RBF,
+    'C2Y_RBF': C2Y_RBF,
+    'SIGMA1_RBF': SIGMA1_RBF,
+    'SIGMA2_RBF': SIGMA2_RBF,
   }, cfg['report_dir'])
   
   report.compile_patterns()

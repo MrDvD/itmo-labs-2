@@ -67,7 +67,7 @@ y - y_0
 
 \begin{figure}[H]
   \centering
-  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
     \includegraphics{pics/model_plot_gauss.pdf}
   \end{adjustbox}
   \caption{Модельная поверхность двумерной гауссианы после обучения.}
@@ -75,15 +75,32 @@ y - y_0
 
 \begin{figure}[H]
   \centering
-  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+  \begin{adjustbox}{max width=.8\textwidth,keepaspectratio}
     \includegraphics{pics/contour_lines_gauss.pdf}
   \end{adjustbox}
   \caption{Линии уровня двумерной гауссианы после обучения.}
 \end{figure}
 
-\subsection{Аналитический вид}
+\subsubsection{Аналитический вид}
 
 В результате обучения модель имеет следующий вид:
 \[
-  \dots
+  z(x, y) = {{ A_GAUSS }} \cdot \exp \left( - \left[ \frac{\tilde{x}^2}{2\cdot {{ SIGMAX_GAUSS }}^2} + \frac{\tilde{y}^2}{2\cdot {{ SIGMAY_GAUSS }}^2} \right] \right) + {{ Z0_ELLIPTIC }}
+\]
+где:
+\[
+\begin{pmatrix}
+\tilde{x} \\
+\tilde{y}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\cos({{ THETA_GAUSS }}) & \sin({{ THETA_GAUSS }})\\
+-\sin({{ THETA_GAUSS }})& \cos({{ THETA_GAUSS }})
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+x -({{ X0_GAUSS }})\\
+y -({{ Y0_GAUSS }})
+\end{pmatrix}
 \]
