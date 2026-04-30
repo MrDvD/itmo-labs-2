@@ -1,3 +1,8 @@
 temp/
 hello*
 factorial*
+
+*.log
+*.out
+*.aux
+*.toc

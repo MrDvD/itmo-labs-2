@@ -1,0 +1,43 @@
+\section{Data Path}
+
+\dots
+
+Нужно указать PC
+* указать обвязку для автоинкремента PC
+
+Почему "это всё" - это комбинационная схема?
+
+Нужен ли IR?
+
+Указать управляющие линии с CU, которые выходят из instruction decoder.
+Не нужно вести их напрямую с CU, чтобы не засорять схему.
+
+\begin{center}
+\begin{tikzpicture}[processor arch]
+  \node[register] (pc) {PC};
+  \node[register, below= of pc] (sr) {SR};
+  \node[memory, below=of sr] (imem) {Instruction\\Memory};
+  \node[alu, below=of imem] (alu) {ALU};
+  \begin{scope}[start chain=flow going below, node distance=1mm]
+    \node[register, on chain, below= of alu] (d0) {D0};
+    \node[register, on chain] (d1) {D1};
+    \node[register, on chain] (d2) {D2};
+    \node[register, on chain] (d3) {D3};
+    \node[register, on chain] (d4) {D4};
+    \node[register, on chain] (d5) {D5};
+    \node[register, on chain] (d6) {D6};
+    \node[register, on chain] (d7) {D7};
+  \end{scope}
+  \begin{scope}[start chain=flow going below, node distance=1mm]
+    \node[register, on chain, right= of d0] (a0) {A0};
+    \node[register, on chain] (a1) {A1};
+    \node[register, on chain] (a2) {A2};
+    \node[register, on chain] (a3) {A3};
+    \node[register, on chain] (a4) {A4};
+    \node[register, on chain] (a5) {A5};
+    \node[register, on chain] (a6) {A6};
+    \node[register, on chain] (a7) {A7};
+  \end{scope}
+  
+\end{tikzpicture}
+\end{center}
