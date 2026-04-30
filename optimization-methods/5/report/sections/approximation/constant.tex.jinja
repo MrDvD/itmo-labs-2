@@ -1,0 +1,35 @@
+\subsection{Константная модель}
+
+\subsubsection{Аналитический вид}
+
+Лучшая константная модель в смысле минимизации среднеквадратичной ошибки \textit{(MSE)} --- среднее выборочное:
+\[
+  \hat{z} = \bar{z} = \frac{1}{n}\sum_{i=1}^{n} z_i = {{ MSE_CONSTANT }}
+\]
+
+Лучшая константная модель в смысле минимизации средней абсолютной ошибки \textit{(MAE)} --- медиана:
+\[
+  \hat{z} = \text{median}(z_1, \dots, z_n) = 
+  \begin{cases}
+  z_{((n+1)/2)}, & 2\nmid n \\
+  \frac{1}{2}\left(z_{(n/2)} + z_{(n/2+1)}\right), & 2\mid n
+  \end{cases} = {{ MAE_CONSTANT }}
+\]
+
+\subsubsection{Вектор невязки}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/residuals_mse.pdf}
+  \end{adjustbox}
+  \caption{Невязки исходных объектов для константной модели \textit{(MSE)}.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/residuals_mae.pdf}
+  \end{adjustbox}
+  \caption{Невязки исходных объектов для константной модели \textit{(MAE)}.}
+\end{figure}

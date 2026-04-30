@@ -1,0 +1,88 @@
+\subsection{RBF-сеть}
+
+\subsubsection{Алгоритм}
+
+\textit{RBF-сеть} --- это модель в виде графа, у которого вершины группируются в 3 «слоя»: входной, скрытый \textit{(слой базисных функций)} и выходной.
+
+Входных нейронов два --- моделируем функцию двух переменных $z=z(x,y)$. Так как данных мало, используется сеть с двумя «скрытыми нейронами» \textit{(двумя слагаемыми РБФ)}:
+\[
+  z(x,y) = w_1 e^{-\frac{(x-c_{1x})^2+(y-c_{1y})^2}{2\sigma_1^2}} + w_2 e^{-\frac{(x-c_{2x})^2+(y-c_{2y})^2}{2\sigma_2^2}} + w_0
+\]
+
+Параметры функции:
+\begin{itemize}
+  \item $c_1=(c_{1x}, c_{1y}), c_2=(c_{2x}, c_{2y}) \in \mathbb{R}^2$ --- центры \textit{(centers)};
+  \item $\sigma_{1,2} \in \mathbb{R}_+$ --- параметры ширины \textit{(widths)};
+  \item $w=(w_0, w_1, w_2) \in \mathbb{R}^3$ --- веса \textit{(weights)};
+\end{itemize}
+
+\textbf{1. K-Means (центры)}:
+Разделим на 2 кластера по $(x, y)$:
+$c_1 = \text{mean}(P_1, P_2) \approx (1.40, 1.55)$
+$c_2 = \text{mean}(P_3, P_4, P_5) \approx (3.92, 4.06)$
+
+\textbf{2. Начальное приближение}:
+$c_1=(1.40, 1.55), c_2=(3.92, 4.06), \sigma_{1,2}=1.0, w_0=0, w_{1,2}=1.0$
+
+\textbf{3. Аналитические выражения производных} ($E = (z_{RBF} - z_{target})^2$):
+\begin{itemize}
+    \item $\frac{\partial E}{\partial w_0} = 2(z_{RBF} - z_{target})$
+    \item $\frac{\partial E}{\partial w_1} = 2(z_{RBF} - z_{target}) \cdot \exp\left(-\frac{(x-c_{1x})^2 + (y-c_{1y})^2}{2\sigma_1^2}\right)$
+    \item $\frac{\partial E}{\partial c_{2y}} = 2(z_{RBF} - z_{target}) \cdot w_2 \cdot G_2 \cdot \frac{y - c_{2y}}{\sigma_2^2}$
+    \item $\frac{\partial E}{\partial \sigma_2} = 2(z_{RBF} - z_{target}) \cdot w_2 \cdot G_2 \cdot \frac{(x - c_{2x})^2 + (y - c_{2y})^2}{\sigma_2^3}$
+\end{itemize}
+
+\textbf{4. Расчёт (1-я итерация, точка $P_1$)}:
+$G_1 = e^{-0.4385/2} \approx 0.803$, $G_2 = e^{-17.768/2} \approx 0.00014$
+$z_{RBF} = 0 + 1(0.803) + 1(0.00014) = 0.80314$
+$\text{Delta} = 2(0.80314 - (-0.10)) = 1.80628$
+
+$\frac{\partial E}{\partial w_0} \approx 1.806$
+$\frac{\partial E}{\partial w_1} \approx 1.806 \cdot 0.803 \approx 1.450$
+$\frac{\partial E}{\partial c_{2y}} \approx 1.806 \cdot 1 \cdot 0.00014 \cdot (1.14 - 4.06) \approx -0.0007$
+$\frac{\partial E}{\partial \sigma_2} \approx 1.806 \cdot 1 \cdot 0.00014 \cdot 17.768 \approx 0.0045$
+
+\subsubsection{Кривая обучения}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/learning_curve_rbf.pdf}
+  \end{adjustbox}
+  \caption{Кривая обучения для RBF-сети.}
+\end{figure}
+
+\subsubsection{Вектор невязки}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/residuals_rbf.pdf}
+  \end{adjustbox}
+  \caption{Невязки исходных объектов для RBF-сети.}
+\end{figure}
+
+\subsubsection{Графики модели}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/model_plot_rbf.pdf}
+  \end{adjustbox}
+  \caption{Модельная поверхность RBF-сети после обучения.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+    \includegraphics{pics/contour_lines_rbf.pdf}
+  \end{adjustbox}
+  \caption{Линии уровня RBF-сети после обучения.}
+\end{figure}
+
+\subsubsection{Аналитический вид}
+
+В результате обучения модель имеет следующий вид:
+\[
+  z(x,y) = {{ W1_RBF }} e^{-\frac{(x-{{C1X_RBF}})^2+(y-{{C1Y_RBF}})^2}{2\cdot {{ SIGMA1_RBF }}^2}} + {{ W2_RBF }} e^{-\frac{(x-{{ C2X_RBF}})^2+(y-{{ C2Y_RBF }})^2}{2\cdot {{ SIGMA2_RBF }}^2}} + {{ W0_RBF }}
+\]
