@@ -1,0 +1,5 @@
+variant_num: 1
+report_dir: './report'
+task_1_file: './resources/task1.txt'
+task_2_file: './resources/task2.txt'
+infinity: 1000000
