@@ -21,6 +21,11 @@ if __name__ == "__main__":
   
   context: Dict[str, Any] = {
     'variant_number': cfg['variant_num'],
+    'c_constant_gene': cfg['c_constant_gene'],
+    'colony_size': cfg['colony_size'],
+    'q0_ant': cfg['q0_ant'],
+    'limit_ant': cfg['limit_ant'],
+    'rho_ant': cfg['rho_ant'],
   }
 
   report = ReportFiller(context, cfg['infinity'])
