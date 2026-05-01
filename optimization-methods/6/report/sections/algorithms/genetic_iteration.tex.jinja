@@ -1,0 +1,56 @@
+\subsubsection{Итерация {{ iteration_num }}}
+
+Разобъём популяцию \( H^{({{ iteration_num_prev }})} \) на следующие пары и проведём цикл размножения и мутаций:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textit{Родители} & \textit{Потомки} & \textit{Мутации} & $f(\vec{h}_i)$ \\ \hline\hline
+$\vec{h}_a=$ & $\vec{h}'_a=$ & --- & $f(\vec{h}''_1)$ \\ \cline{1-4} 
+$\vec{h}_b=$ & $\vec{h}'_b=$ & $\vec{h}''_2=$ & $f(\vec{h}''_2)$ \\ \hline\hline
+$\vec{h}_c=$ & $\vec{h}'_c=$ & $\vec{h}''_3$ & $f(\vec{h}''_3)$ \\ \cline{1-4} 
+$\vec{h}_d=$ & $\vec{h}'_d=$ & $\vec{h}''_4$ & $f(\vec{h}''_4)$ \\ \hline
+\end{tabular}
+\caption{Результаты операторов скрещивания и мутации}
+\end{table}
+
+Рассчитаем вероятности отбора для каждого элемента текущей популяции:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Номер ($i$) & $\vec{h}_i$ & $f(\vec{h}_i)$ & $p_i$ \\ \hline\hline
+1 & & & \\ \hline
+2 & & & \\ \hline
+3 & & & \\ \hline
+4 & & & \\ \hline
+5 & & & \\ \hline
+6 & & & \\ \hline
+7 & & & \\ \hline
+8 & & & \\ \hline\hline
+$\sum$ & --- & & 1.0 \\ \hline
+\end{tabular}
+\caption{Расчёт вероятностей выживания особей.}
+\end{table}
+
+Отберём четыре лучших потомка:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|}
+\hline
+$i$ & $\vec{h}_i$ & $f(\vec{h}_i)$ \\ \hline
+1 & & \\ \hline
+2 & & \\ \hline
+3 & & \\ \hline
+4 & & \\ \hline
+\end{tabular}
+\caption{Состав популяции $H^{({{ iteration_num }})}$ после отбора.}
+\end{table}
+
+Заметим, что средневыборочное значение \( \bar{f} \) --- {{ f_avg }}.
