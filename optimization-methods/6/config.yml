@@ -3,7 +3,10 @@ report_dir: './report'
 task_1_file: './resources/task1.txt'
 task_2_file: './resources/task2.txt'
 infinity: 1000000
-c_constant_gene: 250
+population_size: 4
+c_constant_gene: 200
+prob_mutate_gene: 0.01
+limit_gene: 100
 colony_size: 10
 q0_ant: 0.75
 limit_ant: 100
