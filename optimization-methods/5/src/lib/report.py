@@ -3,7 +3,7 @@ import re
 import math
 from typing import Dict, List
 from jinja2 import Environment, FileSystemLoader, meta
-from lib.primitives import TableEntry
+from lib.primitives import TableEntry, KmeansIteration
 
 class ReportFiller:
   def __init__(self, context: Dict[str, str], report_dir: str):
@@ -30,13 +30,13 @@ class ReportFiller:
       raise RuntimeError(f"Error reading artifact: {e}")
   
   @staticmethod
-  def print_vector(vector: List[float]) -> str:
+  def print_vector(vector: List[float], prec: int = 5) -> str:
     vec_str: List[str] = list()
     for c in vector:
-      vec_str.append(f"{c:.5f}")
+      vec_str.append(f"{c:.{prec}f}")
     return f"({','.join(vec_str)})^T"
   
-  def fill_rbf_handmade(self, c1: List[float], c2: List[float], objects: List[TableEntry]) -> None:
+  def fill_rbf_handmade(self, c1: List[float], c2: List[float], objects: List[TableEntry], kmeans_log: List[KmeansIteration], kmeans_epsilon: float, first_params: List[float]) -> None:
     distance_lines: List[str] = list()
     new_lines: List[str] = list()
     c1_vertices: List[TableEntry] = list()
@@ -86,6 +86,45 @@ class ReportFiller:
     new_lines.append(line_new)
 
     self.context['new_centers_rbf'] = '\n'.join(new_lines)
+
+    kmeans_lines: List[str] = list()
+    for i, iteration in enumerate(kmeans_log[1:]):
+      row: List[str] = list()
+      row.append(f"{i + 2}")
+      
+      cluster1_str: str = "{"
+      cluster1: List[str] = list()
+      for c in iteration.cluster1:
+        cluster1.append(f"${ReportFiller.print_vector(list(c), 2)}$")
+      a = '\\\\'.join(cluster1)
+      cluster1_str += f"{ a }}}"
+      row.append(cluster1_str)
+
+      cluster2_str: str = "{"
+      cluster2: List[str] = list()
+      for c in iteration.cluster2:
+        cluster2.append(f"${ReportFiller.print_vector(list(c), 2)}$")
+      b = '\\\\'.join(cluster2)
+      cluster2_str += f"{ b }}}"
+      row.append(cluster2_str)
+
+      c = '\\\\'.join(map(lambda x: f"{x:.4f}", list(iteration.center1)))
+      row.append(f"$\\begin{{pmatrix}} {c} \\end{{pmatrix}}$")
+      d = '\\\\'.join(map(lambda x: f"{x:.4f}", list(iteration.center2)))
+      row.append(f"$\\begin{{pmatrix}} {d} \\end{{pmatrix}}$")
+      row.append(f"{iteration.delta1:.3f}")
+      row.append(f"{iteration.delta2:.3f}")
+      kmeans_lines.append(' & '.join(row) + "\\\\")
+
+    self.context['kmeans_all_iterations_rbf'] = '\n'.join(kmeans_lines)
+
+    self.context['d1_rbf'] = f"{kmeans_log[0].delta1:.3f}" + ('>\\varepsilon' if kmeans_log[0].delta1 > kmeans_epsilon else '\\leq\\varepsilon')
+    self.context['d2_rbf'] = f"{kmeans_log[0].delta2:.3f}" + ('>\\varepsilon' if kmeans_log[0].delta2 > kmeans_epsilon else '\\leq\\varepsilon')
+
+    params_lines: List[str] = list()
+    for p in first_params:
+      params_lines.append(f"{p:.6f}")
+    self.context['omega_params_rbf'] = "\\begin{pmatrix}" + "\\\\".join(params_lines) + "\\end{pmatrix}"
 
   def compile_patterns(self):
     if not os.path.isdir(self.report_dir):

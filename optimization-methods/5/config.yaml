@@ -2,3 +2,5 @@ variant_number: 6
 report_dir: './report'
 table_file: './resources/table.txt'
 output_dir: './output'
+
+kmeans_epsilon: 0.01

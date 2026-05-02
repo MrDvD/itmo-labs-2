@@ -90,7 +90,7 @@ if __name__ == "__main__":
     X_data=pts,
     targets=targets
   )
-  start_params_rbf = rbf_opt.get_initial_params()
+  start_params_rbf, rbf_log = rbf_opt.get_initial_params(eps=cfg['kmeans_epsilon'])
   res_rbf = np.array(rbf_opt.optimize(params_start=start_params_rbf))
   plot.plot_learning_curve(rbf_opt, filename="learning_curve_rbf.pdf")
   plot.plot_model(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="model_plot_rbf.pdf")
@@ -133,8 +133,9 @@ if __name__ == "__main__":
     'c1_init_rbf': ReportFiller.print_vector(start_params_rbf[3:5]),
     'c2_init_rbf': ReportFiller.print_vector(start_params_rbf[5:7]),
     'sigma_init_rbf': f"{start_params_rbf[7]:.5f}",
+    'kmeans_epsilon': cfg['kmeans_epsilon'],
   }, cfg['report_dir'])
 
-  report.fill_rbf_handmade(centers[0], centers[1], values)
+  report.fill_rbf_handmade(centers[0], centers[1], values, rbf_log, cfg['kmeans_epsilon'], rbf_opt.params_history[1])
 
   report.compile_patterns()
