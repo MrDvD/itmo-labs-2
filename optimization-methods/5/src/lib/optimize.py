@@ -281,8 +281,5 @@ class RBFOptimizer(BaseOptimizer):
       params -= self.learning_rate * grads
 
       self.params_history.append(list(params))
-      
-      w_c_offset = self.w_len + self.c_len
-      params[w_c_offset:] = np.maximum(params[w_c_offset:], 1e-3)
       self._callback(params)
     return params
