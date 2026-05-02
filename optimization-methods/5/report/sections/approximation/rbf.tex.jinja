@@ -1,8 +1,8 @@
 \subsection{RBF-сеть}
 
-\subsubsection{Алгоритм}
+\subsubsection{Описание модели}
 
-\textit{RBF-сеть} --- это модель в виде графа, у которого вершины группируются в 3 «слоя»: входной, скрытый \textit{(слой базисных функций)} и выходной.
+\textit{RBF-сеть} --- это модель в виде графа, у которого вершины группируются в~3~«слоя»: входной, скрытый \textit{(слой базисных функций)} и выходной.
 
 Входных нейронов два --- моделируем функцию двух переменных $z=z(x,y)$. Так как данных мало, используется сеть с двумя «скрытыми нейронами» \textit{(двумя слагаемыми РБФ)}:
 \[
@@ -11,36 +11,135 @@
 
 Параметры функции:
 \begin{itemize}
-  \item $c_1=(c_{1x}, c_{1y}), c_2=(c_{2x}, c_{2y}) \in \mathbb{R}^2$ --- центры \textit{(centers)};
+  \item $c_1=(c_{1x}, c_{1y})^T, c_2=(c_{2x}, c_{2y})^T \in \mathbb{R}^2$ --- центры \textit{(centers)};
   \item $\sigma_{1,2} \in \mathbb{R}_+$ --- параметры ширины \textit{(widths)};
-  \item $w=(w_0, w_1, w_2) \in \mathbb{R}^3$ --- веса \textit{(weights)};
+  \item $w=(w_0, w_1, w_2)^T \in \mathbb{R}^3$ --- веса \textit{(weights)};
 \end{itemize}
 
-\textbf{1. K-Means (центры)}:
-Разделим на 2 кластера по $(x, y)$:
-$c_1 = \text{mean}(P_1, P_2) \approx (1.40, 1.55)$
-$c_2 = \text{mean}(P_3, P_4, P_5) \approx (3.92, 4.06)$
+Имеем задачу регрессии, которая заключается в минимизации среднеквадратичной ошибки:
+\[
+\begin{gathered}
+  Loss = L(\{x_i,y_i,z_i\}^N_{i=1},c_1,c_2,\sigma_1,\sigma_2,w) = MSE = \\
+  =\frac{1}{2\cdot N} \sum_{i=1}^{N} (z_i - z(x_i,y_i))^2 \to \min_{A,x_0,y_0,\sigma_x,\sigma_y,z_0,\theta}
+\end{gathered}
+\]
 
-\textbf{2. Начальное приближение}:
-$c_1=(1.40, 1.55), c_2=(3.92, 4.06), \sigma_{1,2}=1.0, w_0=0, w_{1,2}=1.0$
+\subsubsection{Начальное приближение}
 
-\textbf{3. Аналитические выражения производных} ($E = (z_{RBF} - z_{target})^2$):
-\begin{itemize}
-    \item $\frac{\partial E}{\partial w_0} = 2(z_{RBF} - z_{target})$
-    \item $\frac{\partial E}{\partial w_1} = 2(z_{RBF} - z_{target}) \cdot \exp\left(-\frac{(x-c_{1x})^2 + (y-c_{1y})^2}{2\sigma_1^2}\right)$
-    \item $\frac{\partial E}{\partial c_{2y}} = 2(z_{RBF} - z_{target}) \cdot w_2 \cdot G_2 \cdot \frac{y - c_{2y}}{\sigma_2^2}$
-    \item $\frac{\partial E}{\partial \sigma_2} = 2(z_{RBF} - z_{target}) \cdot w_2 \cdot G_2 \cdot \frac{(x - c_{2x})^2 + (y - c_{2y})^2}{\sigma_2^3}$
-\end{itemize}
+Определим начальное приближение при помощи \textit{метода $K$-средних}.
 
-\textbf{4. Расчёт (1-я итерация, точка $P_1$)}:
-$G_1 = e^{-0.4385/2} \approx 0.803$, $G_2 = e^{-17.768/2} \approx 0.00014$
-$z_{RBF} = 0 + 1(0.803) + 1(0.00014) = 0.80314$
-$\text{Delta} = 2(0.80314 - (-0.10)) = 1.80628$
+На нулевой итерации выберем в качестве центров \( c_1^{(0)} \), \( c_2^{(0)} \) два случайных объекта:
+\[
+  c_1^{(0)}={{ C1_VECTOR_INIT }}\quad c_2^{(0)}={{ C2_VECTOR_INIT }}
+\]
 
-$\frac{\partial E}{\partial w_0} \approx 1.806$
-$\frac{\partial E}{\partial w_1} \approx 1.806 \cdot 0.803 \approx 1.450$
-$\frac{\partial E}{\partial c_{2y}} \approx 1.806 \cdot 1 \cdot 0.00014 \cdot (1.14 - 4.06) \approx -0.0007$
-$\frac{\partial E}{\partial \sigma_2} \approx 1.806 \cdot 1 \cdot 0.00014 \cdot 17.768 \approx 0.0045$
+В начале следующей \textit{(первой)} итерации для каждого объекта считаем расстояние до каждого центра \textit{(допустим, Евклидово)}. Если объект ближе в центру \( c_i \), то приписываем его к кластеру \( C_i \):
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \( x_i \) & \( \lVert x_i-c_1\rVert_2 \) & \( \lVert x_i-c_2\rVert_2 \) & \( C_i \) \\
+    \hline
+    \( x_1 \) & \( d_{11} \) & \( d_{12} \) & \( C_1 \) / \( C_2 \) \\
+    \hline
+    \( x_2 \) & \( d_{21} \) & \( d_{22} \) & \( C_1 \) / \( C_2 \) \\
+    \hline
+    \( x_3 \) & \( d_{31} \) & \( d_{32} \) & \( C_1 \) / \( C_2 \) \\
+    \hline
+    \( x_4 \) & \( d_{41} \) & \( d_{42} \) & \( C_1 \) / \( C_2 \) \\
+    \hline
+    \( x_5 \) & \( d_{51} \) & \( d_{52} \) & \( C_1 \) / \( C_2 \) \\
+    \hline
+  \end{tabular}
+  \caption{Распределение объектов по кластерам на первой итерации.}
+\end{table}
+
+После заполнения кластеров определяем их центры как среднее арифметическое векторов-элементов:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \( i \) & \( C_i \) & \( c_i^{(1)} \) \\
+    \hline
+    \( 1 \) & \( \{ x_1, x_2, x_4 \} \) & \( {{ C1_VECTOR_NEW }} \) \\
+    \hline
+    \( 2 \) & \( \{ x_3, x_5, x_6 \} \) & \( {{ C2_VECTOR_NEW }} \) \\
+    \hline
+  \end{tabular}
+  \caption{Пересчитанные центры кластеров после первой итерации}
+\end{table}
+
+Проверим смещение центров относительно прошлого положения:
+\[
+  \begin{cases}
+    \lVert c^{(1)}_1-c^{(0)}_1 \rVert_2=\dots<\varepsilon=\dots\\
+    \lVert c^{(1)}_2-c^{(0)}_2 \rVert_2=\dots<\varepsilon=\dots
+  \end{cases}
+\]
+
+Продолжим итерации, пока не выполнен критерий останова:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+    \hline
+    $t$ & \( c_1^{(t-1)} \) & \( c_2^{(t-1)} \) & \( C_1^{(t)} \) & \( C_2^{(t)} \) & \( c_1^{(t)} \) & \( c_2^{(t)} \) & \( \Delta_1^{(t)} \) & \( \Delta_2^{(t)} \) \\
+    \hline
+    \( 0 \) & \( {{ C1_VECTOR_INIT }} \) & \( {{ C2_VECTOR_INIT }} \) & \( \{ \ldots \} \) & \( \{ \ldots \} \) & \( {{ C1_VECTOR_NEW }} \) & \( {{ C2_VECTOR_NEW }} \) & \( {{ delta1_0 }} \) & \( {{ delta2_0 }} \) \\
+    \hline
+    \( 1 \) & \( {{ C1_VECTOR_NEW }} \) & \( {{ C2_VECTOR_NEW }} \) & \( \{ \ldots \} \) & \( \{ \ldots \} \) & \( {{ C1_VECTOR_NEW2 }} \) & \( {{ C2_VECTOR_NEW2 }} \) & \( {{ delta1_1 }} \) & \( {{ delta2_1 }} \) \\
+    \hline
+    \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) \\
+    \hline
+    \( t \) & \( c_1^{(t)} \) & \( c_2^{(t)} \) & \( \{ \ldots \} \) & \( \{ \ldots \} \) & \( c_1^{(t+1)} \) & \( c_2^{(t+1)} \) & \( \Delta_1^{(t)} \) & \( \Delta_2^{(t)} \) \\
+    \hline
+  \end{tabular}
+  \caption{Итерационный процесс кластеризации.}
+\end{table}
+
+В итоге имеем следующее начальное приближение центров:
+\[
+  c_1=\dots\quad c_2=\dots
+\]
+
+Начальное приближение для параметров ширины установим по формуле:
+\[
+  \sigma_1=\sigma_2=\dfrac{\lVert c_2-c_1 \rVert_2}{2}=\dots
+\]
+
+Вектор весов определим как \( w^{(0)}=0.1\cdot\{\xi_i\}^3_{i=1} \), где \( \xi_i\sim\mathcal{N}(0,1) \):
+\[
+  w^{(0)}=\dots
+\]
+
+\subsubsection{Градиент функции ошибки}
+
+Обозначим значение \( j \)-й базисной функции для \( i \)-го объекта:
+\[
+  G_{ij}=e^{-\frac{(x_i-c_{jx})^2+(y_i-c_{jy})^2}{2\sigma^2_j}}
+\]
+
+Вычислим градиент целевой функции покомпонентно:
+\[
+\begin{aligned}
+  &\frac{\partial L}{\partial w_0} = -\frac{1}{N} \sum_{i=1}^{N} (z_i - z(x_i, y_i))
+  \\[10pt]
+  &\frac{\partial L}{\partial w_j} = -\frac{1}{N} \sum_{i=1}^{N} (z_i - z(x_i, y_i)) \cdot G_{ij}, \quad j \in \{1, 2\}
+  \\[15pt]
+  &\frac{\partial L}{\partial c_{jx}} = -\frac{1}{N} \sum_{i=1}^{N} (z_i - z(x_i, y_i)) \cdot w_j G_{ij} \cdot \frac{(x_i - c_{jx})}{\sigma_j^2}
+  \\[10pt]
+  &\frac{\partial L}{\partial c_{jy}} = -\frac{1}{N} \sum_{i=1}^{N} (z_i - z(x_i, y_i)) \cdot w_j G_{ij} \cdot \frac{(y_i - c_{jy})}{\sigma_j^2}
+  \\[15pt]
+  &\frac{\partial L}{\partial \sigma_j} = -\frac{1}{N} \sum_{i=1}^{N} (z_i - z(x_i, y_i)) \cdot w_j G_{ij} \cdot \frac{(x_i - c_{jx})^2 + (y_i - c_{jy})^2}{\sigma_j^3}
+\end{aligned}
+\]
+
+Для первой итерации имеем следующие значения компонент градиента:
+\[
+  \omega^{(1)}=(\dots)^T
+\]
 
 \subsubsection{Кривая обучения}
 
