@@ -63,8 +63,8 @@
 \[
   \begin{cases}
     {{ centers_offset_rbf }}
-    % \lVert c^{(1)}_1-c^{(0)}_1 \rVert_2=\\
-    \lVert c^{(1)}_2-c^{(0)}_2 \rVert_2=\dots<\varepsilon=\dots
+    \lVert c^{(1)}_1-c^{(0)}_1 \rVert_2={{ d1_rbf }} \\
+    \lVert c^{(1)}_2-c^{(0)}_2 \rVert_2={{ d2_rbf }}
   \end{cases}
 \]
 
@@ -72,20 +72,14 @@
 
 \begin{table}[H]
   \centering
-  \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-    \hline
-    $t$ & \( c_1^{(t-1)} \) & \( c_2^{(t-1)} \) & \( C_1^{(t)} \) & \( C_2^{(t)} \) & \( c_1^{(t)} \) & \( c_2^{(t)} \) & \( \Delta_1^{(t)} \) & \( \Delta_2^{(t)} \) \\
-    \hline
+  \begin{tblr}{
+    colspec = {*7{Q[c,m]}},
+    hlines,
+    vlines,
+  }
+    $t$ & $C_1^{(t)}$ & $C_2^{(t)}$ & $c_1^{(t)}$ & $c_2^{(t)}$ & $\Delta_1^{(t)}$ & $\Delta_2^{(t)}$ \\
     {{ kmeans_all_iterations_rbf }}
-    \( 0 \) & \( {{ C1_VECTOR_INIT }} \) & \( {{ C2_VECTOR_INIT }} \) & \( \{ \ldots \} \) & \( \{ \ldots \} \) & \( {{ C1_VECTOR_NEW }} \) & \( {{ C2_VECTOR_NEW }} \) & \( {{ delta1_0 }} \) & \( {{ delta2_0 }} \) \\
-    \hline
-    \( 1 \) & \( {{ C1_VECTOR_NEW }} \) & \( {{ C2_VECTOR_NEW }} \) & \( \{ \ldots \} \) & \( \{ \ldots \} \) & \( {{ C1_VECTOR_NEW2 }} \) & \( {{ C2_VECTOR_NEW2 }} \) & \( {{ delta1_1 }} \) & \( {{ delta2_1 }} \) \\
-    \hline
-    \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) & \( \vdots \) \\
-    \hline
-    \( t \) & \( c_1^{(t)} \) & \( c_2^{(t)} \) & \( \{ \ldots \} \) & \( \{ \ldots \} \) & \( c_1^{(t+1)} \) & \( c_2^{(t+1)} \) & \( \Delta_1^{(t)} \) & \( \Delta_2^{(t)} \) \\
-    \hline
-  \end{tabular}
+  \end{tblr}
   \caption{Итерационный процесс кластеризации.}
 \end{table}
 
@@ -128,7 +122,7 @@
 
 Для первой итерации имеем следующее значение градиента:
 \[
-  \omega^{(1)}=(\dots)^T
+  \omega^{(1)}={{ omega_params_rbf }}
 \]
 
 \subsubsection{Кривая обучения}
@@ -155,7 +149,7 @@
 
 \begin{figure}[H]
   \centering
-  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
     \includegraphics{pics/model_plot_rbf.pdf}
   \end{adjustbox}
   \caption{Модельная поверхность RBF-сети после обучения.}
@@ -163,7 +157,7 @@
 
 \begin{figure}[H]
   \centering
-  \begin{adjustbox}{max width=\textwidth,keepaspectratio}
+  \begin{adjustbox}{max width=.8\textwidth,keepaspectratio}
     \includegraphics{pics/contour_lines_rbf.pdf}
   \end{adjustbox}
   \caption{Линии уровня RBF-сети после обучения.}
