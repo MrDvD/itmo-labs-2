@@ -1,7 +1,9 @@
 import os
 import re
-from typing import Dict
+import math
+from typing import Dict, List
 from jinja2 import Environment, FileSystemLoader, meta
+from lib.primitives import TableEntry
 
 class ReportFiller:
   def __init__(self, context: Dict[str, str], report_dir: str):
@@ -26,6 +28,64 @@ class ReportFiller:
         self.context[name.strip()] = body.strip()
     except IOError as e:
       raise RuntimeError(f"Error reading artifact: {e}")
+  
+  @staticmethod
+  def print_vector(vector: List[float]) -> str:
+    vec_str: List[str] = list()
+    for c in vector:
+      vec_str.append(f"{c:.5f}")
+    return f"({','.join(vec_str)})^T"
+  
+  def fill_rbf_handmade(self, c1: List[float], c2: List[float], objects: List[TableEntry]) -> None:
+    distance_lines: List[str] = list()
+    new_lines: List[str] = list()
+    c1_vertices: List[TableEntry] = list()
+    c2_vertices: List[TableEntry] = list()
+    c1_vertices_str: List[str] = list()
+    c2_vertices_str: List[str] = list()
+    for i in range(len(objects)):
+      line: List[str] = [f"$x_{i + 1}$"]
+      obj = objects[i]
+      d1: float = math.hypot(obj.x - c1[0], obj.y - c1[1])
+      line.append(f"{d1:.5f}")
+      d2: float = math.hypot(obj.x - c2[0], obj.y - c2[1])
+      line.append(f"${d2:.5f}$")
+      if d1 <= d2:
+        line.append("$C_1$")
+        c1_vertices_str.append(f"$x_{i + 1}$")
+        c1_vertices.append(obj)
+      else:
+        line.append("$C_2$")
+        c2_vertices_str.append(f"$x_{i + 1}$")
+        c2_vertices.append(obj)
+      raw_line = " & ".join(line)
+      raw_line += "\\\\ \\hline"
+      distance_lines.append(raw_line)
+    self.context['distance_centers_rbf'] = '\n'.join(distance_lines)
+    
+    line_new  = "1 & "
+    line_new += f"\\{{ {','.join(c1_vertices_str)} \\}} & "
+    
+    def find_avg_vector(arr: List[TableEntry]) -> str:
+      avg_vector: List[float] = [0.0, 0.0]
+      for v in arr:
+        avg_vector[0] += v.x
+        avg_vector[1] += v.y
+      avg_vector[0] /= len(arr)
+      avg_vector[1] /= len(arr)
+      return ReportFiller.print_vector(avg_vector)
+
+    line_new += f"${find_avg_vector(c1_vertices)}$"
+    line_new += "\\\\ \\hline"
+    new_lines.append(line_new)
+
+    line_new  = "2 & "
+    line_new += f"\\{{ {','.join(c2_vertices_str)} \\}} & "
+    line_new += f"${find_avg_vector(c2_vertices)}$"
+    line_new += "\\\\ \\hline"
+    new_lines.append(line_new)
+
+    self.context['new_centers_rbf'] = '\n'.join(new_lines)
 
   def compile_patterns(self):
     if not os.path.isdir(self.report_dir):

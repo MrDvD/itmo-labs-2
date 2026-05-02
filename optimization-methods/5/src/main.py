@@ -98,6 +98,8 @@ if __name__ == "__main__":
   plot.plot_residuals(rbf_opt.get_model(res_rbf), pts[:, 0], pts[:, 1], targets, filename="residuals_rbf.pdf")
   W0_RBF, W1_RBF, W2_RBF, C1X_RBF, C1Y_RBF, C2X_RBF, C2Y_RBF, SIGMA1_RBF, SIGMA2_RBF = map(lambda x: f"{x:.3f}", res_rbf)
 
+  centers = rbf_opt.get_initial_centers()
+
   report = ReportFiller({
     'variant_number': cfg['variant_number'],
     'input_table_data': input_table_data,
@@ -125,6 +127,14 @@ if __name__ == "__main__":
     'C2Y_RBF': C2Y_RBF,
     'SIGMA1_RBF': SIGMA1_RBF,
     'SIGMA2_RBF': SIGMA2_RBF,
+    'c1_vector_init': ReportFiller.print_vector(centers[0]), 
+    'c2_vector_init': ReportFiller.print_vector(centers[1]),
+    'weights_init_rbf': ReportFiller.print_vector(start_params_rbf[0:3]),
+    'c1_init_rbf': ReportFiller.print_vector(start_params_rbf[3:5]),
+    'c2_init_rbf': ReportFiller.print_vector(start_params_rbf[5:7]),
+    'sigma_init_rbf': f"{start_params_rbf[7]:.5f}",
   }, cfg['report_dir'])
-  
+
+  report.fill_rbf_handmade(centers[0], centers[1], values)
+
   report.compile_patterns()

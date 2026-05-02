@@ -162,6 +162,8 @@ class RBFOptimizer(BaseOptimizer):
     self.learning_rate = learning_rate
     self.n_iterations = n_iterations
 
+    self.initial_centers = np.array([])
+
   def _unpack_params(self, params: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     weights = params[:self.w_len]
     centers = params[self.w_len : self.w_len + self.c_len].reshape(self.n_centers, self.n_features)
@@ -212,12 +214,16 @@ class RBFOptimizer(BaseOptimizer):
 
     return np.concatenate([grad_w, grad_c.flatten(), grad_s])
   
-  def get_initial_params(self, random_state: int = 42) -> np.ndarray:
+  def get_initial_centers(self) -> np.ndarray:
+    return self.initial_centers
+  
+  def get_initial_params(self, random_state: int = 52) -> np.ndarray:
     np.random.seed(random_state)
     n_samples, _ = self.X_data.shape
 
     indices = np.random.choice(n_samples, self.n_centers, replace=False)
     centers = self.X_data[indices].copy()
+    self.initial_centers = centers.copy()
     
     distances = np.zeros((n_samples, self.n_centers))
     for j in range(self.n_centers):
@@ -237,13 +243,8 @@ class RBFOptimizer(BaseOptimizer):
       if np.sum((centers - prev_centers)**2) < 1e-6:
         break
 
-    widths = np.zeros(self.n_centers)
-    for j in range(self.n_centers):
-      dist_to_center = np.sqrt(np.sum((self.X_data - centers[j])**2, axis=1))
-      if np.sum(labels == j) > 0:
-        widths[j] = np.mean(dist_to_center[labels == j]) * 0.8
-      else:
-        widths[j] = np.mean(dist_to_center) * 0.5
+    sigma = np.sqrt(np.sum((centers[0] - centers[1])**2)) / 2
+    widths = [sigma, sigma]
 
     weights = np.random.randn(self.n_centers + 1) * 0.1
     return np.concatenate([weights, centers.flatten(), widths])
