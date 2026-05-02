@@ -13,3 +13,7 @@ class GeneticIteration:
   probabilities: List[float]
   end_population: List[str]
   end_goals: List[int]
+
+@dataclass
+class AntIteration:
+  end_goals: List[int]

@@ -6,8 +6,12 @@ infinity: 1000000
 population_size: 4
 c_constant_gene: 200
 prob_mutate_gene: 0.01
+
 limit_gene: 100
 colony_size: 10
-q0_ant: 0.75
+q0_ant: 0.7
+q_ant: 20
 limit_ant: 100
 rho_ant: 0.2
+alpha_ant: 0.8
+beta_ant: 2.0

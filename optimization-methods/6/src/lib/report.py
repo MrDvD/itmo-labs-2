@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Callable, Tuple
-from lib.primitives import GeneticIteration
+from lib.primitives import GeneticIteration, AntIteration
 from jinja2 import Template
 import matplotlib.pyplot as plt
 
@@ -60,23 +60,64 @@ class ReportFiller:
       total_table.append(' & '.join(row) + "\\\\ \\hline")
     return total_table
   
-  def draw_population_diagram(self, iterations_meta: List[GeneticIteration], diagram_path: str) -> None:
+  def _draw_iterations(self, means: List[float], optimums: List[int], diagram_path: str) -> None:
     plt.figure(figsize=(12, 6))
+    
+    iterations = range(len(means))
+    plt.plot(iterations, means, 'o-', label='Sample mean', color='blue', linewidth=2)
+    plt.plot(iterations, optimums, 's-', label='Optimum (min)', color='red', linewidth=2)
+    
+    plt.xlabel('Iteration')
+    plt.ylabel('Goal value')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(diagram_path, dpi=150)
+    plt.close()
   
-    iterations = range(len(iterations_meta))
-    sample_means = []
-    optimums = []
+  def draw_population_diagram(self, iterations_meta: List[GeneticIteration], diagram_path: str) -> None:
+    sample_means: List[float] = list()
+    optimums: List[int] = list()
     
     for meta in iterations_meta:
       goals = meta.end_goals
       sample_means.append(sum(goals) / len(goals))
       optimums.append(min(goals + optimums))
     
-    plt.plot(iterations, sample_means, 'o-', label='Sample mean', color='blue', linewidth=2)
-    plt.plot(iterations, optimums, 's-', label='Optimum (min)', color='red', linewidth=2)
+    self._draw_iterations(sample_means, optimums, diagram_path)
+  
+  def draw_colony_diagram(self, iterations_meta: List[AntIteration], diagram_path: str) -> None:
+    all_ant_x: List[int] = list()
+    all_ant_y: List[float] = list()
+    global_optimums: List[float] = list()
+    
+    current_min = float('inf')
+    
+    for i, meta in enumerate(iterations_meta):
+      valid_goals = [g for g in meta.end_goals if g < self.infty]
+      
+      for goal in valid_goals:
+        all_ant_x.append(i)
+        all_ant_y.append(goal)
+      
+      if valid_goals:
+        current_min = min(current_min, min(valid_goals))
+      
+      global_optimums.append(current_min if current_min != self.infty else None)
+
+    plt.figure(figsize=(12, 6))
+    
+    plt.scatter(all_ant_x, all_ant_y, color='blue', s=10, alpha=0.5, label='Individual Ants')
+    
+    iterations = range(len(iterations_meta))
+    plt.plot(iterations, global_optimums, '-', color='red', linewidth=2, label='Global Optimum (min)')
+    
+    if all_ant_y:
+      plt.ylim(min(all_ant_y) - 5, max(all_ant_y) + 5)
     
     plt.xlabel('Iteration')
-    plt.ylabel('Goal value')
+    plt.ylabel('Goal value (Path weight)')
     plt.legend()
     plt.grid(True, alpha=0.3)
     
