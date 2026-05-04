@@ -8,12 +8,12 @@
     \node[register, anchor=south, xshift=-5cm] at (mem.north) (mux_data) {MUX\\ Data Read};
     \node[register, anchor=south, minimum width=3cm, minimum height=2cm, xshift=5cm] at (mux_data.north) (io) {IO\\ Device};
 
-    \node[alu, anchor=south, xshift=-11cm] at (mem.south) (alu) {ALU};
+    \node[alu, anchor=south, xshift=-6.5cm] at (mem.south) (alu) {ALU};
 
-    \node[register, anchor=south west, yshift=1.5cm] at (alu.west |- alu.north) (mux_alu_left) {MUX ALU\\ Left};
-    \node[register, anchor=south east, yshift=1.5cm] at (alu.east |- alu.north) (mux_alu_right) {MUX ALU\\ Right};
+    \node[register, anchor=south west, yshift=1.5cm] at (alu.top left corner |- alu.north) (mux_alu_left) {MUX ALU\\ Left};
+    \node[register, anchor=south east, yshift=1.5cm] at (alu.top right corner |- alu.north) (mux_alu_right) {MUX ALU\\ Right};
 
-    \node[register, xshift=1.5cm] at (alu.south |- mux_data.west) (di) {D$_i$};
+    \node[register, xshift=-3.5cm] at (mux_data.west) (di) {D$_i$};
     \node[register, anchor=east, xshift=-1cm] at (di.west) (mux_di_size) {MUX D$_i$ \\ Size};
 
     \node[register, anchor=north, minimum width=3cm, minimum height=2cm, yshift=-1.5cm] at (mem.south) (addr_decoder) {ADDR\\ Decoder};
@@ -24,11 +24,35 @@
     \node[register, anchor=south, yshift=1cm] at (ai.north) (mux_ai_value) {MUX A$_i$ \\ Value};
     \node[register, anchor=north, yshift=-1cm] at (ai.south) (mux_ai_size) {MUX A$_i$ \\ Size};
     \begin{registergroup}{sr}{SR (4)}
-      \node[register, minimum width=0.7cm, minimum height=0.7cm, xshift=1.1cm, yshift=-0.2cm] at (alu.south west |- ai.west) (sr-1) {N};
+      \node[register, minimum width=0.7cm, minimum height=0.7cm, yshift=-0.2cm, anchor=west, xshift=0.32cm] at (mux_di_size.west |- ai.west) (sr-1) {N};
       \node[register, right=5pt of sr-1, minimum width=0.7cm, minimum height=0.7cm] (sr-2) {Z};
       \node[register, right=5pt of sr-2, minimum width=0.7cm, minimum height=0.7cm] (sr-3) {V};
       \node[register, right=5pt of sr-3, minimum width=0.7cm, minimum height=0.7cm] (sr-4) {C};
     \end{registergroup}
+
+    \draw[data bus] (mem.north) |- (mux_data.-20) node[pos=0.98, above right] {\footnotesize data out};
+    \draw[data bus] (io.west) -| (mux_data.north) node[pos=0.5, above right] {\footnotesize data out};
+    \draw[data bus] (addr_decoder.east) -- +(0.5, 0) |- (mux_data.20) node[pos=0.98, above right] {\footnotesize select};
+    \draw[data bus] (mux_data.west) -- (di.east);
+
+    \draw[data bus] ([yshift=1.5cm]mux_di_size.120) -- (mux_di_size.120) node[pos=0.98, above right, rotate=90] {\footnotesize latch D$_i$};
+    \draw[data bus] ([yshift=1.5cm]mux_di_size.60) -- (mux_di_size.60) node[pos=0.98, above right, rotate=90] {\footnotesize is long};
+    \draw[data bus] (mux_di_size.east) -- (di.west);
+
+    \draw[data bus] (mux_alu_left.south) -| (alu.150);
+    \draw[data bus] (mux_alu_right.south) -| (alu.30);
+
+    \draw[data bus] (di.-60) -- +(0, -1) -| node[dot, pos=0.5] {} (mux_alu_left.north);
+    \draw[data bus] (di.-60) -- +(0, -1) -| (mux_alu_right.north);
+    \draw[data bus] ([yshift=2cm]mux_alu_right.120) -- (mux_alu_right.120) node[pos=0.98, above right, rotate=90] {\footnotesize shifted IR};
+    \draw[data bus] ([yshift=2cm]mux_alu_left.120) -- (mux_alu_left.120) node[pos=0.98, above right, rotate=90] {\footnotesize shifted IR};
+    \draw[data bus] (addr_decoder.160) -| +(-0.5, 1) |- ([yshift=0.5cm]mux_alu_left.60) -- (mux_alu_left.60);
+    \draw[data bus] (addr_decoder.160) -| +(-0.5, 1) |- ([yshift=0.5cm]mux_alu_right.60) node[dot] {} -- (mux_alu_right.60);
+    \draw[data bus] ([xshift=-1.8cm]mux_alu_left.west) -- (mux_alu_left.west) node[pos=0.02, above right] {\footnotesize select op1};
+    \draw[data bus] ([xshift=1.8cm]mux_alu_right.east) -- (mux_alu_right.east) node[pos=0.98, above right] {\footnotesize select op2};
+
+    \draw[data bus] ([xshift=-1.8cm]alu.170) -- (alu.170) node[pos=0.02, above right] {\footnotesize alu op};
+    \draw[data bus] ([xshift=-1.8cm]alu.190) -- (alu.190) node[pos=0.02, above right] {\footnotesize is long};
   \end{tikzpicture}
 \end{figure}
 \vfill
