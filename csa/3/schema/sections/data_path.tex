@@ -23,7 +23,12 @@
     \node[register, anchor=east, xshift=-5.2cm] at (sp.west) (ai) {A$_i$};
     \node[register, anchor=south, yshift=1cm] at (ai.north) (mux_ai_value) {MUX A$_i$ \\ Value};
     \node[register, anchor=north, yshift=-1cm] at (ai.south) (mux_ai_size) {MUX A$_i$ \\ Size};
-    \node[register] at (alu.south |- ai.west) (sr) {SR};
+    \begin{registergroup}{sr}{SR (4)}
+      \node[register, minimum width=0.7cm, minimum height=0.7cm, xshift=1.1cm, yshift=-0.2cm] at (alu.south west |- ai.west) (sr-1) {N};
+      \node[register, right=5pt of sr-1, minimum width=0.7cm, minimum height=0.7cm] (sr-2) {Z};
+      \node[register, right=5pt of sr-2, minimum width=0.7cm, minimum height=0.7cm] (sr-3) {V};
+      \node[register, right=5pt of sr-3, minimum width=0.7cm, minimum height=0.7cm] (sr-4) {C};
+    \end{registergroup}
   \end{tikzpicture}
 \end{figure}
 \vfill

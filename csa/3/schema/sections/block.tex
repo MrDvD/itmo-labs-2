@@ -1,4 +1,4 @@
-\usetikzlibrary{calc, positioning, arrows.meta, shapes.misc, shapes.geometric}
+\usetikzlibrary{calc, positioning, arrows.meta, shapes.misc, shapes.geometric, fit, backgrounds}
 
 \tikzset{
   % Base layout style - Adjusted for vertical flow
@@ -103,18 +103,31 @@
   bus width/.style = {
     minimum size = 10pt,
     inner sep = 0pt,
-    label = {[font=\scriptsize, inner sep=1pt]right:#1}, % Shifted label to the right for vertical lines
+    label = {[font=\scriptsize, inner sep=1pt]right:#1},
     path picture = {
       \draw[thick] 
         ([xshift=-3.5pt, yshift=-2.5pt]path picture bounding box.center) -- 
         ([xshift=3.5pt, yshift=2.5pt]path picture bounding box.center);
     }
   },
-  % 10. Junction Dot
-  dot/.style = {
-    fill,
-    circle,
-    inner sep = 1.5pt,
-    minimum size = 0pt
-  }
 }
+
+\NewDocumentEnvironment{registergroup}{O{} m m +b}{
+  \begin{scope}[local bounding box=group_box]
+    #4 
+  \end{scope}
+
+  \begin{scope}[on background layer]
+    \node[
+      draw, 
+      rectangle, 
+      thick,
+      dashed,
+      inner xsep=10pt,
+      inner ysep=10pt,
+      fit={(group_box) ($(group_box.north)+(0,15pt)$)}, 
+      label={[anchor=north, yshift=-2pt]north:#3},
+      #1
+    ] (#2) {};
+  \end{scope}
+}{}
