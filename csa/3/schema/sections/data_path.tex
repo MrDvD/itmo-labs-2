@@ -1,7 +1,34 @@
 \section{Data Path}
 
-\dots
+\vfill
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[processor arch]
+    \node[memory, minimum height=8cm] (mem) {Memory:\\ \textit{Instructions,}\\ \textit{Data}};
+    \node[register, anchor=south, xshift=-5cm] at (mem.north) (mux_data) {MUX\\ Data Read};
+    \node[register, anchor=south, minimum width=3cm, minimum height=2cm, xshift=5cm] at (mux_data.north) (io) {IO\\ Device};
 
+    \node[alu, anchor=south, xshift=-11cm] at (mem.south) (alu) {ALU};
+
+    \node[register, anchor=south west, yshift=1.5cm] at (alu.west |- alu.north) (mux_alu_left) {MUX ALU\\ Left};
+    \node[register, anchor=south east, yshift=1.5cm] at (alu.east |- alu.north) (mux_alu_right) {MUX ALU\\ Right};
+
+    \node[register, xshift=1.5cm] at (alu.south |- mux_data.west) (di) {D$_i$};
+    \node[register, anchor=east, xshift=-1cm] at (di.west) (mux_di_size) {MUX D$_i$ \\ Size};
+
+    \node[register, anchor=north, minimum width=3cm, minimum height=2cm, yshift=-1.5cm] at (mem.south) (addr_decoder) {ADDR\\ Decoder};
+    \node[register, anchor=east, xshift=-1.5cm] at (addr_decoder.west) (mux_addr) {MUX\\ Addr};
+
+    \node[register, anchor=north, yshift=-3cm] at (addr_decoder.south) (sp) {SP*};
+    \node[register, anchor=east, xshift=-5.2cm] at (sp.west) (ai) {A$_i$};
+    \node[register, anchor=south, yshift=1cm] at (ai.north) (mux_ai_value) {MUX A$_i$ \\ Value};
+    \node[register, anchor=north, yshift=-1cm] at (ai.south) (mux_ai_size) {MUX A$_i$ \\ Size};
+    \node[register] at (alu.south |- ai.west) (sr) {SR};
+  \end{tikzpicture}
+\end{figure}
+\vfill
+
+\newpage
 Нужно указать PC
 * указать обвязку для автоинкремента PC
 
@@ -11,33 +38,3 @@
 
 Указать управляющие линии с CU, которые выходят из instruction decoder.
 Не нужно вести их напрямую с CU, чтобы не засорять схему.
-
-\begin{center}
-\begin{tikzpicture}[processor arch]
-  \node[register] (pc) {PC};
-  \node[register, below= of pc] (sr) {SR};
-  \node[memory, below=of sr] (imem) {Instruction\\Memory};
-  \node[alu, below=of imem] (alu) {ALU};
-  \begin{scope}[start chain=flow going below, node distance=1mm]
-    \node[register, on chain, below= of alu] (d0) {D0};
-    \node[register, on chain] (d1) {D1};
-    \node[register, on chain] (d2) {D2};
-    \node[register, on chain] (d3) {D3};
-    \node[register, on chain] (d4) {D4};
-    \node[register, on chain] (d5) {D5};
-    \node[register, on chain] (d6) {D6};
-    \node[register, on chain] (d7) {D7};
-  \end{scope}
-  \begin{scope}[start chain=flow going below, node distance=1mm]
-    \node[register, on chain, right= of d0] (a0) {A0};
-    \node[register, on chain] (a1) {A1};
-    \node[register, on chain] (a2) {A2};
-    \node[register, on chain] (a3) {A3};
-    \node[register, on chain] (a4) {A4};
-    \node[register, on chain] (a5) {A5};
-    \node[register, on chain] (a6) {A6};
-    \node[register, on chain] (a7) {A7};
-  \end{scope}
-  
-\end{tikzpicture}
-\end{center}

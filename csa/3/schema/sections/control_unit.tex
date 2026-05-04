@@ -1,6 +1,26 @@
 \section{Control Unit}
 
-\dots
+\vfill
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[processor arch]
+    \node[memory, minimum height=8cm] (mem) {Memory:\\ \textit{Instructions,}\\ \textit{Data}};
+
+    \node[register, anchor=south, xshift=-10cm, yshift=3cm] at (mem.north) (ir) {IR};
+    \node[register, anchor=south, yshift=1.5cm] at (ir.north) (mux_ir) {MUX\\ IR};
+
+    \node[register, anchor=north east, minimum width=15cm, yshift=-4cm] at (mem.south east) (datapath) {DataPath};
+
+    \node[register, anchor=south west, minimum width=4.5cm, minimum height=3cm] at (datapath.west |- mem.south) (i_decoder) {Instruction\\ Decoder};
+    \node[register, anchor=south west, yshift=1.5cm] at (i_decoder.north west) (step_counter) {Step\\ Couter};
+
+    \node[register, anchor=south, xshift=-4cm] at (mem.south west) (mux_pc) {MUX\\ PC};
+    \node[register] at (mux_pc.south |- step_counter.east) (pc) {PC};
+  \end{tikzpicture}
+\end{figure}
+\vfill
+
+\newpage
 
 * счётчик тактов (для инструкций, которые выполняются за несколько тактов)
 * это у меня с состоянием или без него? (в данном процессоре)
@@ -8,38 +28,3 @@
 Комбинационная схема для CISC (т.к. Пенской считает, что микрокодом будет долго)
 
 Непрямое отображение кода операции на адрес микроинструкции (см. 8:12-5)
-
-\begin{tikzpicture}[processor arch]
-
-  % Place nodes vertically
-  \node[clocked register] (pc) {PC};
-  \node[memory, below=of pc] (imem) {Instruction\\Memory};
-  \node[register, below=of imem] (reg) {Register};
-  \node[mux, below=of reg, xshift=1.5cm] (mux) {MUX};
-  \node[alu, below=of mux, xshift=-1.5cm] (alu) {ALU};
-  
-  % Branching Adder placed to the side
-  \node[adder, right=of pc, xshift=1cm] (add) {};
-
-  % Draw vertical datapath buses
-  \draw[data bus] (pc) -- node[bus width=32] {} (imem);
-  \draw[data bus] (imem) -- node[bus width=32] {} (reg);
-  
-  % Branching a bus horizontally then vertically
-  \draw[data bus] (pc.east) -- node[dot] {} (add.west);
-  
-  % Connections into MUX and ALU
-  % Register has two outputs going down
-  \draw[data bus] ([xshift=-1cm]reg.south) -- ([xshift=-1cm, yshift=0.5cm]alu.north) -- ([xshift=-1cm]alu.north);
-  \draw[data bus] ([xshift=1cm]reg.south) -- ([xshift=0cm]mux.north);
-  
-  % MUX output to ALU right input
-  \draw[data bus] (mux.south) |- ([yshift=0.5cm, xshift=1cm]alu.north) -- ([xshift=1cm]alu.north);
-  
-  % ALU Output
-  \draw[data bus] (alu.south) -- +(0,-1) node[below] {Result};
-
-  % Control signal (dashed) coming in from the side
-  \draw[control bus] ([xshift=2cm]mux.east) node[right, font=\scriptsize] {Control} -- (mux.east);
-
-\end{tikzpicture}
