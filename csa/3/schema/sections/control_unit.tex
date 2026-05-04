@@ -3,15 +3,14 @@
 \vfill
 \begin{figure}[H]
   \centering
+  \begin{adjustbox}{max width=\textwidth}
   \begin{tikzpicture}[processor arch]
-    \node[memory, minimum height=8cm] (mem) {Memory:\\ \textit{Instructions,}\\ \textit{Data}};
+    \node[register, anchor=north east, minimum width=15cm] (datapath) {DataPath};
 
-    \node[register, anchor=north east, minimum width=15cm, yshift=-4cm] at (mem.south east) (datapath) {DataPath};
-
-    \node[register, anchor=south west, minimum width=4.5cm, minimum height=3cm] at (datapath.west |- mem.south) (i_decoder) {Instruction\\ Decoder};
+    \node[register, anchor=south west, yshift=4cm, minimum width=4.5cm, minimum height=3cm] at (datapath.west |- datapath.north) (i_decoder) {Instruction\\ Decoder};
     \node[register, anchor=south west, yshift=1.5cm] at (i_decoder.north west) (step_counter) {Step\\ Couter};
 
-    \node[register, anchor=south, xshift=-4cm] at (mem.south west) (mux_pc) {MUX\\ PC};
+    \node[register, anchor=south, yshift=4cm] at (datapath.north) (mux_pc) {MUX\\ PC};
     \node[register] at (mux_pc.south |- step_counter.east) (pc) {PC};
 
     \begin{registergroup}{ir}{IR (64)}
@@ -22,7 +21,10 @@
     \end{registergroup}
 
     \node[register, anchor=south, yshift=1.5cm] at (ir.north) (mux_ir) {MUX\\ IR};
+
+    \node[memory, minimum height=6cm, anchor=south east, yshift=12cm] at (datapath.north east) (mem) {Memory:\\ \textit{Instructions,}\\ \textit{Data}};
   \end{tikzpicture}
+  \end{adjustbox}
 \end{figure}
 \vfill
 

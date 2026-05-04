@@ -14,26 +14,13 @@
     minimum height = 1.5cm,
     inner sep = 4pt,
     align = center,
-  },
-  % 2. Clocked Register (Edge-triggered triangle at bottom left)
-  clocked register/.style = {
-    draw, thick,
-    rectangle,
-    minimum width = 2.5cm,
-    minimum height = 1.5cm,
-    inner sep = 4pt,
-    align = center,
-    path picture = {
-      \draw[thick] 
-        ($(path picture bounding box.south west) + (0.2,0)$) -- 
-        ($(path picture bounding box.south west) + (0.4,0.3)$) -- 
-        ($(path picture bounding box.south west) + (0.6,0)$);
-    }
+    fill = gray!8,
   },
   % 3. Memory Block
   memory/.style = {
     draw, thick,
     rectangle,
+    fill = gray!8,
     minimum width = 3cm,
     minimum height = 2cm,
     inner sep = 5pt,
@@ -42,17 +29,15 @@
   % 4. ALU (Top-to-Bottom: Inputs on top, output on bottom, notch on top edge)
   alu/.style = {
     shape = trapezium,
-    % 123.69 degrees makes the top 5cm and the bottom exactly 3cm (20% in from each side)
     trapezium angle = 123.69, 
     draw = none, 
     minimum width = 4cm,
     minimum height = 1.5cm,
     align = center,
     inner sep = 5pt,
-    % Draw the outline using the actual vertices of the trapezium shape
     append after command={
       \pgfextra{
-        \draw[thick]
+        \draw[thick, fill=gray!8]
           (\tikzlastnode.top left corner) -- 
           ($(\tikzlastnode.top left corner)!0.45!(\tikzlastnode.top right corner)$) -- 
           ($(\tikzlastnode.top side)!0.2!(\tikzlastnode.bottom side)$) -- % Notch depth
@@ -135,6 +120,7 @@
       rectangle, 
       thick,
       dashed,
+      fill = gray!3,
       inner xsep=10pt,
       inner ysep=10pt,
       fit={(group_box) ($(group_box.north)+(0,15pt)$)}, 
