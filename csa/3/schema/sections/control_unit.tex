@@ -6,9 +6,6 @@
   \begin{tikzpicture}[processor arch]
     \node[memory, minimum height=8cm] (mem) {Memory:\\ \textit{Instructions,}\\ \textit{Data}};
 
-    \node[register, anchor=south, xshift=-10cm, yshift=3cm] at (mem.north) (ir) {IR};
-    \node[register, anchor=south, yshift=1.5cm] at (ir.north) (mux_ir) {MUX\\ IR};
-
     \node[register, anchor=north east, minimum width=15cm, yshift=-4cm] at (mem.south east) (datapath) {DataPath};
 
     \node[register, anchor=south west, minimum width=4.5cm, minimum height=3cm] at (datapath.west |- mem.south) (i_decoder) {Instruction\\ Decoder};
@@ -16,6 +13,15 @@
 
     \node[register, anchor=south, xshift=-4cm] at (mem.south west) (mux_pc) {MUX\\ PC};
     \node[register] at (mux_pc.south |- step_counter.east) (pc) {PC};
+
+    \begin{registergroup}{ir}{IR (64)}
+      \node[register, anchor=west, yshift=7cm] at (step_counter.west) (ir_1) {IR\\ {[Op]}};
+      \node[register, right=5pt of ir_1] (ir_2) {IR\\ {[Arg1]}};
+      \node[register, right=5pt of ir_2] (ir_3) {IR\\ {[Arg1/2]}};
+      \node[register, right=5pt of ir_3] (ir_4) {IR\\ {[-/Arg2]}};
+    \end{registergroup}
+
+    \node[register, anchor=south, yshift=1.5cm] at (ir.north) (mux_ir) {MUX\\ IR};
   \end{tikzpicture}
 \end{figure}
 \vfill
