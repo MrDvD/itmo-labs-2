@@ -16,14 +16,14 @@
 
     \node[register, xshift=-3.5cm] at (mux_data.west) (di) {D$_i$};
     \node[register, anchor=south, yshift=1cm] at (di.north) (mux_di_value) {MUX D$_i$ \\ Value};
-    \node[register, anchor=north, yshift=-1cm] at (di.south) (mux_di_size) {MUX D$_i$ \\ Size};
+    \node[register, anchor=north, yshift=-0.9cm] at (di.south) (mux_di_size) {MUX D$_i$ \\ Size};
 
     \node[register, anchor=north, minimum width=3cm, minimum height=2cm, yshift=-1.5cm] at (mem.south) (addr_decoder) {Address\\ Decoder};
     \node[register, anchor=east, xshift=-1cm] at (addr_decoder.west) (mux_addr) {MUX\\ Addr};
 
-    \node[register, anchor=north, yshift=-3cm] at (addr_decoder.south) (sp) {SP*};
-    \node[register, anchor=north, yshift=-1cm] at (sp.south) (mux_sp_value) {MUX A$_7$ \\ Value};
-    \node[register, anchor=east, xshift=-4.7cm] at (sp.west) (ai) {A$_i$};
+    % \node[register, anchor=north, yshift=-3cm] at (addr_decoder.south) (sp) {SP*};
+    % \node[register, anchor=north, yshift=-1cm] at (sp.south) (mux_sp_value) {MUX A$_7$ \\ Value};
+    \node[register, anchor=west, yshift=-11cm, xshift=-0.7cm] at (mux_alu_right.west) (ai) {A$_i$};
     \node[register, anchor=south, yshift=1cm] at (ai.north) (mux_ai_value) {MUX A$_i$ \\ Value};
     \node[register, anchor=north, yshift=-1cm] at (ai.south) (mux_ai_size) {MUX A$_i$ \\ Size};
     \begin{registergroup}{sr}{SR (4)}
@@ -50,13 +50,15 @@
     % MUX ALU
     \draw[data bus] (di.east) -- +(1, 0) -| coordinate[pos=0.71] (mux_di_branch) (mux_alu_left.north);
     \draw[data bus] (mux_di_branch) node[dot] {} -| (mux_alu_right.north);
-    \draw[data bus] (addr_decoder.160) -| +(-0.5, 1) |- ([yshift=0.5cm]mux_alu_left.60) -- (mux_alu_left.60);
-    \draw[data bus] (addr_decoder.160) -| +(-0.5, 1) |- ([yshift=0.5cm]mux_alu_right.60) node[dot] {} -- (mux_alu_right.60);
+    % \draw[data bus] (addr_decoder.160) -| +(-0.5, 1) |- node[pos=0.02, above, rotate=90] {\footnotesize address value} coordinate[pos=0.15] (addr_decoder_mem_branch) ([yshift=0.5cm]mux_alu_left.60) -- (mux_alu_left.60);
+    % \draw[data bus] (addr_decoder_mem_branch) node[dot] {} -- (mem.west |- addr_decoder_mem_branch);
+    \draw[data bus] ([yshift=0.5cm, xshift=-2cm]mux_alu_left.120) -| (mux_alu_left.120) node[pos=0.02, above right] {\footnotesize from PC};
+    \draw[data bus] (addr_decoder.160) -| +(-0.5, 1) |- ([yshift=0.5cm]mux_alu_right.60) -- (mux_alu_right.60);
     \draw[data bus] ([xshift=-1.8cm]mux_alu_left.-165) -- (mux_alu_left.-165) node[pos=0.02, above right] {\footnotesize select op$_1$};
     \draw[data bus] ([xshift=1.8cm]mux_alu_right.-15) -- (mux_alu_right.-15) node[pos=0.98, above right] {\footnotesize select op$_2$};
     \draw[data bus] ([xshift=1.8cm]mux_alu_right.15) -- (mux_alu_right.15) node[pos=0.98, above right] {\footnotesize shifted IR};
     \draw[data bus] ([xshift=-1.8cm]mux_alu_left.165) -- (mux_alu_left.165) node[pos=0.98, above left] {\footnotesize shifted IR};
-    \draw[data bus] (mux_data_branch) node[dot] {} -- +(0, -3) coordinate (mux_data_alu_branch) -| (mux_alu_left.120);
+    \draw[data bus] (mux_data_branch) node[dot] {} -- +(0, -3) coordinate (mux_data_alu_branch) -| (mux_alu_left.60);
     \draw[data bus] (mux_data_alu_branch) node[dot] {} -| (mux_alu_right.120);
 
     \draw[data bus] ([xshift=-2cm]alu.170) -- (alu.170) node[pos=0.02, above right] {\footnotesize alu op};
@@ -70,32 +72,31 @@
     \draw[data bus] (alu_result_branch) node[dot] {} -| ([xshift=0.75cm]io.-15) node[pos=0.85, above right, rotate=90] {\footnotesize data in} coordinate (io_alu_in) -- (io.-15);
     \draw[data bus] ([yshift=0.45cm]io_alu_in |- mem.north) node[dot] {} -| (mem.85);
     \draw[data bus] (mux_addr.north |- alu_result_branch) node[dot] {} -| (mux_addr.north);
+    \draw[data bus] (mux_addr.north |- alu_result_branch) -- ([yshift=2.3cm]mux_addr.north |- alu_result_branch) node[pos=0.98, above left, rotate=90] {\footnotesize to MUX PC};
     % Status Register
     \draw[data bus] (sr.-60) -- ([yshift=-2cm]sr.-60) node[pos=0.98, above right, rotate=90] {\footnotesize to PC};
     \draw[data bus] ([yshift=-2cm]sr.-120) -- (sr.-120) node[pos=0.02, above right, rotate=90] {\footnotesize latch SR};
     % A_i
     \draw[data bus] (mux_ai_value.south) -- (ai.north);
     \draw[data bus] ([xshift=-0.5cm, yshift=-2.5cm]mux_ai_value.west) |- node[pos=0, above right, rotate=90] {\footnotesize select A$_i$ value} (mux_ai_value.west);
-    \draw[data bus] (ai.east) -| (mux_addr.-120) coordinate[pos=0.858] (ai_inc);
-    \draw[data bus] (ai.east) -| (mux_addr.-120) coordinate[pos=0.772] (ai_dec);
+    \draw[data bus] (ai.east) -| (mux_addr.-120) coordinate (addr_line);
     \draw[data bus] (mux_addr.east) -- (addr_decoder.west);
     \draw[data bus] ([xshift=-2cm]mux_addr.west) -- (mux_addr.west) node[pos=0.98, above left] {\footnotesize select addr};
     \draw[data bus] ([yshift=-2cm]mux_addr.-60) -| (mux_addr.-60) node[pos=0.02, above right, rotate=90] {\footnotesize from PC};
-    \draw[data bus] (ai_inc) node[dot] {} |- (mux_ai_value.20) node[pos=0.98, above right] {\footnotesize ($+$size)};
-    \draw[data bus] (ai_dec) node[dot] {} |- (mux_ai_value.-20) node[pos=0.98, above right] {\footnotesize ($-$size)};
+    \draw[data bus] (addr_line |- mux_ai_value.20) node[dot] {} |- (mux_ai_value.20) node[pos=0.98, above right] {\footnotesize ($+$size)};
+    \draw[data bus] (addr_line |- mux_ai_value.-20) node[dot] {} |- (mux_ai_value.-20) node[pos=0.98, above right] {\footnotesize ($-$size)};
     \draw[data bus] (mux_ai_size.north) -- (ai.south);
     \draw[data bus] ([xshift=-2cm]mux_ai_size.160) -- (mux_ai_size.160) node[pos=0.02, above right] {\footnotesize latch A$_i$};
     \draw[data bus] ([xshift=-2cm]mux_ai_size.200) -- (mux_ai_size.200) node[pos=0.02, above right] {\footnotesize is long};
     % Address Decoder
     \draw[data bus] ([yshift=-2cm]addr_decoder.-60) -| (addr_decoder.-60) node[pos=0.02, above right, rotate=90] {\footnotesize write latch};
     \draw[data bus] ([yshift=-2cm]addr_decoder.-120) -| (addr_decoder.-120) node[pos=0.02, above right, rotate=90] {\footnotesize is long};
-    \draw[data bus] (mem.-95 |- addr_decoder.north) -- (mem.-95) node[pos=0.02, above right, rotate=90] {\footnotesize wr latch};
-    \draw[data bus] (mem.-85 |- addr_decoder.north) -- (mem.-85) node[pos=0.02, above right, rotate=90] {\footnotesize set addr};
+    \draw[data bus] (mem.south |- addr_decoder.north) -- (mem.south) node[pos=0.02, above right, rotate=90] {\footnotesize wr latch};
     \draw[data bus] (addr_decoder.-15) -- +(1, 0) |- (io.15) node[pos=0.98, above right] {\footnotesize wr latch};
     % Stack Pointer (SP)
-    \draw[data bus] ([xshift=-2cm]mux_sp_value.west) -- (mux_sp_value.west) node[pos=0.02, above right] {\footnotesize from PC$+$} node[pos=0.5, below, inner sep=2pt] {$\vdots$} node[pos=0, left, inner sep=2pt, xshift=-1cm] {$\dots$};
-    \draw[data bus] (mux_sp_value.north) -- (sp.south);
-    \draw[data bus] (sp.east) -- ([xshift=2cm]sp.east) node[pos=0.02, above right] {\footnotesize to PC};
+    % \draw[data bus] ([xshift=-2cm]mux_sp_value.west) -- (mux_sp_value.west) node[pos=0.02, above right] {\footnotesize from PC$+$} node[pos=0.5, below, inner sep=2pt] {$\vdots$} node[pos=0, left, inner sep=2pt, xshift=-1cm] {$\dots$};
+    % \draw[data bus] (mux_sp_value.north) -- (sp.south);
+    % \draw[data bus] (sp.east) -- ([xshift=2cm]sp.east) node[pos=0.02, above right] {\footnotesize to PC};
   \end{tikzpicture}
   \end{adjustbox}
 \end{figure}
@@ -106,5 +107,5 @@
 \textbf{Пояснения:}
 \begin{enumerate}
   \item Индекс \( i=\overline{0,7} \), то есть регистров данных и адреса по восемь штук.
-  \item Считать, что SP --- это регистр A$_7$ с дополнительной связью с PC.
+  % \item Считать, что SP --- это регистр A$_7$ с дополнительной связью с PC.
 \end{enumerate}
