@@ -74,7 +74,7 @@
     \draw[data bus] (mux_addr.north |- alu_result_branch) node[dot] {} -| (mux_addr.north);
     \draw[data bus] (mux_addr.north |- alu_result_branch) -- ([yshift=2.3cm]mux_addr.north |- alu_result_branch) node[pos=0.98, above left, rotate=90] {\footnotesize to MUX PC};
     % Status Register
-    \draw[data bus] (sr.-60) -- ([yshift=-2cm]sr.-60) node[pos=0.98, above right, rotate=90] {\footnotesize to PC};
+    \draw[data bus] (sr.-60) -- ([yshift=-2.5cm]sr.-60) node[pos=0.98, above right, rotate=90] {\footnotesize to i-decoder};
     \draw[data bus] ([yshift=-2cm]sr.-120) -- (sr.-120) node[pos=0.02, above right, rotate=90] {\footnotesize latch SR};
     % A_i
     \draw[data bus] (mux_ai_value.south) -- (ai.north);
