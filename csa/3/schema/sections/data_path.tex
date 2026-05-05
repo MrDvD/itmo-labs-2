@@ -67,8 +67,9 @@
     \draw[data bus] ([xshift=2cm]mux_di_value.15) -- (mux_di_value.15) node[pos=0.98, above right] {\footnotesize select D$_i$ value};
     \draw[data bus] (alu.-112) -- +(0, -0.7) -| (sr.north) node[pos=0.49, below right] {\footnotesize flags};
     \draw[data bus] (mux_ai_value.north |- alu.south) -| (mux_ai_value.north) node[pos=0.98, above right, rotate=90] {\footnotesize ALU result};
-    \draw[data bus] (alu_result_branch) node[dot] {} -| ([xshift=0.75cm]io.-15) node[pos=0.8, above right, rotate=90] {\footnotesize ALU result} coordinate (io_alu_in) -- (io.-15);
+    \draw[data bus] (alu_result_branch) node[dot] {} -| ([xshift=0.75cm]io.-15) node[pos=0.85, above right, rotate=90] {\footnotesize data in} coordinate (io_alu_in) -- (io.-15);
     \draw[data bus] ([yshift=0.45cm]io_alu_in |- mem.north) node[dot] {} -| (mem.85);
+    \draw[data bus] (mux_addr.north |- alu_result_branch) node[dot] {} -| (mux_addr.north);
     % Status Register
     \draw[data bus] (sr.-60) -- ([yshift=-2cm]sr.-60) node[pos=0.98, above right, rotate=90] {\footnotesize to PC};
     \draw[data bus] ([yshift=-2cm]sr.-120) -- (sr.-120) node[pos=0.02, above right, rotate=90] {\footnotesize latch SR};
@@ -88,7 +89,8 @@
     % Address Decoder
     \draw[data bus] ([yshift=-2cm]addr_decoder.-60) -| (addr_decoder.-60) node[pos=0.02, above right, rotate=90] {\footnotesize write latch};
     \draw[data bus] ([yshift=-2cm]addr_decoder.-120) -| (addr_decoder.-120) node[pos=0.02, above right, rotate=90] {\footnotesize is long};
-    \draw[data bus] (addr_decoder.north) -| (mem.south) node[pos=0.02, above right, rotate=90] {\footnotesize wr latch};
+    \draw[data bus] (mem.-95 |- addr_decoder.north) -- (mem.-95) node[pos=0.02, above right, rotate=90] {\footnotesize wr latch};
+    \draw[data bus] (mem.-85 |- addr_decoder.north) -- (mem.-85) node[pos=0.02, above right, rotate=90] {\footnotesize set addr};
     \draw[data bus] (addr_decoder.-15) -- +(1, 0) |- (io.15) node[pos=0.98, above right] {\footnotesize wr latch};
     % Stack Pointer (SP)
     \draw[data bus] ([xshift=-2cm]mux_sp_value.west) -- (mux_sp_value.west) node[pos=0.02, above right] {\footnotesize from PC$+$} node[pos=0.5, below, inner sep=2pt] {$\vdots$} node[pos=0, left, inner sep=2pt, xshift=-1cm] {$\dots$};
