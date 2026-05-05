@@ -8,7 +8,7 @@
     \node[register, anchor=north east, minimum width=15cm] (datapath) {DataPath};
 
     \node[register, anchor=south west, yshift=4cm, xshift=1.5cm, minimum width=4.5cm, minimum height=3cm] at (datapath.west |- datapath.north) (i_decoder) {Instruction\\ Decoder};
-    \node[register, anchor=south west, yshift=1.5cm] at (i_decoder.north west) (step_counter) {Step\\ Couter};
+    \node[register, anchor=south west, yshift=1.5cm] at (i_decoder.north west) (step_counter) {Step\\ Counter};
     \node[register, anchor=south, yshift=1.5cm] at (step_counter.north) (mux_step) {MUX\\ Step};
 
     \node[register, anchor=south west, xshift=2cm] at (i_decoder.south east) (mux_pc) {MUX\\ PC};
@@ -27,12 +27,6 @@
     \draw[data bus] (mem.west) -- +(-0.5, 0) node[dot] (mem_branch) {} |- ([yshift=1cm]ir_1.east |- ir.north) node[pos=0.6, above right] {\footnotesize data out} coordinate (ir_left) -- (ir_left |- ir.north);
     \draw[data bus] ([yshift=1cm] ir_4.west |- ir.north) node[dot] {} coordinate (ir_right) -| (ir_right |- ir.north);
     \draw[data bus] (mem_branch) -- (mem_branch |- datapath.north) node[pos=0.98, above right, rotate=90] {\footnotesize data to MUX Data Read};
-    % Step Counter
-    \draw[data bus] (step_counter.south) -| (step_counter.south |- i_decoder.north);
-    \draw[data bus] (mux_step.south) -| (step_counter.north);
-    \draw[data bus] ([yshift=0.5cm, xshift=-1cm]mux_step.north) -| (mux_step.north) node[pos=0.98, above right] {\footnotesize 0};
-    \draw[data bus] (step_counter.west) -- +(-0.5, 0) |- node[pos=0.17, above right, rotate=90] {\footnotesize ($+1$)} (mux_step.west);
-    \draw[data bus] (i_decoder.90) |- node[pos=0.17, above right, rotate=90] {\footnotesize select step} (mux_step.east);
     % MUX PC
     \draw[data bus] (mux_pc.-120 |- datapath.north) -- (mux_pc.-120) node[pos=0.98, above left, rotate=90] {\footnotesize SP};
     \draw[data bus] (mux_pc.-60 |- datapath.north) -- (mux_pc.-60) node[pos=0.98, above left, rotate=90] {\footnotesize SR};
@@ -46,8 +40,15 @@
     % Instruction Decoder
     \draw[data bus] (i_decoder.south) -- (i_decoder.south |- datapath.north) node[pos=0.9, above right, rotate=90] {\footnotesize control signals};
     \draw[data bus] (i_decoder.51) -- +(0, 3) -| (ir_right.south |- ir.south) node[pos=0.98, above left, rotate=90] {\footnotesize latch IR right};
-    \draw[data bus] (i_decoder.67) -- +(0, 7) node[pos=0.5, above, rotate=90] {\footnotesize latch IR left} -| (ir_left |- ir.south);
+    \draw[data bus] (i_decoder.67) -- +(0, 7) node[pos=0.5, above, rotate=90] {\footnotesize latch IR left} coordinate (latch_left_ir_branch) -| (ir_left |- ir.south);
     \draw[data bus] (ir_1.-120) |- (i_decoder.west);
+    % Step Counter
+    \draw[data bus] (step_counter.-110) -- (step_counter.-110 |- i_decoder.north);
+    \draw[data bus] (step_counter.-70 |- i_decoder.north) -- (step_counter.-70) node[pos=0.98, above left, rotate=90] {\footnotesize latch sc};
+    \draw[data bus] (mux_step.south) -| (step_counter.north);
+    \draw[data bus] ([yshift=0.5cm, xshift=-1cm]mux_step.north) -| (mux_step.north) node[pos=0.98, above right] {\footnotesize 0};
+    \draw[data bus] (step_counter.west) -- +(-0.5, 0) |- node[pos=0.17, above right, rotate=90] {\footnotesize ($+1$)} (mux_step.west);
+    \draw[data bus] (i_decoder.88) |- node[pos=0.17, above right, rotate=90] {\footnotesize select step} (mux_step.east);
   \end{tikzpicture}
   \end{adjustbox}
 \end{figure}
