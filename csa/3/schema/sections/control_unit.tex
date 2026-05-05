@@ -45,8 +45,8 @@
     \draw[data bus] (i_decoder.40) |- (pc.west) node[pos=0.98, above left] {\footnotesize latch PC};
     % Instruction Decoder
     \draw[data bus] (i_decoder.south) -- (i_decoder.south |- datapath.north) node[pos=0.9, above right, rotate=90] {\footnotesize control signals};
-    \draw[data bus] (i_decoder.51) -- +(0, 3) -| (ir_right.south |- ir.south) node[pos=0.98, above left, rotate=90] {\footnotesize latch ir right};
-    \draw[data bus] (i_decoder.67) -- +(0, 7) node[pos=0.5, above, rotate=90] {\footnotesize latch ir left} -| (ir_left |- ir.south);
+    \draw[data bus] (i_decoder.51) -- +(0, 3) -| (ir_right.south |- ir.south) node[pos=0.98, above left, rotate=90] {\footnotesize latch IR right};
+    \draw[data bus] (i_decoder.67) -- +(0, 7) node[pos=0.5, above, rotate=90] {\footnotesize latch IR left} -| (ir_left |- ir.south);
     \draw[data bus] (ir_1.-120) |- (i_decoder.west);
   \end{tikzpicture}
   \end{adjustbox}
