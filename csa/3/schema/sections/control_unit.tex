@@ -31,10 +31,10 @@
     \draw[data bus] (mux_pc.-90 |- datapath.north) -- (mux_pc.-90) node[pos=0.98, above left, rotate=90] {\footnotesize ALU result};
     \draw[data bus] (i_decoder.east |- mux_pc.west) -- (mux_pc.west) node[pos=0.98, above left] {\footnotesize select PC};
     \draw[data bus] (mux_pc.north) -- (pc.south);
-    \draw[data bus] (ir.east) -| ([xshift=1cm]mux_pc.20) -- (mux_pc.20);
+    \draw[data bus] (ir.east) -| ([xshift=1cm]mux_pc.-20) -- (mux_pc.-20);
     % Program Counter (PC)
-    \draw[data bus] (pc.east) -- +(0.5,0) coordinate (pc_midpoint) -| (pc_midpoint |- datapath.north) node[pos=0.707, above right, rotate=90] {\footnotesize ($+$instruction size)} node[pos=0.98, above right, rotate=90] {\footnotesize to MUX ALU Left};
-    \draw[data bus] (pc_midpoint |- mux_pc.-20) node[dot] {} -- (mux_pc.-20);
+    \draw[data bus] (pc.east) -- +(0.5,0) node[dot] {} coordinate (pc_midpoint) |- node[pos=0.27, above, rotate=90] {\footnotesize ($+$instruction size)} (mux_pc.20);
+    \draw[data bus] (pc_midpoint) node[dot] {} -| ([xshift=2cm]pc_midpoint |- datapath.north) node[pos=0.98, above right, rotate=90] {\footnotesize to MUX ALU Left \& AR};
     \draw[data bus] (i_decoder.40) |- (pc.west) node[pos=0.98, above left] {\footnotesize latch PC};
     % Instruction Decoder
     \draw[data bus] (i_decoder.-110) -- (i_decoder.-110 |- datapath.north) node[pos=0.9, above right, rotate=90] {\footnotesize control signals};
