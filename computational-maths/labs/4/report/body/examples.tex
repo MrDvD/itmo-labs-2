@@ -1,0 +1,36 @@
+\subsection{Результаты работы программы}
+
+Для демонстрации работы метода и тестирования программы рассмотрим пять систем различной природы.
+
+\begin{enumerate}
+    \item \textit{Тригонометрическая система:}
+    $$\begin{cases} \sin(x_1) = 0 \\ \frac{x_1 x_2}{2} = 0 \end{cases} \implies \begin{cases} x_1 = x_1 - \sin(x_1) \\ x_2 = x_2 - \frac{x_1 x_2}{2} \end{cases}$$
+
+    \item \textit{Алгебраическая система высоких степеней:}
+    $$\begin{cases} x_1^2 x_2^2 - 3x_1^3 - 6x_2^3 + 8 = 0 \\ x_1^4 - 9x_2 + 2 = 0 \end{cases} \implies \begin{cases} x_1 = -\sqrt[4]{9x_2 - 2} \\ x_2 = \sqrt[3]{\dfrac{x_1^2 x_2^2 - 3x_1^3 + 8}{6}} \end{cases}$$
+
+    \item \textit{Алгебраическая система:}
+    $$\begin{cases} x_1 + x_1^2 - 2x_2x_3 - 0.1 = 0 \\ x_2 + x_2^2 + 3x_1x_3 + 0.2 = 0 \\ x_3 + x_3^2 + 2x_1x_2 - 0.3 = 0 \end{cases} \implies \begin{cases} x_1 = 0.1 - x_1^2 + 2x_2x_3 \\ x_2 = -0.2 - x_2^2 - 3x_1x_3 \\ x_3 = 0.3 - x_3^2 - 2x_1x_2 \end{cases}$$
+
+    \item \textit{Смешанная алгебраическая система:}
+    $$\begin{cases} x_1 - \sqrt{1 - x_2^2} = 0 \\ x_2 - x_1^3 = 0 \end{cases} \implies \begin{cases} x_1 = \sqrt[3]{x_2} \\ x_2 = \sqrt{1 - x_1^2} \end{cases}$$
+
+    \item \textit{Трансцендентная система:}
+    $$\begin{cases} x_1 + e^{x_1} - 2 = 0 \\ x_2 + \sin(x_2) - x_1 = 0 \end{cases} \implies \begin{cases} x_1 = \ln(2 - x_1) \\ x_2 = x_1 - \sin(x_2) \end{cases}$$
+\end{enumerate}
+
+Ниже приведены результаты решения указанных систем методом простых итераций с заданной точностью $\varepsilon = 10^{-5}$.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+№ & $\vec{x}^{(0)}$ & $\vec{x}^*$ & $\sigma^2$ & Итерации \\ \hline
+1 & $(0.0, 0.0)^T$ & $(-0.0, -0.0)^T$ & $0$ & 1 \\ \hline
+2 & $(-1.9, 2.1)^T$ & $(-2.0, 2.0)^T$ & $3.76559^{-12}$ & 22 \\ \hline
+3 & $(0.0, 0.0, 0.0)^T$ & $(-0.0179359, -0.249651, 0.235557)^T$ & $1.79298^{-15}$ & 29 \\ \hline
+4 & $(0.8, 0.6)^T$ & $(0.826031, 0.563624)^T$ & $4.43422^{-15}$ & 79 \\ \hline
+5 & $(0.4, 0.2)^T$ & $(0.442854, 0.222341)^T$ & $4.63827^{-15}$ & 584 \\ \hline
+\end{tabular}
+\caption{Сводная таблица результатов тестирования.}
+\end{table}
