@@ -33,6 +33,24 @@ double five_function(double x) {
   return log(x);
 }
 
+double sineIntegral(double x) {
+  if (x == 0)
+    return 0;
+
+  double sum = 0;
+  double term = x;
+  double x2 = x * x;
+
+  for (int n = 0; n < 50; ++n) {
+    sum += term / (2 * n + 1);
+    term *= -x2 / ((2 * n + 2) * (2 * n + 3));
+
+    if (std::abs(term) < 1e-15)
+      break;
+  }
+  return sum;
+}
+
 fn_t& get_function(int n) {
   switch (n) {
     case 1:
