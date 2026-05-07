@@ -23,14 +23,17 @@ struct DiscontinuityPlace {
 
 struct FunctionMeta {
   std::function<double(double)> f;
+  std::function<double(double, double)> integrate;
   std::vector<DiscontinuityPlace> discontinuity_places;
 };
 
 struct IntegrationResult {
   double result;
+  double exact_result;
   bool has_result;
   bool has_discontinuity;
   std::string message;
+  std::size_t num_iterations;
 };
 
 class IntegrateFunctions {
@@ -62,18 +65,42 @@ public:
     }
     double result = 0.0;
     FunctionMeta meta = this->_funcs[number];
-    std::vector<DiscontinuityDot> split_points = {
-        {a, 0}
+
+    auto get_point_order = [&](double x) -> std::size_t {
+      for (const auto& place : meta.discontinuity_places) {
+        if (place.is_interval) {
+          if (x > place.left.x && x < place.right.x) {
+            return 2; 
+          }
+        } else {
+          if (std::abs(place.left.x - x) < 1e-12) {
+            return place.left.order;
+          }
+        }
+      }
+      return 0;
     };
+
+    std::size_t order_a = get_point_order(a);
+    std::size_t order_b = get_point_order(b);
+
+    std::vector<DiscontinuityDot> split_points = {
+        {a, order_a}
+    };
+
+    bool is_discontinued = order_a != 0 || order_b != 0;
 
     for (const auto& place : meta.discontinuity_places) {
       if (place.is_interval) {
         if (place.left.x < b && a < place.right.x) {
           return {
               0.0,
+              0.0,
               false,
               true,
-              "Integrated function has discontinuity or does not defined in current interval"};
+              "Integrated function has discontinuity or does not defined in current interval",
+              0,
+          };
         }
       } else {
         double dx = place.left.x;
@@ -81,34 +108,49 @@ public:
           if (place.left.order == 2) {
             return {
                 0.0,
+                0.0,
                 false,
                 true,
-                "Integrated function has discontinuity or does not defined in current interval"};
+                "Integrated function has discontinuity or does not defined in current interval",
+                0,
+            };
           }
           if (dx != a && dx != b) {
+            is_discontinued = true;
             split_points.push_back({dx, place.left.order});
           }
         }
       }
     }
-    split_points.push_back({b, 0});
+    split_points.push_back({b, order_b});
 
     double total_result = 0.0;
+    std::size_t intervals = 0;
     for (std::size_t i = 0; i < split_points.size() - 1; ++i) {
       DiscontinuityDot sub_a = split_points[i];
       DiscontinuityDot sub_b = split_points[i + 1];
-      total_result += _IntegrateSubInterval(meta.f, sub_a, sub_b);
+      SubintervalResult sub_res = _IntegrateSubInterval(meta.f, sub_a, sub_b);
+      total_result += sub_res.integral;
+      intervals += sub_res.num_iterations;
     }
 
     return {
         total_result * result_sign,
+        meta.integrate(a, b),
         true,
-        false,
+        is_discontinued,
+        "",
+        intervals,
     };
   }
 
 private:
-  double _IntegrateSubInterval(
+  struct SubintervalResult {
+    double integral;
+    std::size_t num_iterations;
+  };
+
+  SubintervalResult _IntegrateSubInterval(
       const std::function<double(double)>& f, const DiscontinuityDot& a, const DiscontinuityDot& b
   ) {
     auto safe_eval = [&](double x, double h_step, bool is_left, bool is_continuous) -> double {
@@ -134,6 +176,7 @@ private:
     double prev_res = 0.0;
     std::size_t n = 1;
 
+    std::size_t prev_n = 1;
     while (n <= this->_max_iterations) {
       double h = (b.x - a.x) / n;
       double current_res =
@@ -144,12 +187,13 @@ private:
       current_res *= h;
 
       if (n > 1 && std::abs(current_res - prev_res) < this->_epsilon) {
-        return current_res;
+        return {current_res, n};
       }
       prev_res = current_res;
+      prev_n = n;
       n *= 2;
     }
-    return prev_res;
+    return {prev_res, prev_n};
   }
 
   std::unordered_map<std::size_t, FunctionMeta> _funcs;
@@ -163,34 +207,53 @@ IntegrateFunctions InitMain(double epsilon) {
       1,
       FunctionMeta{
           get_function(1),
+          [](double a, double b) { return log(std::abs(b / a)); },
           {
-               DiscontinuityPlace{
-               false,
-               {
-               0.0,
-               2,
-               },
-               }, },
+                                  DiscontinuityPlace{
+                  false,
+                  {
+                      0.0,
+                      2,
+                  },
+              }, },
   }
   );
   integrate.AddFunction(
       2,
       FunctionMeta{
           get_function(2),
+          [](double a, double b) {
+            double result = 0.0;
+            if (b < a) {
+              std::swap(a, b);
+            }
+            if (a < 0) {
+              result += sineIntegral(-a);
+              if (b < 0) {
+                result -= sineIntegral(-b);
+              } else {
+                result += sineIntegral(b);
+              }
+            } else {
+              result = sineIntegral(b) - sineIntegral(a);
+            }
+            return result;
+                                  },
           {
-               DiscontinuityPlace{
-               false,
-               {
-               0.0,
-               1,
-               },
-               }, },
+                                  DiscontinuityPlace{
+                  false,
+                  {
+                      0.0,
+                      1,
+                  },
+              }, },
   }
   );
   integrate.AddFunction(
       3,
       FunctionMeta{
           get_function(3),
+          [](double a, double b) { return (pow(b, 3) - pow(a, 3)) / 3 + 2 * (b - a); },
           {},
       }
   );
@@ -198,6 +261,7 @@ IntegrateFunctions InitMain(double epsilon) {
       4,
       FunctionMeta{
           get_function(4),
+          [](double a, double b) { return pow(b, 2) - pow(a, 2) + 2 * (b - a); },
           {},
       }
   );
@@ -205,18 +269,19 @@ IntegrateFunctions InitMain(double epsilon) {
       5,
       FunctionMeta{
           get_function(5),
+          [](double a, double b) { return b * log(b) - a * log(a) + a - b; },
           {
-               DiscontinuityPlace{
-               true,
-               {
-               -std::numeric_limits<double>::infinity(),
-               0,
-               },
-               {
-               0.0,
-               2,
-               },
-               }, },
+                                  DiscontinuityPlace{
+                  true,
+                  {
+                      -std::numeric_limits<double>::infinity(),
+                      0,
+                  },
+                  {
+                      0.0,
+                      2,
+                  },
+              }, },
   }
   );
   return integrate;
