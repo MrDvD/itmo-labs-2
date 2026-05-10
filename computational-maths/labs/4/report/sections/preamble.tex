@@ -22,7 +22,7 @@
     colorlinks=true,        % цветные ссылки (false - черные рамки)
     linkcolor=black,        % цвет ссылок на разделы
     urlcolor=blue,          % цвет URL-ссылок
-    citecolor=green,        % цвет ссылок на литературу
+    citecolor=blue,         % цвет ссылок на литературу
     pdfborder={0 0 0}       % убрать рамки вокруг ссылок
 }
 \addto\extrasrussian{%
@@ -63,46 +63,9 @@
 
 \newcommand{\abs}[1]{\left|#1\right|}
 
-\addto\captionsrussian{\renewcommand{\refname}{}}
-
-\DefTblrTemplate{firsthead,middlehead,lasthead}{default}{
-}
-\DefTblrTemplate{firstfoot}{default}{
-  \UseTblrTemplate{contfoot}{default}
-}
-\DefTblrTemplate{middlefoot}{default}{
-  \UseTblrTemplate{contfoot}{default}
-  \UseTblrTemplate{capcont}{default}
-}
-\DefTblrTemplate{lastfoot}{default}{
-  \UseTblrTemplate{note}{default}
-  \UseTblrTemplate{remark}{default}
-  \addvspace{9pt}
-  \UseTblrTemplate{caption}{default}
-}
-\DeclareTblrTemplate{contfoot-text}{default}{См. далее}
-
-\usepackage{seqsplit}
-\usepackage[most]{tcolorbox}
-\usepackage{caption}
-
-\newenvironment{MatrixBox}{%
-  \begin{tcolorbox}[
-    enhanced,
-    breakable,
-    colback=white,
-    colframe=black,
-    width=\textwidth,
-    sharp corners,
-    boxrule=0.4pt,
-    segmentation style={solid}, 
-    break at=-0pt,
-    bottomrule at break=0pt,
-    toprule at break=0pt,
-    bottomrule at break=0pt,
-    fontupper=\ttfamily,
-    toprule at break=0pt,
-  ]
-}{%
-  \end{tcolorbox}
-}
+\usepackage[
+    backend=biber,
+    style=gost-numeric,
+    sorting=none
+]{biblatex}
+\addbibresource{refs.bib}
