@@ -27,6 +27,62 @@ module lab_functions
     val = g(x, c, a, b)
   end function get_v0
 
+  function integral_psi_ext(x1, x2, c, a, b, L) result(res)
+    real, intent(in) :: x1, x2, c, a, b, L
+    real :: res
+
+    res = primitive_psi(x2, c, a, b, L) - primitive_psi(x1, c, a, b, L)
+  end function integral_psi_ext
+
+  recursive function primitive_psi(X, c, a, b, L) result(P)
+    real, intent(in) :: X, c, a, b, L
+    real :: P
+    real :: two_L, x_mod
+    real :: len_pos, len_neg
+    
+    two_L = 2.0 * L
+
+    if (X < 0.0) then
+      P = primitive_psi(-X, c, a, b, L)
+      return
+    end if
+
+    if (two_L > 0.0) then
+      x_mod = X - two_L * floor(X / two_L)
+    else
+      x_mod = X
+    end if
+    
+    P = 0.0
+
+    len_pos = max(0.0, min(x_mod, b) - max(0.0, a))
+    if (x_mod > 0.0) then
+       if (x_mod < a) then
+         len_pos = 0.0
+       else if (x_mod > b) then
+         len_pos = b - a
+       else
+         len_pos = x_mod - a
+       end if
+       if (len_pos < 0.0) len_pos = 0.0
+       P = P + c * len_pos
+    end if
+    
+    if (x_mod > L) then
+      if (x_mod < (2.0*L - b)) then
+        len_neg = 0.0
+      else if (x_mod > (2.0*L - a)) then
+        len_neg = (2.0*L - a) - max(L, 2.0*L - b)
+      else
+        len_neg = x_mod - max(L, 2.0*L - b)
+      end if
+      
+      if (len_neg < 0.0) len_neg = 0.0
+      P = P - c * len_neg
+    end if
+    
+  end function primitive_psi
+
   function f_ext(x, L, mode) result(res)
     real, intent(in) :: x, L
     integer, intent(in) :: mode
@@ -38,6 +94,25 @@ module lab_functions
       res = -get_u0(2.0 * L - x_mod, mode)
     end if
   end function f_ext
+
+  function integral_g(x1, x2, c, a, b) result(res)
+    implicit none
+
+    real, intent(in) :: x1, x2, c, a, b
+    real :: res
+    real :: lower, upper
+    
+    lower = min(x1, x2)
+    upper = max(x1, x2)
+    lower = max(lower, a)
+    upper = min(upper, b)
+    
+    if (lower < upper) then
+      res = c * (upper - lower)
+    else
+      res = 0.0
+    end if
+  end function integral_g
 
   subroutine calc_fourier_coeffs(An, Bn, Nx, L, mode, a_wave, a, b, n_max)
     integer, intent(in) :: Nx, mode, n_max
@@ -132,25 +207,25 @@ module lab_functions
       call pgsci(3) ; call pgline(Nx + 1, x_vals, u2) 
       call pgsci(4) ; call pgline(Nx + 1, x_vals, u3) 
 
-      x_pos = L * 0.65 ; y_pos = h * 1.55
+      x_pos = L * 0.55 ; y_pos = h * 1.55
       lx(1) = x_pos ; lx(2) = x_pos + L*0.05
       
       ! legend numerical
       ly(1) = y_pos ; ly(2) = y_pos
       write(txt_num, '("Numerical MSE: ", E9.2)') mse_num
       call pgsci(2) ; call pgline(2, lx, ly)
-      call pgsci(1) ; call pgtext(x_pos + L*0.06, y_pos - h*0.02, trim(txt_num))
+      call pgsci(1) ; call pgtext(x_pos + L*0.05, y_pos - h*0.02, trim(txt_num))
       
       ! legend analytical
       y_pos = y_pos - h * 0.12 ; ly(1) = y_pos ; ly(2) = y_pos
       call pgsci(3) ; call pgline(2, lx, ly)
-      call pgsci(1) ; call pgtext(x_pos + L*0.06, y_pos - h*0.02, "Analytical (Ref)")
+      call pgsci(1) ; call pgtext(x_pos + L*0.05, y_pos - h*0.02, "Analytical (Ref)")
       
       ! legend fourier
       y_pos = y_pos - h * 0.12 ; ly(1) = y_pos ; ly(2) = y_pos
       write(txt_fou, '("Fourier MSE:   ", E9.2)') mse_fou
       call pgsci(4) ; call pgline(2, lx, ly)
-      call pgsci(1) ; call pgtext(x_pos + L*0.06, y_pos - h*0.02, trim(txt_fou))
+      call pgsci(1) ; call pgtext(x_pos + L*0.05, y_pos - h*0.02, trim(txt_fou))
     else
       write(title, '("T: ", F6.3, "s | Single Method")') t_curr
       call pglab('X (m)', 'U (m)', title)
@@ -210,7 +285,12 @@ program lab_11_12
       t_curr = real(j) * dt
       do i = 0, Nx
         x_curr = real(i) * dx
-        h_ana(i,j) = 0.5 * (f_ext(x_curr - a_wave*t_curr, L, mode) + f_ext(x_curr + a_wave*t_curr, L, mode))
+        
+        h_ana(i,j) = 0.5 * (f_ext(x_curr - a_wave*t_curr, L, mode) + &
+                            f_ext(x_curr + a_wave*t_curr, L, mode))
+        h_ana(i,j) = h_ana(i,j) + &
+                     (1.0 / (2.0 * a_wave)) * &
+                     integral_psi_ext(x_curr - a_wave*t_curr, x_curr + a_wave*t_curr, c, a, b, L)
       end do
     end do
   end if
