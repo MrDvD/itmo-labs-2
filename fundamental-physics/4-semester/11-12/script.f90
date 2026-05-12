@@ -18,6 +18,8 @@ module lab_functions
     case (1) ; val = f2_2(x)
     case (2) ; val = f3_2(x)
     case (3) ; val = f3_9(x)
+    case (4) ; val = f_odd(x)
+    case (5) ; val = f_even(x)
     end select
   end function get_u0
 
@@ -160,6 +162,18 @@ module lab_functions
     f3_9 = exp(-x) * sin(PI * x)
   end function f3_9
 
+  function f_odd(x)
+    real, intent(in) :: x
+    real :: f_odd
+    f_odd = cos(PI * x)
+  end function f_odd
+
+  function f_even(x)
+    real, intent(in) :: x
+    real :: f_even
+    f_even = sin(PI * x)
+  end function f_even
+
   function calculate_mse(u_calc, u_ref, Nx) result(mse)
     implicit none
 
@@ -295,6 +309,8 @@ program lab_11_12
     end do
   end if
 
+
+
   ! fourier
   if (calc_method == 3 .or. calc_method == 4) then
     allocate(An(N_HARMONICS), Bn(N_HARMONICS))
@@ -308,6 +324,14 @@ program lab_11_12
                        Bn(i_harm)*sin(real(i_harm)*PI*a_wave*t_curr/L)) * sin(real(i_harm)*PI*x_curr/L)
         end do
       end do
+    end do
+    write(*,*) "### Print A_n: "
+    do i = 1, N_HARMONICS
+      write(*,'(I0, A, E0.4)') i, " ", An(i)
+    end do
+    write(*,*) "### Print B_n: "
+    do i = 1, N_HARMONICS
+      write(*,'(I0, A, E0.4)') i, " ", Bn(i)
     end do
     deallocate(An, Bn)
   end if
