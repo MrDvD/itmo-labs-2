@@ -7,3 +7,8 @@ __pycache__/
 *.out
 *.toc
 *.compiled.*
+
+*.bcf
+*.bbl
+*.blg
+*.run.xml
