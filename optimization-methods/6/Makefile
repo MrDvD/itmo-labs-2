@@ -18,4 +18,5 @@ clean:
 pdf: generate
 	cd "${report_dir}"; \
 	xelatex "${report_name}"; \
+	biber "${report_name}"; \
 	xelatex "${report_name}"

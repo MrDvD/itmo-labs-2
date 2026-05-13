@@ -3,7 +3,18 @@ from typing import List, Tuple, Dict, Set
 from lib.primitives import AntIteration
 
 class AntColonyAlgorithm:
-  def __init__(self, graph: Dict[str, Dict[str, int]], start_node: str, end_node: str, infty: int, num_ants: int = 10, max_iterations: int = 100, alpha: float = 1.0, beta: float = 1.0, rho: float = 0.2, q0: float = 0.75, Q: float = 10):
+  def __init__(self,
+               graph: Dict[str, Dict[str, int]],
+               start_node: str,
+               end_node: str,
+               infty: int,
+               num_ants: int = 10,
+               max_iterations: int = 100,
+               alpha: float = 1.0,
+               beta: float = 1.0,
+               rho: float = 0.2,
+               q0: float = 0.75,
+               Q: float = 10):
     self.graph = graph
     self.start_node = start_node
     self.end_node = end_node
@@ -62,7 +73,7 @@ class AntColonyAlgorithm:
     
     q = random.random()
     
-    if q < self.q0:
+    if q <= self.q0:
       best_node = ""
       max_val = -1.0
       for node in unvisited:
@@ -120,6 +131,7 @@ class AntColonyAlgorithm:
             self.pheromones[(u, v)] += delta
           if (v, u) in self.pheromones:
             self.pheromones[(v, u)] += delta
+    return
 
   def simulate(self) -> Tuple[Tuple[float, List[str]], List[AntIteration]]:
     best_route: List[str] = list()
