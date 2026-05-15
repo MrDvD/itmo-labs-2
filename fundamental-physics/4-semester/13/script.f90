@@ -9,8 +9,8 @@ module cinema_logic
 
   contains
 
-  function simulate_seating(n) result(success)
-    integer, intent(in) :: n
+  function simulate_seating(n, is_evil) result(success)
+    integer, intent(in) :: n, is_evil
     logical :: success
     logical, allocatable :: seats(:)
     integer :: i, j, vasya_choice, count_free, target_idx, current_free
@@ -18,7 +18,11 @@ module cinema_logic
     allocate(seats(n))
     seats = .true.
     call random_number(r)
-    vasya_choice = int(r * n) + 1
+    if (is_evil .ne. 0) then
+      vasya_choice = int(r * (n - 1)) + 2
+    else
+      vasya_choice = int(r * n) + 1
+    end if
     seats(vasya_choice) = .false.
     do i = 2, n - 1
       if (seats(i)) then
@@ -48,13 +52,13 @@ module cinema_logic
     deallocate(seats)
   end function simulate_seating
 
-  subroutine draw_convergence(current_step, history, n_seats, step_size)
-    integer, intent(in) :: current_step, n_seats, step_size
+  subroutine draw_convergence(current_step, history, n_seats, step_size, is_evil)
+    integer, intent(in) :: current_step, n_seats, step_size, is_evil
     real, intent(in) :: history(MAX_TRIALS)
     real, allocatable :: x_axis(:), y_axis(:)
     integer :: i
     character(len=100) :: title, info
-    real :: x_max
+    real :: x_max, ideal_val
 
     if (current_step < 1) then
         call pgpage()
@@ -85,14 +89,20 @@ module cinema_logic
     write(title, '("N=", I0, " | Step Size: ", I0, " | Trial: ", I0)') n_seats, step_size, current_step
     call pglab('Trials (Adaptive)', 'Probability', title)
 
+    if (is_evil .ne. 0) then
+      ideal_val = real(n_seats - 2) / real(2 * (n_seats - 1))
+    else
+      ideal_val = 0.5
+    end if
+
     call pgsci(2) ! Red
-    call pgmove(0.0, 0.5)
-    call pgdraw(x_max, 0.5)
+    call pgmove(0.0, ideal_val)
+    call pgdraw(x_max, ideal_val)
 
     call pgsci(4) ! Blue
     call pgline(current_step, x_axis, y_axis)
 
-    write(info, '("P = ", F6.4)') history(current_step)
+    write(info, '("P* = ", F0.4, "; P = ", F0.4)') history(current_step), ideal_val
     call pgsci(1)
     call pgtext(x_max * 0.05, 0.9, info)
 
@@ -107,7 +117,7 @@ program cinema_adaptive
 
   integer :: n_seats, total_success, current_step, step_size, i
   real :: history(MAX_TRIALS)
-  integer :: pgopen
+  integer :: pgopen, is_evil
   real :: px, py
   character(len=1) :: key
   logical :: quit
@@ -123,6 +133,8 @@ program cinema_adaptive
   write(*,*) "- Q - quit"
   write(*,*) "Enter N:"
   read(*,*) n_seats
+  write(*,*) "Vasya is evil?:"
+  read(*,*) is_evil
 
   if (pgopen('/XSERVE') <= 0) stop
   call pgask(.false.)
@@ -138,7 +150,7 @@ program cinema_adaptive
   step_size = 1
 
   do while (.not. quit)
-    call draw_convergence(current_step, history, n_seats, step_size)
+    call draw_convergence(current_step, history, n_seats, step_size, is_evil)
     call pgcurs(px, py, key)
     
     select case (key)
@@ -146,7 +158,9 @@ program cinema_adaptive
       do i = 1, step_size
         if (current_step < MAX_TRIALS) then
           current_step = current_step + 1
-          if (simulate_seating(n_seats)) total_success = total_success + 1
+          if (simulate_seating(n_seats, is_evil)) then
+            total_success = total_success + 1
+          end if
           history(current_step) = real(total_success) / real(current_step)
         end if
       end do
