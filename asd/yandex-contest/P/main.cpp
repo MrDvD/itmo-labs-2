@@ -1,0 +1,53 @@
+#include <algorithm>
+#include <cstddef>
+#include <iostream>
+#include <vector>
+
+class Graph {
+public:
+  explicit Graph(std::size_t n_count)
+      : distances_(n_count + 1, std::vector<std::size_t>(n_count + 1, 0)) {
+  }
+  void AddEdge(std::size_t from_id, std::size_t to_id, std::size_t weight) {
+    this->distances_[from_id][to_id] = weight;
+  }
+  std::size_t FindExpensiveEdge(std::size_t n_count) {
+    for (std::size_t third_vertex = 1; third_vertex <= n_count; third_vertex++) {
+      for (std::size_t first_vertex = 1; first_vertex <= n_count; first_vertex++) {
+        for (std::size_t second_vertex = 1; second_vertex <= n_count; second_vertex++) {
+          const std::size_t other_path = std::max(
+              this->distances_[first_vertex][third_vertex],
+              this->distances_[third_vertex][second_vertex]
+          );
+          this->distances_[first_vertex][second_vertex] =
+              std::min(this->distances_[first_vertex][second_vertex], other_path);
+        }
+      }
+    }
+    std::size_t expensive_edge = 0;
+    for (std::size_t first_vertex = 1; first_vertex <= n_count; first_vertex++) {
+      for (std::size_t second_vertex = 1; second_vertex <= n_count; second_vertex++) {
+        expensive_edge = std::max(expensive_edge, this->distances_[first_vertex][second_vertex]);
+      }
+    }
+    return expensive_edge;
+  }
+
+private:
+  std::vector<std::vector<std::size_t>> distances_;
+};
+
+int main() {
+  std::size_t n_count = 0;
+  std::cin >> n_count;
+  Graph graph(n_count);
+  for (std::size_t row_idx = 0; row_idx < n_count; row_idx++) {
+    for (std::size_t col_idx = 0; col_idx < n_count; col_idx++) {
+      std::size_t weight = 0;
+      std::cin >> weight;
+      graph.AddEdge(row_idx + 1, col_idx + 1, weight);
+    }
+  }
+  std::cout << graph.FindExpensiveEdge(n_count);
+  return 0;
+}
