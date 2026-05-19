@@ -1,10 +1,10 @@
-module cinema_params
+module lab_params
   implicit none
   integer, parameter :: MAX_TRIALS = 100000
-end module cinema_params
+end module lab_params
 
-module cinema_logic
-  use cinema_params
+module lab_functions
+  use lab_params
   implicit none
 
   contains
@@ -87,7 +87,7 @@ module cinema_logic
     call pgbox('BCNST', 0.0, 0, 'BCNST', 0.0, 0)
     
     write(title, '("N=", I0, " | Step Size: ", I0, " | Trial: ", I0)') n_seats, step_size, current_step
-    call pglab('Trials (Adaptive)', 'Probability', title)
+    call pglab('Trials', 'Probability', title)
 
     if (is_evil .ne. 0) then
       ideal_val = real(n_seats - 2) / real(2 * (n_seats - 1))
@@ -108,11 +108,11 @@ module cinema_logic
 
     deallocate(x_axis, y_axis)
   end subroutine draw_convergence
-end module cinema_logic
+end module lab_functions
 
-program cinema_adaptive
-  use cinema_params
-  use cinema_logic
+program lab_13
+  use lab_params
+  use lab_functions
   implicit none
 
   integer :: n_seats, total_success, current_step, step_size, i
@@ -176,4 +176,4 @@ program cinema_adaptive
   end do
 
   call pgend()
-end program cinema_adaptive
+end program lab_13
