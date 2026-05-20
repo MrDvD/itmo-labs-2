@@ -1,0 +1,118 @@
+\subsection{Network}
+
+\subsubsection{Описание решения}
+
+Краскала алгоритм (mst)
+
+\dots
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- \dots \( \mathcal{O}(\dots) \).
+
+\textit{Пространственная сложность решения} --- \dots \( \mathcal{O}(\dots) \).
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <algorithm>
+#include <cstddef>
+#include <iostream>
+#include <vector>
+
+class DSU {
+public:
+  explicit DSU(std::size_t n) {
+    this->parent_.resize(n + 1);
+    this->rank_.resize(n + 1, 0);
+    for (std::size_t i = 0; i <= n; ++i) {
+      this->parent_[i] = i;
+    }
+  }
+
+  std::size_t Find(std::size_t vertex) {
+    if (vertex == this->parent_[vertex]) {
+      return vertex;
+    }
+    return this->parent_[vertex] = Find(this->parent_[vertex]);
+  }
+
+  bool Union(std::size_t left, std::size_t right) {
+    left = Find(left);
+    right = Find(right);
+    if (left != right) {
+      if (this->rank_[left] < this->rank_[right]) {
+        std::swap(left, right);
+      }
+      this->parent_[right] = left;
+      if (this->rank_[left] == this->rank_[right]) {
+        this->rank_[left]++;
+      }
+      return true;
+    }
+    return false;
+  }
+
+private:
+  std::vector<std::size_t> parent_;
+  std::vector<std::size_t> rank_;
+};
+
+struct Edge {
+  std::size_t from_vertex;
+  std::size_t to_vertex;
+  std::size_t weight;
+
+  bool operator<(const Edge& other) const {
+    return this->weight < other.weight;
+  }
+};
+
+class Graph {
+public:
+  explicit Graph(std::size_t n_vertices) : n_vertices_(n_vertices) {
+  }
+
+  void AddEdge(std::size_t from_vertex, std::size_t to_vertex, std::size_t weight) {
+    edges_.push_back({from_vertex, to_vertex, weight});
+  }
+
+  std::vector<Edge> CreatePlan() {
+    std::vector<Edge> spanning_list;
+    std::sort(this->edges_.begin(), this->edges_.end());
+    DSU dsu(n_vertices_);
+    for (const auto& edge : edges_) {
+      if (dsu.Union(edge.from_vertex, edge.to_vertex)) {
+        spanning_list.push_back(edge);
+      }
+    }
+    return spanning_list;
+  }
+
+private:
+  std::size_t n_vertices_;
+  std::vector<Edge> edges_;
+};
+
+int main() {
+  std::size_t n_networks = 0;
+  std::size_t m_connections = 0;
+  std::cin >> n_networks >> m_connections;
+  Graph graph(n_networks);
+  for (std::size_t i = 0; i < m_connections; i++) {
+    std::size_t from_vertex = 0;
+    std::size_t to_vertex = 0;
+    std::size_t weight = 0;
+    std::cin >> from_vertex >> to_vertex >> weight;
+    graph.AddEdge(from_vertex, to_vertex, weight);
+  }
+  std::vector<Edge> plan = graph.CreatePlan();
+  auto max_edge = std::max_element(plan.begin(), plan.end());
+  std::cout << max_edge->weight << '\n';
+  std::cout << plan.size() << '\n';
+  for (const auto& edge : plan) {
+    std::cout << edge.from_vertex << " " << edge.to_vertex << '\n';
+  }
+  return 0;
+}
+\end{lstlisting}
