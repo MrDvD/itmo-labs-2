@@ -1,14 +1,15 @@
 import os
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import numpy as np
 from typing import Tuple, Callable, List
 from numpy.typing import NDArray
 
 class Visualizer:
   def __init__(self, x_range: Tuple[float, float], y_range: Tuple[float, float], resolution: int = 50, output_dir: str = "plots") -> None:
-    self.x_grid = np.linspace(x_range[0], x_range[1], resolution)
-    self.y_grid = np.linspace(y_range[0], y_range[1], resolution)
-    self.X_grid, self.Y_grid = np.meshgrid(self.x_grid, self.y_grid)
+    self.x_range = x_range
+    self.y_range = y_range
+    self.resolution = resolution
     self.output_dir = output_dir
     if not os.path.exists(self.output_dir):
       os.makedirs(self.output_dir)
@@ -20,11 +21,19 @@ class Visualizer:
     min_points: Tuple[NDArray[np.floating], NDArray[np.floating]],
     filename: str
   ) -> None:
-    Z_pred_grid = predict_func(self.X_grid, self.Y_grid)
+    padding_x = (self.x_range[1] - self.x_range[0]) * 0.05 if self.x_range[0] != self.x_range[1] else 1.0
+    padding_y = (self.y_range[1] - self.y_range[0]) * 0.05 if self.y_range[0] != self.y_range[1] else 1.0
+    x_limits = (self.x_range[0] - padding_x, self.x_range[1] + padding_x)
+    y_limits = (self.y_range[0] - padding_y, self.y_range[1] + padding_y)
+    plot_x = np.linspace(x_limits[0], x_limits[1], 200)
+    plot_y = np.linspace(y_limits[0], y_limits[1], 200)
+    X_plot_grid, Y_plot_grid = np.meshgrid(plot_x, plot_y)
+
+    Z_pred_grid = predict_func(X_plot_grid, Y_plot_grid)
     
     plt.figure(figsize=(8, 6))
     
-    contour = plt.contourf(self.X_grid, self.Y_grid, Z_pred_grid, levels=25, cmap='viridis', alpha=0.9)
+    contour = plt.contourf(X_plot_grid, Y_plot_grid, Z_pred_grid, levels=25, cmap='viridis', alpha=0.9)
     plt.xlabel('X', fontsize=10)
     plt.ylabel('Y', fontsize=10)
     plt.grid(True, alpha=0.3)
@@ -47,10 +56,25 @@ class Visualizer:
     line_count: int,
     filename: str
   ) -> None:
-    Z_pred_grid = predict_func(self.X_grid, self.Y_grid)
-    
     history_x = np.array([p[0] for p in history])
     history_y = np.array([p[1] for p in history])
+
+    x_min = min(self.x_range[0], history_x.min())
+    x_max = max(self.x_range[1], history_x.max())
+    y_min = min(self.y_range[0], history_y.min())
+    y_max = max(self.y_range[1], history_y.max())
+    
+    padding_x = (x_max - x_min) * 0.05 if x_max != x_min else 1.0
+    padding_y = (y_max - y_min) * 0.05 if y_max != y_min else 1.0
+    
+    x_limits = (x_min - padding_x, x_max + padding_x)
+    y_limits = (y_min - padding_y, y_max + padding_y)
+
+    plot_x = np.linspace(x_limits[0], x_limits[1], 200)
+    plot_y = np.linspace(y_limits[0], y_limits[1], 200)
+    X_plot_grid, Y_plot_grid = np.meshgrid(plot_x, plot_y)
+    
+    Z_pred_grid = predict_func(X_plot_grid, Y_plot_grid)
     history_z = predict_func(history_x, history_y)
     
     exact_levels = np.unique(np.sort(history_z[:line_count]))
@@ -60,20 +84,31 @@ class Visualizer:
 
     plt.figure(figsize=(10, 8))
     
-    contour_f = plt.contourf(self.X_grid, self.Y_grid, Z_pred_grid, levels=25, cmap='viridis', alpha=0.5)
-    
-    contour_lines = plt.contour(
-      self.X_grid, self.Y_grid, Z_pred_grid, 
+    contour_f = plt.contourf(X_plot_grid, Y_plot_grid, Z_pred_grid, levels=25, cmap='viridis', alpha=0.5)
+    plt.contour(
+      X_plot_grid, Y_plot_grid, Z_pred_grid, 
       levels=exact_levels, 
       colors='black', 
       linewidths=0.7, 
       linestyles='dashed',
       alpha=0.8
     )
-    plt.clabel(contour_lines, inline=True, fontsize=8, fmt='%.3f')
+    
+    box = patches.Rectangle(
+      (self.x_range[0], self.y_range[0]),
+      self.x_range[1] - self.x_range[0],
+      self.y_range[1] - self.y_range[0],
+      linewidth=2,
+      edgecolor='red',
+      facecolor='none',
+      linestyle='--',
+      label='Boundary Domain',
+      zorder=5
+    )
+    plt.gca().add_patch(box)            
     
     plt.plot(history_x, history_y, color='gray', linewidth=2, zorder=3)
-    plt.scatter(history_x, history_y, c='gold', s=30, edgecolors='black', label='Итерации GD', zorder=4)
+    plt.scatter(history_x, history_y, c='gold', s=30, edgecolors='black', label='Iteration', zorder=4)
     
     plt.scatter(history_x[0], history_y[0], c='lime', s=150, marker='*', edgecolors='black', label='Start', zorder=5)
     plt.scatter(history_x[-1], history_y[-1], c='cyan', s=100, marker='X', edgecolors='black', label='End', zorder=5)

@@ -27,7 +27,30 @@
 
 \subsubsection{Adam}
 
-\dots
+Воспользуемся такими параметрами для \textit{стандартного градиентного спуска}:
+\begin{itemize}
+  \item начальное приближение --- \( {{ adam_init }} \);
+  \item базовая скорость обучения --- \( {{ adam_learning_rate }} \);
+  \item скорость обучения первого момента --- \( {{ adam_beta_1 }} \);
+  \item скорость обучения второго момента --- \( {{ adam_beta_2 }} \);
+  \item ограничение по итерациям --- \( {{ adam_iterations }} \);
+  \item малая константа \( \varepsilon \) --- \( {{ adam_eps }} \).
+\end{itemize}
+
+Программно в качестве критерия останова выбрана малость нормы градиента и малость нормы разности приближений:
+\[
+  \lVert \nabla f(x^{(k)}, y^{(k)}) \rVert < \varepsilon \quad \text{или} \quad \lVert \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)} \rVert < \varepsilon
+\]
+
+Получаем следующий график градиентного спуска за {{ adam_iterations_num }} итераций:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/adam_iterations.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных приближений алгоритмом Adam.}
+\end{figure}
 
 \subsubsection{Эталонная реализация}
 
