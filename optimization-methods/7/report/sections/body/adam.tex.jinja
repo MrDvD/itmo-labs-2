@@ -25,9 +25,34 @@
   \caption{Диаграмма последовательных приближений градиентного спуска.}
 \end{figure}
 
-\subsubsection{Adam}
+\subsubsection{Реализация алгоритма Adam}
 
-Воспользуемся такими параметрами для \textit{стандартного градиентного спуска}:
+Воспользуемся такими параметрами, чтобы воспроизвести ситуацию с \textit{пилообразным движением} в стороны:
+\begin{itemize}
+  \item начальное приближение --- \( {{ adam_init_zig }} \);
+  \item базовая скорость обучения --- \( {{ adam_learning_rate_zig }} \);
+  \item скорость обучения первого момента --- \( {{ adam_beta_1_zig }} \);
+  \item скорость обучения второго момента --- \( {{ adam_beta_2_zig }} \);
+  \item ограничение по итерациям --- \( {{ adam_iterations_zig }} \);
+  \item малая константа \( \varepsilon \) --- \( {{ adam_eps_zig }} \).
+\end{itemize}
+
+Как и в случае с градиентным спуском в качестве критерия останова выбрана малость нормы градиента и малость нормы разности приближений:
+\[
+  \lVert \nabla f(x^{(k)}, y^{(k)}) \rVert < \varepsilon \quad \text{или} \quad \lVert \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)} \rVert < \varepsilon
+\]
+
+Получаем следующий график алгоритма Adam за {{ zig_iterations_num }} итераций:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/adam_iterations_zig.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных пилообразных приближений Adam.}
+\end{figure}
+
+Воспользуемся такими параметрами, чтобы воспроизвести ситуацию с \textit{плавным движением}:
 \begin{itemize}
   \item начальное приближение --- \( {{ adam_init }} \);
   \item базовая скорость обучения --- \( {{ adam_learning_rate }} \);
@@ -37,21 +62,24 @@
   \item малая константа \( \varepsilon \) --- \( {{ adam_eps }} \).
 \end{itemize}
 
-Программно в качестве критерия останова выбрана малость нормы градиента и малость нормы разности приближений:
-\[
-  \lVert \nabla f(x^{(k)}, y^{(k)}) \rVert < \varepsilon \quad \text{или} \quad \lVert \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)} \rVert < \varepsilon
-\]
-
-Получаем следующий график градиентного спуска за {{ adam_iterations_num }} итераций:
+Получаем следующий график алгоритма Adam за {{ adam_iterations_num }} итераций:
 
 \begin{figure}[H]
   \centering
   \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
     \includegraphics{pics/adam_iterations.pdf}
   \end{adjustbox}
-  \caption{Диаграмма последовательных приближений алгоритмом Adam.}
+  \caption{Диаграмма последовательных плавных приближений Adam.}
 \end{figure}
 
-\subsubsection{Эталонная реализация}
+\subsubsection{Эталонная реализация Adam}
 
-\dots
+Воспользуемся реализацией алгоритма Adam из библиотеки \textit{PyTorch} и воспроизведём ситуацию с \textit{плавным движением}:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/adam_iterations_torch.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных приближений Adam (PyTorch).}
+\end{figure}

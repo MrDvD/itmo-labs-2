@@ -54,7 +54,7 @@ class Visualizer:
     saddle_points: Tuple[NDArray[np.floating], NDArray[np.floating]],
     min_points: Tuple[NDArray[np.floating], NDArray[np.floating]],
     line_count: int,
-    filename: str
+    filename: str,
   ) -> None:
     history_x = np.array([p[0] for p in history])
     history_y = np.array([p[1] for p in history])
@@ -114,7 +114,8 @@ class Visualizer:
     plt.scatter(history_x[-1], history_y[-1], c='cyan', s=100, marker='X', edgecolors='black', label='End', zorder=5)
 
     plt.scatter(saddle_points[0], saddle_points[1], c='white', s=120, edgecolors='black', label='Saddle point', zorder=6)
-    plt.scatter(min_points[0], min_points[1], c='red', s=120, edgecolors='black', label='Global Min', zorder=6)
+    if (len(min_points[0]) > 0):
+      plt.scatter(min_points[0], min_points[1], c='red', s=120, edgecolors='black', label='Global Min', zorder=6)
     
     plt.xlabel('X', fontsize=10)
     plt.ylabel('Y', fontsize=10)
