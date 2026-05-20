@@ -1,0 +1,34 @@
+\subsection{Сравнение алгоритмов машинного обучения}
+
+\subsubsection{Градиентный спуск}
+
+Воспользуемся такими параметрами для \textit{стандартного градиентного спуска}:
+\begin{itemize}
+  \item начальное приближение --- \( {{ gd_init }} \);
+  \item скорость обучения --- \( {{ gd_learning_rate }} \);
+  \item ограничение по итерациям --- \( {{ max_iter }} \);
+  \item малая константа \( \varepsilon \) --- \( {{ gd_eps }} \).
+\end{itemize}
+
+Программно в качестве критерия останова выбрана малость нормы градиента и малость нормы разности приближений:
+\[
+  \lVert \nabla f(x^{(k)}, y^{(k)}) \rVert < \varepsilon \quad \text{или} \quad \lVert \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)} \rVert < \varepsilon
+\]
+
+Получаем следующий график градиентного спуска за {{ gd_iterations_num }} итераций:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/gd_iterations.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных приближений градиентного спуска.}
+\end{figure}
+
+\subsubsection{Adam}
+
+\dots
+
+\subsubsection{Эталонная реализация}
+
+\dots
