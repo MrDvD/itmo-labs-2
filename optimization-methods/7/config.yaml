@@ -1,7 +1,11 @@
 report_dir: './report'
-output_dir: './output'
 
 gd_learning_rate: 0.71
 gd_eps: 0.00002
+
+adam_learning_rate: 0.7
+adam_beta_1: 0.9
+adam_beta_2: 0.99
+adam_eps: 0.00001
 
 max_iter: 200
