@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from typing import List, Tuple, Protocol, runtime_checkable
 from numpy.typing import NDArray
 from abc import ABC
@@ -73,4 +74,38 @@ class OurAdamOptimizer(BaseOptimizer):
         params = next_params
         break
       params = next_params
+    return self.iter_history
+
+class PyTorchAdamOptimizer(BaseOptimizer):
+  def __init__(self, learning_rate: float, max_iter: int, eps: float) -> None:
+    super().__init__()
+    self.learning_rate = learning_rate
+    self.max_iter = max_iter
+    self.eps = eps
+
+  def optimize(self, params_start: NDArray[np.float32]) -> List[Tuple[float, float]]:
+    x0, y0, beta1, beta2 = params_start
+    params_tensor = torch.tensor([x0, y0], dtype=torch.float64, requires_grad=True)
+    optimizer = torch.optim.Adam(
+      [params_tensor], 
+      lr=self.learning_rate, 
+      betas=(beta1, beta2), 
+      eps=1e-8
+    )
+    self.iter_history = [(float(params_tensor[0]), float(params_tensor[1]))]
+    for t in range(1, self.max_iter + 1):
+      optimizer.zero_grad()
+      x = params_tensor[0]
+      y = params_tensor[1]
+      loss = 10 ** (-2) * (8 * x ** 2 + 2 * x * y + 43 * x + 10 * y + 15)
+      loss.backward()
+      grad_norm = torch.linalg.norm(params_tensor.grad).item()
+      if grad_norm < self.eps:
+        break
+      old_params = params_tensor.clone().detach()
+      optimizer.step()
+      current_position = (float(params_tensor[0]), float(params_tensor[1]))
+      self._callback(current_position)
+      if torch.linalg.norm(params_tensor - old_params).item() < self.eps:
+        break
     return self.iter_history
