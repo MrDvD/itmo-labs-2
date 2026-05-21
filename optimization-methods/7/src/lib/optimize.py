@@ -93,7 +93,7 @@ class PyTorchAdamOptimizer(BaseOptimizer):
       eps=1e-8
     )
     self.iter_history = [(float(params_tensor[0]), float(params_tensor[1]))]
-    for t in range(1, self.max_iter + 1):
+    for _ in range(1, self.max_iter + 1):
       optimizer.zero_grad()
       x = params_tensor[0]
       y = params_tensor[1]

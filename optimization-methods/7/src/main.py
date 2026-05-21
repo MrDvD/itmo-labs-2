@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
   torch_optimizer = PyTorchAdamOptimizer(cfg['torch_learning_rate'], len(gd_iterations) - 1, cfg['torch_eps'])
   torch_iterations = torch_optimizer.optimize(np.array([*start_param, cfg['torch_beta_1'], cfg['torch_beta_2']]))
-  plot2.plot_optimization_trajectory(function, torch_iterations, saddle_points, (np.array([]), np.array([])), 20, 'adam_iterations_torch.pdf')
+  plot2.plot_optimization_trajectory(function, torch_iterations, saddle_points, (np.array([]), np.array([])), 28, 'adam_iterations_torch.pdf')
 
   report = ReportFiller({
     'gd_init': f"({start_param[0]}, {start_param[1]})^T",
