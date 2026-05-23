@@ -27,7 +27,7 @@ class ReportFiller:
           with open(output_path, "w") as f:
             f.write(rendered_content)
   
-  def add_plot(self, report_dir: str, num: str, filename: str, a: str, b: str, ya: str, eps: str, cheb_calc: str, cheb_an: str, iters: str):
+  def add_plot(self, report_dir: str, num: str, filename: str, a: str, b: str, ya: str, eps: str, cheb_calc: str, cheb_an: str, iters: str, case: str):
     template_path = os.path.join(report_dir, 'body', 'plot.tex.j2')
   
     if not os.path.exists(template_path):
@@ -38,6 +38,7 @@ class ReportFiller:
       
       rendered_snippet = template.render(
         odu_equation_num=num,
+        odu_case=case,
         odu_a=a,
         odu_b=b,
         odu_ya=ya,
