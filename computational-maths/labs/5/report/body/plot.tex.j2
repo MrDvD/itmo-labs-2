@@ -1,0 +1,17 @@
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.7\textwidth,keepaspectratio}
+    \includegraphics{ {{ filename }} }
+  \end{adjustbox}
+  \caption{Графическое сравнение решений ОДУ №{{ odu_equation_num }}.}
+\end{figure}
+
+Параметры графика выше:
+\begin{itemize}
+  \item начальное условие --- \( y( {{ odu_a }}) = {{ odu_ya }} \);
+  \item интересуемая точка --- \( {{ odu_b }} \);
+  \item малая константа --- $ {{ odu_eps }} $;
+  \item число узлов в методе Эйлера --- $ {{ odu_iters }} $;
+  \item число узлов Чебышёва для численного решения --- $ {{ odu_chebyshev_calc }} $;
+  \item число узлов Чебышёва для аналитического решения --- $ {{ odu_chebyshev_an }} $.
+\end{itemize}

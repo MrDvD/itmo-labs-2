@@ -13,56 +13,38 @@ using fn_t = double(double);
 string error_message = "";
 bool has_discontinuity = false;
 
-double first_function(double x) {
-  return 1 / x;
+double first_function (double x, double y)
+{
+  return sin(x);
 }
 
-double second_function(double x) {
-  return sin(x) / x;
+double second_function (double x, double y)
+{
+  return (x * y)/2;
 }
 
-double third_function(double x) {
-  return x * x + 2;
+double third_function (double x, double y)
+{
+  return y - (2 * x)/y;
 }
 
-double fourth_function(double x) {
-  return 2 * x + 2;
+double fourth_function (double x, double y)
+{
+  return x + y;
 }
 
-double five_function(double x) {
-  return log(x);
+double default_function(double x, double y)
+{
+    return 0.0;
 }
 
-double sineIntegral(double x) {
-  if (x == 0)
-    return 0;
-
-  double sum = 0;
-  double term = x;
-  double x2 = x * x;
-
-  for (int n = 0; n < 50; ++n) {
-    sum += term / (2 * n + 1);
-    term *= -x2 / ((2 * n + 2) * (2 * n + 3));
-
-    if (std::abs(term) < 1e-15)
-      break;
-  }
-  return sum;
-}
-
-fn_t& get_function(int n) {
+std::function<double(double,double)> get_function(int n) {
   switch (n) {
-    case 1:
-      return first_function;
-    case 2:
-      return second_function;
-    case 3:
-      return third_function;
-    case 4:
-      return fourth_function;
-    case 5:
-      return five_function;
+    case 1:  return first_function;
+    case 2:  return second_function;
+    case 3:  return third_function;
+    case 4:  return fourth_function;
+    case 5:  return [](double x, double y) { return y * y; };
+    default: return default_function;
   }
-  return five_function;
 }

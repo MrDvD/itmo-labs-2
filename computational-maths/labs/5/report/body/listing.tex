@@ -2,304 +2,128 @@
 
 Для реализации блок-схем воспользуемся языком программирования C++.
 
-\begin{lstlisting}[caption=Файл \texttt{integration.hpp}]
-#ifndef INTEGRATION_H
-#define INTEGRATION_H
-
-#include <limits>
+\begin{lstlisting}[caption=Файл \texttt{differential.hpp}]
+#ifndef DIFFERENTIAL_H
+#define DIFFERENTIAL_H
 
 #include "preamble.h"
-#include "unordered_map"
-#include "vector"
+#include <cstdlib>
 
-struct DiscontinuityDot {
-  double x;
-  // 0 - continuous
-  // 1 - first order
-  // 2 - second order
-  std::size_t order;
+std::size_t ITERATIONS_MAX = 1e6;
+
+struct EulerSolution {
+  double answer;
+  std::size_t n_grid;
 };
 
-struct DiscontinuityPlace {
-  bool is_interval;
-  DiscontinuityDot left;
-  DiscontinuityDot right;
-};
-
-struct FunctionMeta {
-  std::function<double(double)> f;
-  std::function<double(double, double)> integrate;
-  std::vector<DiscontinuityPlace> discontinuity_places;
-};
-
-struct IntegrationResult {
-  double result;
-  double exact_result;
-  bool has_result;
-  bool has_discontinuity;
-  std::string message;
-  std::size_t num_iterations;
-};
-
-class IntegrateFunctions {
-public:
-  IntegrateFunctions(double epsilon)
-      : IntegrateFunctions(epsilon, 1e6, std::unordered_map<std::size_t, FunctionMeta>{}) {
+double calcForGrid(int f, double y_a, double a, double b, std::size_t n_grid) {
+  double h = (b - a) / n_grid;
+  std::function<double(double,double)> func = get_function(f);
+  double y_b = y_a;
+  double x = a;
+  for (std::size_t i = 1; i <= n_grid; i++) {
+    y_b += h * func(x, y_b);
+    x += h;
   }
-
-  IntegrateFunctions(
-      double epsilon,
-      std::size_t max_iterations,
-      std::unordered_map<std::size_t, FunctionMeta> funcs
-  )
-      : _funcs(funcs), _epsilon(epsilon), _max_iterations(max_iterations) {
-  }
-
-  void AddFunction(const std::size_t number, const FunctionMeta& func) {
-    this->_funcs[number] = func;
-  }
-
-  IntegrationResult Integrate(std::size_t number, double a, double b) {
-    double result_sign = 1.0;
-    if (b < a) {
-      std::swap(a, b);
-      result_sign = -1.0;
-    }
-    if (this->_funcs.count(number) == 0U) {
-      throw std::invalid_argument("no integration functions registered under specified number");
-    }
-    double result = 0.0;
-    FunctionMeta meta = this->_funcs[number];
-
-    auto get_point_order = [&](double x) -> std::size_t {
-      for (const auto& place : meta.discontinuity_places) {
-        if (place.is_interval) {
-          if (x > place.left.x && x < place.right.x) {
-            return 2; 
-          }
-        } else {
-          if (std::abs(place.left.x - x) < 1e-12) {
-            return place.left.order;
-          }
-        }
-      }
-      return 0;
-    };
-
-    std::size_t order_a = get_point_order(a);
-    std::size_t order_b = get_point_order(b);
-
-    std::vector<DiscontinuityDot> split_points = {
-        {a, order_a}
-    };
-
-    bool is_discontinued = order_a != 0 || order_b != 0;
-
-    for (const auto& place : meta.discontinuity_places) {
-      if (place.is_interval) {
-        if (place.left.x < b && a < place.right.x) {
-          return {
-              0.0,
-              0.0,
-              false,
-              true,
-              "Integrated function has discontinuity or does not defined in current interval",
-              0,
-          };
-        }
-      } else {
-        double dx = place.left.x;
-        if (dx >= a && dx <= b) {
-          if (place.left.order == 2) {
-            return {
-                0.0,
-                0.0,
-                false,
-                true,
-                "Integrated function has discontinuity or does not defined in current interval",
-                0,
-            };
-          }
-          if (dx != a && dx != b) {
-            is_discontinued = true;
-            split_points.push_back({dx, place.left.order});
-          }
-        }
-      }
-    }
-    split_points.push_back({b, order_b});
-
-    double total_result = 0.0;
-    std::size_t intervals = 0;
-    for (std::size_t i = 0; i < split_points.size() - 1; ++i) {
-      DiscontinuityDot sub_a = split_points[i];
-      DiscontinuityDot sub_b = split_points[i + 1];
-      SubintervalResult sub_res = _IntegrateSubInterval(meta.f, sub_a, sub_b);
-      total_result += sub_res.integral;
-      intervals += sub_res.num_iterations;
-    }
-
-    return {
-        total_result * result_sign,
-        meta.integrate(a, b),
-        true,
-        is_discontinued,
-        "",
-        intervals,
-    };
-  }
-
-private:
-  struct SubintervalResult {
-    double integral;
-    std::size_t num_iterations;
-  };
-
-  SubintervalResult _IntegrateSubInterval(
-      const std::function<double(double)>& f, const DiscontinuityDot& a, const DiscontinuityDot& b
-  ) {
-    auto safe_eval = [&](double x, double h_step, bool is_left, bool is_continuous) -> double {
-      if (!is_continuous) {
-        double eps = std::max(1e-12, h_step * 0.01);
-        if (is_left) {
-          double v_r = f(x + eps);
-          bool bad_r = std::isnan(v_r) || std::isinf(v_r);
-          if (!bad_r) {
-            return v_r;
-          }
-        }
-
-        double v_l = f(x - eps);
-        bool bad_l = std::isnan(v_l) || std::isinf(v_l);
-        if (!bad_l) {
-          return v_l;
-        }
-        return 0.0;
-      }
-      return f(x);
-    };
-    double prev_res = 0.0;
-    std::size_t n = 1;
-
-    std::size_t prev_n = 1;
-    while (n <= this->_max_iterations) {
-      double h = (b.x - a.x) / n;
-      double current_res =
-          0.5 * (safe_eval(a.x, h, true, a.order == 0) + safe_eval(b.x, h, false, b.order == 0));
-      for (std::size_t i = 1; i < n; i++) {
-        current_res += f(a.x + i * h);
-      }
-      current_res *= h;
-
-      if (n > 1 && std::abs(current_res - prev_res) < this->_epsilon) {
-        return {current_res, n};
-      }
-      prev_res = current_res;
-      prev_n = n;
-      n *= 2;
-    }
-    return {prev_res, prev_n};
-  }
-
-  std::unordered_map<std::size_t, FunctionMeta> _funcs;
-  const std::size_t _max_iterations;
-  const double _epsilon;
-};
-
-IntegrateFunctions InitMain(double epsilon) {
-  IntegrateFunctions integrate = IntegrateFunctions(epsilon);
-  integrate.AddFunction(
-      1,
-      FunctionMeta{
-          get_function(1),
-          [](double a, double b) { return log(std::abs(b / a)); },
-          {
-                                  DiscontinuityPlace{
-                  false,
-                  {
-                      0.0,
-                      2,
-                  },
-              }, },
-  }
-  );
-  integrate.AddFunction(
-      2,
-      FunctionMeta{
-          get_function(2),
-          [](double a, double b) {
-            double result = 0.0;
-            if (b < a) {
-              std::swap(a, b);
-            }
-            if (a < 0) {
-              result += sineIntegral(-a);
-              if (b < 0) {
-                result -= sineIntegral(-b);
-              } else {
-                result += sineIntegral(b);
-              }
-            } else {
-              result = sineIntegral(b) - sineIntegral(a);
-            }
-            return result;
-                                  },
-          {
-                                  DiscontinuityPlace{
-                  false,
-                  {
-                      0.0,
-                      1,
-                  },
-              }, },
-  }
-  );
-  integrate.AddFunction(
-      3,
-      FunctionMeta{
-          get_function(3),
-          [](double a, double b) { return (pow(b, 3) - pow(a, 3)) / 3 + 2 * (b - a); },
-          {},
-      }
-  );
-  integrate.AddFunction(
-      4,
-      FunctionMeta{
-          get_function(4),
-          [](double a, double b) { return pow(b, 2) - pow(a, 2) + 2 * (b - a); },
-          {},
-      }
-  );
-  integrate.AddFunction(
-      5,
-      FunctionMeta{
-          get_function(5),
-          [](double a, double b) { return b * log(b) - a * log(a) + a - b; },
-          {
-                                  DiscontinuityPlace{
-                  true,
-                  {
-                      -std::numeric_limits<double>::infinity(),
-                      0,
-                  },
-                  {
-                      0.0,
-                      2,
-                  },
-              }, },
-  }
-  );
-  return integrate;
+  return y_b;
 }
 
-double calculate_integral(double a, double b, int f, double epsilon) {
-  IntegrateFunctions integrate = InitMain(epsilon);
-  IntegrationResult result = integrate.Integrate(static_cast<std::size_t>(f), a, b);
-  has_discontinuity = result.has_discontinuity;
-  if (!result.has_result) {
-    error_message = result.message;
+EulerSolution solveByEuler(int f, double epsilon, double a, double y_a, double b) {
+  std::size_t n_grid = 2;
+  double y_b_h = calcForGrid(f, y_a, a, b, n_grid);
+  while (n_grid < ITERATIONS_MAX) {
+    n_grid *= 2;
+    double y_b_h_2 = calcForGrid(f, y_a, a, b, n_grid);
+    if (std::abs(y_b_h - y_b_h_2) <= epsilon) {
+      return { y_b_h_2, n_grid };
+    }
+    y_b_h = y_b_h_2;
   }
-  return result.result;
+  return { y_b_h, n_grid };
+}
+
+#endif
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Файл \texttt{interpolate.hpp}]
+#ifndef INTERPOLATE_H
+#define INTERPOLATE_H
+
+#include <vector>
+#include <tuple>
+#include <functional>
+#include <algorithm>
+#include <cmath>
+
+struct InterpolationResult {
+  std::vector<std::tuple<double, double>> points;
+  std::size_t chebyshev_k;
+};
+
+std::vector<double> GetChebyshevRoots(double a, double b, std::size_t n_size) {
+  std::vector<double> roots(n_size);
+  const double pi = std::acos(-1.0);
+
+  for (std::size_t i = 0; i < n_size; i++) {
+    double x_standard = std::cos((2.0 * i + 1.0) / (2.0 * n_size) * pi);
+    roots[i] = 0.5 * (a + b) + 0.5 * (b - a) * x_standard;
+  }
+
+  return roots;
+}
+
+InterpolationResult InterpolateLagrange(double a, double b, std::function<double(double)> func, double eps, std::size_t n_lagrange_max, std::size_t dots_num) {
+  std::vector<std::tuple<double, double>> lagrange_values(dots_num + 1);
+  std::vector<double> prev_values(dots_num + 1, 0.0);
+  std::vector<double> curr_values(dots_num + 1, 0.0);
+
+  auto eval_lagrange = [](double x, const std::vector<double>& nodes, const std::vector<double>& values) {
+    double total_sum = 0.0;
+    std::size_t n = nodes.size();
+    for (std::size_t i = 0; i < n; ++i) {
+      double term = values[i];
+      for (std::size_t j = 0; j < n; ++j) {
+        if (j != i) {
+          term *= (x - nodes[j]) / (nodes[i] - nodes[j]);
+        }
+      }
+      total_sum += term;
+    }
+    return total_sum;
+  };
+
+  std::size_t final_k = 0;
+  for (std::size_t k = 5; k <= n_lagrange_max; ++k) {
+    final_k = k;
+    auto nodes = GetChebyshevRoots(a, b, k);
+    std::vector<double> values(k);
+    for (std::size_t j = 0; j < k; ++j) {
+      values[j] = func(nodes[j]);
+    }
+
+    for (std::size_t i = 0; i <= dots_num; ++i) {
+      double x = (i == 0) ? a : ((i == dots_num) ? b : a + i * (b - a) / dots_num);
+      curr_values[i] = eval_lagrange(x, nodes, values);
+    }
+
+    if (k > 1) {
+      double max_diff = 0.0;
+      for (std::size_t i = 0; i <= dots_num; ++i) {
+        max_diff = std::max(max_diff, std::abs(curr_values[i] - prev_values[i]));
+      }
+      if (max_diff <= eps) {
+        break;
+      }
+    }
+    prev_values = curr_values;
+  }
+
+  for (std::size_t i = 0; i <= dots_num; ++i) {
+    double x = (i == 0) ? a : ((i == dots_num) ? b : a + i * (b - a) / dots_num);
+    lagrange_values[i] = std::make_tuple(x, curr_values[i]);
+  }
+
+  return {lagrange_values, final_k};
 }
 
 #endif
@@ -307,44 +131,107 @@ double calculate_integral(double a, double b, int f, double epsilon) {
 
 \begin{lstlisting}[caption=Файл \texttt{main.cpp}]
 #include <iostream>
-#include <unordered_map>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <filesystem>
 
-#include "lib/integration.hpp"
+#include "lib/differential.hpp"
+#include "lib/interpolate.hpp"
 
 struct TestCase {
-  std::size_t func_number;
+  int func_number;
+  int case_index;
   double a;
+  double y_a;
   double b;
+  double epsilon;
 };
 
+double getExactResult(int f, double a, double y_a, double b) {
+  switch (f) {
+    case 1:
+      return y_a + std::cos(a) - std::cos(b);
+    case 2:
+      return y_a * std::exp((b * b - a * a) / 4.0);
+    case 3: {
+      double C = (y_a * y_a - 2.0 * a - 1.0) * std::exp(-2.0 * a);
+      double expr = 2.0 * b + 1.0 + C * std::exp(2.0 * b);
+      return (expr >= 0.0) ? std::sqrt(expr) : std::nan("");
+    }
+    case 4:
+      return (y_a + a + 1.0) * std::exp(b - a) - b - 1.0;
+    case 5: {
+      double denom = (1.0 / y_a) - (b - a);
+      return (std::abs(denom) > 1e-9) ? (1.0 / denom) : std::nan("");
+    }
+    default:
+      return 0.0;
+  }
+}
+
+void GenerateTrajectoryData(const TestCase& t) {
+  namespace fs = std::filesystem;
+
+  fs::path dir_path = "output";
+  fs::create_directories(dir_path);
+
+  std::string prefix = "f" + std::to_string(t.func_number) + "_case" + std::to_string(t.case_index);
+  fs::path euler_path = dir_path / (prefix + "_euler.txt");
+  fs::path exact_path = dir_path / (prefix + "_exact.txt");
+
+  std::ofstream euler_file(euler_path);
+  std::ofstream exact_file(exact_path);
+
+  if (!euler_file.is_open() || !exact_file.is_open()) return;
+
+  std::size_t samples = 100;
+  std::size_t euler_iterations = 0;
+
+  auto eval_euler = [t, &euler_iterations](double x) {
+    EulerSolution solution = solveByEuler(t.func_number, t.epsilon, t.a, t.y_a, x);
+    euler_iterations = std::max(euler_iterations, solution.n_grid);
+    return solution.answer;
+  };
+  auto eval_exact = [t](double x) {
+    return getExactResult(t.func_number, t.a, t.y_a, x);
+  };
+
+  InterpolationResult euler_result = InterpolateLagrange(t.a, t.b, eval_euler, t.epsilon, samples, samples);
+  InterpolationResult exact_result = InterpolateLagrange(t.a, t.b, eval_exact, t.epsilon, samples, samples);
+  euler_file << euler_result.chebyshev_k << " " << t.a << " " << t.b << " " << t.epsilon << " " << t.y_a << " " << euler_iterations << '\n';
+  exact_file << exact_result.chebyshev_k << '\n';
+  for (std::tuple<double, double> point : euler_result.points) {
+    euler_file << std::get<0>(point) << " " << std::get<1>(point) << "\n";
+  }
+  for (std::tuple<double, double> point : exact_result.points) {
+    exact_file << std::get<0>(point) << " " << std::get<1>(point) << "\n";
+  }
+}
+
 int main() {
-  IntegrateFunctions obj = InitMain(1e-6);
+  std::cout << std::fixed << std::setprecision(6);
 
   std::vector<TestCase> tests = {
-      {1,  0.1,             2.0},
-      {1, -1.0,             1.0},
-      {2, -1.0,             1.0},
-      {2,  0.0,             1.0},
-      {3,  0.0,             3.0},
-      {4,  0.0,             5.0},
-      {5,  1.0, std::numbers::e},
-      {5, -1.0,             1.0},
+    {1, 1, 0.0, 0.0, 3.141592, 1e-4}, 
+    {1, 2, 0.0, 1.0, 6.283185, 1e-4}, 
+    {2, 1, 0.0, 1.0, 2.0, 1e-4}, 
+    {2, 2, 0.0, 0.2, 7.2, 1e-4}, 
+    {3, 1, 0.0, 2.0, 1.5, 1e-4}, 
+    {3, 2, 0.0, 1.0, 0.8, 1e-4}, 
+    {4, 1, 0.0, 0.0, 1.0, 1e-4}, 
+    {4, 2, 0.0, -1.0, 2.0, 1e-4}, 
+    {5, 1, 0.0, 0.5, 1.5, 1e-4}, 
+    {5, 2, 0.0, 0.8, 1.1, 1e-4},
   };
+
   for (const TestCase& t : tests) {
-    std::cout << "--- Solution for function #" << t.func_number << ":\n";
-    IntegrationResult res = obj.Integrate(t.func_number, t.a, t.b);
-    if (!res.has_result) {
-      std::cout << "[Error] " << res.message << '\n';
-      continue;
-    }
-    if (res.has_discontinuity) {
-      std::cout << "[Warning] The function has discontinuity. The interval was split down." << '\n';
-    }
-    std::cout << "Bounds: [" << t.a << ", " << t.b << "]\n";
-    std::cout << "Result: " << res.result << '\n';
-    std::cout << "Exact: " << res.exact_result << '\n';
-    std::cout << "Difference: " << std::abs(res.exact_result - res.result) << '\n';
-    std::cout << "Intervals: " << res.num_iterations << '\n';
+    GenerateTrajectoryData(t);
+    std::cout << "Trajectory data written to disk.\n";
   }
+
+  return 0;
 }
 \end{lstlisting}
