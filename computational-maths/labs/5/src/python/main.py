@@ -23,12 +23,13 @@ if __name__ == "__main__":
       ya = ""
       epsilon = ""
       iters = ""
+      case = ""
       euler_data = None
       if os.path.exists(euler_path):
         with open(euler_path, 'r') as f:
           first_line = f.readline().strip()
           if first_line:
-            euler_chebyshev, a, b, epsilon, ya, iters = first_line.split()
+            euler_chebyshev, a, b, epsilon, ya, iters, case = first_line.split()
           euler_data = np.loadtxt(f)
       exact_chebyshev = ""
       exact_data = None
@@ -46,7 +47,7 @@ if __name__ == "__main__":
         exact_data=exact_data,
         filename=output_name
       )
-      report.add_plot(cfg['report_dir'], str(func_id), output_name + ".pdf", a, b, ya, epsilon, euler_chebyshev, exact_chebyshev, iters)
+      report.add_plot(cfg['report_dir'], str(func_id), output_name + ".pdf", a, b, ya, epsilon, euler_chebyshev, exact_chebyshev, iters, case)
 
   print("All individual plots successfully exported.")
 

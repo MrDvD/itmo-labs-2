@@ -69,7 +69,7 @@ void GenerateTrajectoryData(const TestCase& t) {
 
   InterpolationResult euler_result = InterpolateLagrange(t.a, t.b, eval_euler, t.epsilon, samples, samples);
   InterpolationResult exact_result = InterpolateLagrange(t.a, t.b, eval_exact, t.epsilon, samples, samples);
-  euler_file << euler_result.chebyshev_k << " " << t.a << " " << t.b << " " << t.epsilon << " " << t.y_a << " " << euler_iterations << '\n';
+  euler_file << euler_result.chebyshev_k << " " << t.a << " " << t.b << " " << t.epsilon << " " << t.y_a << " " << euler_iterations << " " << t.case_index << '\n';
   exact_file << exact_result.chebyshev_k << '\n';
   for (std::tuple<double, double> point : euler_result.points) {
     euler_file << std::get<0>(point) << " " << std::get<1>(point) << "\n";

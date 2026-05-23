@@ -4,9 +4,10 @@
     \includegraphics{ {{ filename }} }
   \end{adjustbox}
   \caption{Графическое сравнение решений ОДУ №{{ odu_equation_num }}.}
+  \label{fig:odu_{{ odu_equation_num }}_{{ odu_case }}}
 \end{figure}
 
-Параметры графика выше:
+Параметры графика на рис.~\ref{fig:odu_{{ odu_equation_num }}_{{ odu_case }}}:
 \begin{itemize}
   \item начальное условие --- \( y( {{ odu_a }}) = {{ odu_ya }} \);
   \item интересуемая точка --- \( {{ odu_b }} \);
