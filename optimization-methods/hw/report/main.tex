@@ -1,0 +1,21 @@
+% !TEX program = xelatex
+\documentclass[12pt]{article}
+
+\input{sections/Preamble}
+
+\begin{document}
+
+\include{sections/Title}
+
+% --- Оглавление ---
+\pagenumbering{gobble}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{blocks/1/Main}
+\input{blocks/2/Main}
+\input{blocks/3/Main}
+
+\end{document}
