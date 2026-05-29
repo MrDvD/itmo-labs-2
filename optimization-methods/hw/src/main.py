@@ -46,7 +46,7 @@ if __name__ == "__main__":
   newton_opt.optimize(x_start=cfg['newton_x0'], y_start=cfg['newton_y0'])
 
   newton_plot = NewtonPlot(newton_f, plots_dir)
-  newton_plot.generate(newton_opt.raw_history)
+  newton_plot.generate(newton_opt.raw_history[:3])
 
   render_data: Dict[str, object] = {
     'hermite_eps': cfg['hermite_eps'],
