@@ -4,3 +4,8 @@ hermite_eps: 0.0001
 hermite_a: 0.0
 hermite_b: 2.0
 hermite_max_iters: 100
+
+newton_eps: 0.0001
+newton_max_iters: 100
+newton_x0: 3.5
+newton_y0: 5.5

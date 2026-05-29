@@ -3,7 +3,7 @@ import os
 from typing import Callable, List, Dict, Any, Union
 import matplotlib.pyplot as plt
 
-class PlotApprox:
+class HermitePlot:
   def __init__(self, f: Callable[[float], float], save_dir: str = ".") -> None:
     self.f: Callable[[float], float] = f
     self.save_dir: str = save_dir

@@ -1,0 +1,175 @@
+\subsection{Аналитическое решение}
+
+Рассмотрим целевую функцию двух переменных $z(x, y)$. Для нахождения точек экстремума вычислим её градиент:
+$$
+\nabla z(x, y) = \begin{pmatrix} 
+\frac{\partial z}{\partial x} \\[1ex] 
+\frac{\partial z}{\partial y} 
+\end{pmatrix}=\begin{pmatrix} 
+3x^2 - 18x + 24 \\
+3y^2 - 28y + 64
+\end{pmatrix}
+$$
+
+Приравняем его к нулевому вектору, чтобы найти стационарные точки:
+\[
+  \begin{cases}
+  \frac{\partial z}{\partial x} = 3x^2 - 18x + 24 = 0 \\[1.5ex]
+  \frac{\partial z}{\partial y} = 3y^2 - 28y + 64 = 0
+  \end{cases}
+\]
+
+Из полученной системы имеем четыре стационарные точки:
+\[
+M_1(2, 4), \quad M_2\left(2, \frac{16}{3}\right), \quad M_3(4, 4), \quad M_4\left(4, \frac{16}{3}\right)
+\]
+
+Вычислим вторые частные производные:
+\[
+\frac{\partial^2 z}{\partial x^2} = 6x - 18, \quad 
+\frac{\partial^2 z}{\partial y^2} = 6y - 28, \quad 
+\frac{\partial^2 z}{\partial x \partial y} = \frac{\partial^2 z}{\partial y \partial x} = 0
+\]
+
+Тогда матрица Гессе для проверки точек на экстремум принимает вид:
+$$
+H(x, y) = \begin{pmatrix}
+6x - 18 & 0 \\
+0 & 6y - 28
+\end{pmatrix}
+$$
+
+Для каждой из четырёх найденных стационарных точек проверим выполнение критерия Сильвестра:
+
+\begin{enumerate}
+    \item Для точки $M_1(2, 4)$:
+    \[
+    \Delta_1 = -6 < 0,\quad \Delta_2 = 24 > 0
+    \]
+
+    Матрица Гессе отрицательно определена $\implies M_1$ является точкой \textbf{строгого локального максимума}.
+
+    \item Для точки $M_2\left(2, \frac{16}{3}\right)$:
+    \[
+    \Delta_1 = -6 < 0,\quad \Delta_2 = -24 < 0
+    \]
+
+    Матрица Гессе знаконеопределена $\implies M_2$ является \textbf{седловой точкой}.
+
+    \item Для точки $M_3(4, 4)$:
+    \[
+    \Delta_1 = 6 > 0,\quad \Delta_2 = -24 < 0
+    \]
+
+    Матрица Гессе знаконеопределена $\implies M_3$ является \textbf{седловой точкой}.
+
+    \item Для точки $M_4\left(4, \frac{16}{3}\right)$:
+    \[
+    \Delta_1 = 6 > 0,\quad \Delta_2 = 24 > 0
+    \]
+
+    Матрица Гессе положительно определена $\implies M_4$ является точкой \textbf{строгого локального минимума}.
+\end{enumerate}
+
+То есть целевая функция обладает глобальным минимумом в точке \( M_4 \):
+\[
+  f(M_4)=f\left(4, \frac{16}{3}\right)\approx -5.18519
+\]
+
+\subsection{Применимость метода}
+
+Метод Ньютона относится к методам второго порядка и использует квадратичную аппроксимацию функции в окрестности текущей точки. Метод обладает квадратичной скоростью сходимости вблизи точки минимума при выполнении следующих условий:
+\begin{enumerate}
+  \item Функция $z(x, y)$ дважды непрерывно дифференцируема в рассматриваемой области.
+  \item Матрица Гессе $H$ непрерывна и положительно определена в окрестности оптимума: это гарантирует шаг в сторону убывания функции.
+\end{enumerate}
+
+\subsection{Первые итерации}
+
+{% for it in newton_iterations[:3] %}
+\subsubsection{Итерация №{{ it.i }}}
+
+Текущее приближение вектора переменных:
+$$
+\mathbf{x}^{({{ it.i - 1 }})} = \begin{pmatrix} {{ it.x }} \\ {{ it.y }} \end{pmatrix}
+$$
+
+Вычислим вектор градиента в текущей точке:
+$$
+\nabla z(\mathbf{x}^{({{ it.i - 1 }})}) = \begin{pmatrix} {{ it.grad_x }} \\ {{ it.grad_y }} \end{pmatrix}
+$$
+
+Определим евклидову норму градиента:
+$$
+\|\nabla z(\mathbf{x}^{({{ it.i - 1 }})})\|_2 = \sqrt{({{ it.grad_x }})^2 + ({{ it.grad_y }})^2} = {{ it.grad_norm }}
+$$
+
+Проверим условие останова:
+\[
+  \|\nabla z\|={{ it.grad_norm }}
+  {%- if it.grad_norm|float > hermite_eps|float -%}
+    > {{ hermite_eps }} \implies \text{условие не выполнено, продолжаем расчёт.}
+  {%- else -%}
+    \le {{ hermite_eps }} \implies \text{условие выполнено, достигается оптимум!}
+  {%- endif -%}
+\]
+
+Вычислим компоненты матрицы Гессе в текущей точке:
+$$
+H(\mathbf{x}^{({{ it.i - 1 }})}) = \begin{pmatrix} 
+{{ it.h11 }} & {{ it.h12 }} \\ 
+{{ it.h21 }} & {{ it.h22 }} 
+\end{pmatrix}
+$$
+
+Найдём приращение вектора переменных $\Delta \mathbf{x}^{({{ it.i }})}$, решая систему линейных уравнений $H \cdot \Delta \mathbf{x} = -\nabla z$:
+$$
+\begin{pmatrix} 
+{{ it.h11 }} & {{ it.h12 }} \\ 
+{{ it.h21 }} & {{ it.h22 }} 
+\end{pmatrix} 
+\begin{pmatrix} \Delta x \\ \Delta y \end{pmatrix} = 
+\begin{pmatrix} -{{ it.grad_x }} \\ -{{ it.grad_y }} \end{pmatrix} 
+\implies 
+\Delta \mathbf{x}^{({{ it.i }})} = \begin{pmatrix} {{ it.dx }} \\ {{ it.dy }} \end{pmatrix}
+$$
+
+Вычислим координаты новой точки:
+$$
+\mathbf{x}^{({{ it.i }})} = \mathbf{x}^{({{ it.i - 1 }})} + \Delta \mathbf{x}^{({{ it.i }})} = 
+\begin{pmatrix} {{ it.x }} \\ {{ it.y }} \end{pmatrix} + \begin{pmatrix} {{ it.dx }} \\ {{ it.dy }} \end{pmatrix} = 
+\begin{pmatrix} {{ it.next_x }} \\ {{ it.next_y }} \end{pmatrix}
+$$
+
+Значение целевой функции в новой точке составляет:
+$$z(\mathbf{x}^{({{ it.i }})}) = {{ it.z_val }}$$
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{plots/newton_iteration_{{ it.i }}.pdf}
+    \caption{Положение точки на линиях уровня для итерации №{{ it.i }}.}
+    \label{fig:newton_{{ it.i }}}
+\end{figure}
+{% endfor %}
+
+\subsection{История приближений}
+
+В таблице \ref{tab:newton_history} приведена сводная история последовательных приближений метода Ньютона по итерациям.
+
+\begin{table}[H]
+\centering
+\begin{tblr}{
+  colspec = {c c c c c c c},
+  rowhead = 1,
+  hline{1,Z} = {0.08em},
+  hline{2} = {0.04em},
+  row{1} = {font=\small\bfseries},
+}
+$i$ & $x^{(i-1)}$ & $y^{(i-1)}$ & $z(\mathbf{x}^{(i-1)})$ & $\|\nabla z\|$ & $\Delta x^{(i)}$ & $\Delta y^{(i)}$ \\
+{% for it in newton_iterations %}
+{{ it.i }} & {{ it.x }} & {{ it.y }} & {{ it.z_val }} & {{ it.grad_norm }} & {{ it.dx }} & {{ it.dy }} \\
+{% endfor %}
+\end{tblr}
+\caption{ Сводная история итераций метода Ньютона. }
+\label{tab:newton_history}
+\end{table}
