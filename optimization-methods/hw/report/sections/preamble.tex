@@ -26,3 +26,10 @@
 \usepackage{tikz}
 \usepackage{adjustbox}
 \usepackage{multirow}
+
+\DefTblrTemplate{firsthead}{default}{}
+\DefTblrTemplate{middlehead}{default}{}
+
+\DefTblrTemplate{lastfoot}{default}{
+  \makebox[\linewidth][c]{\parbox{\textwidth}{\UseTblrTemplate{caption}{default}}}
+}

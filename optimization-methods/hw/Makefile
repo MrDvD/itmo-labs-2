@@ -12,10 +12,10 @@ clean:
 	done
 	# clean project artifacts
 	rm -rf $$(grep "output_dir:" ${config_name} | cut -d '"' -f 2)
-# generate: clean
-# 	source ./venv/bin/activate; \
-# 	python src/main.py
-pdf:
+generate: clean
+	source ./venv/bin/activate; \
+	python src/main.py
+pdf: generate
 	cd "${report_dir}"; \
 	xelatex "${report_name}"; \
 	xelatex "${report_name}"
