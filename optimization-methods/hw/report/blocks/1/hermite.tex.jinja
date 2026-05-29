@@ -27,8 +27,10 @@
   \end{aligned}
 \]
 
-{% for it in iterations[:3] %}
-\subsection{Итерация №{{ it.i }}}
+\subsection{Первые итерации}
+
+{% for it in hermite_iterations[:3] %}
+\subsubsection{Итерация №{{ it.i }}}
 
 Построим каноническую форму кубического интерполяционного многочлена Эрмита на отрезке:
 \[
@@ -104,7 +106,7 @@ $$f'(x^{*({{ it.i }})}) = {{ it.df_x_opt }} {{ it.sign_df }} 0$$
   row{1} = {font=\small\bfseries},
 }
   $i$ & $x_0^{(i)}$ & $x_1^{(i)}$ & $h^{(i)}$ & $t^*$ & $x^{*(i)}$ & $f(x^{*(i)})$ & $f'(x^{*(i)})$ \\
-  {% for row in history %}
+  {% for row in hermite_history %}
   {{ row.i }} & {{ row.x0 }} & {{ row.x1 }} & {{ row.h }} & {{ row.t_opt }} & {{ row.x_opt }} & {{ row.f_x_opt }} & {{ row.df_x_opt }} \\
   {% endfor %}
 \end{longtblr}
