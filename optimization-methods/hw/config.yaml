@@ -1,25 +1,6 @@
 report_dir: './report'
 
-gd_learning_rate: 0.71
-gd_eps: 0.00002
-
-zig_learning_rate: 0.95
-zig_beta_1: 0.92
-zig_beta_2: 0.4
-zig_eps: 0.00001
-
-adam_learning_rate: 0.99
-adam_beta_1: 0.4
-adam_beta_2: 0.95
-adam_eps: 0.00001
-
-# torch_learning_rate: 0.95
-# torch_beta_1: 0.92
-# torch_beta_2: 0.4
-# torch_eps: 0.00001
-torch_learning_rate: 0.99
-torch_beta_1: 0.4
-torch_beta_2: 0.95
-torch_eps: 0.00001
-
-max_iter: 150
+hermite_eps: 0.0001
+hermite_a: 0.0
+hermite_b: 2.0
+hermite_max_iters: 100
