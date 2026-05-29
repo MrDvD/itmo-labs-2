@@ -1,0 +1,109 @@
+\subsection{Объектная модель}
+
+\subsubsection{Постановка задачи}
+
+Задача заключается в программной реализации и проектировании по принципам объектно-ориентированного программирования трёх методов многомерной оптимизации: покоординатного спуска, градиентного спуска и наискорейшего спуска, которые используются для минимизации квадратичной функции двух переменных:
+\[
+  f(x, y) = ax^2 + by^2 + cxy + dx + ey + f
+\]
+
+В ходе анализа предметной области были выделены следующие ключевые архитектурные сущности:
+\begin{itemize}
+    \item \texttt{Vector} --- математический примитив, который инкапсулирует операции векторной алгебры \textit{(сложение, вычитание, умножение на скаляр, скалярное произведение и вычисление нормы)}.
+    \item \texttt{QuadraticFunction} --- класс, который представляет целевую функцию. Отвечает за вычисление значения функции в точке, градиента, аналитического экстремума и оптимального шага при одномерном поиске.
+    \item \texttt{Optimizer} --- абстрактный базовый класс, который задаёт единый интерфейс и общие параметры остановки для всех алгоритмов оптимизации.
+    \item \texttt{CyclicCoordinateDescent, GradientDescent, SteepestDescent} --- конкретные реализации алгоритмов спуска, которые наследуют базовую логику оптимизатора.
+\end{itemize}
+
+\subsubsection{Диаграмма классов}
+Ниже представлена спроектированная иерархия и взаимосвязи между компонентами объектной модели.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm and 0.5cm, arrange/.style={column separation=0.5cm}]
+
+    \node (Vector) [class] {
+        \begin{tabular}{l}
+        \multicolumn{1}{c}{\textbf{Vector}} \\
+        \hline
+        + components: list \\
+        \hline
+        + norm(): float \\
+        + normalize(): Vector \\
+        + dot(other: Vector): float \\
+        + to\_latex(precision: int): string
+        \end{tabular}
+    };
+
+    \node (QuadraticFunction) [class, anchor=north, yshift=-1cm, xshift=-5cm] at (Vector.south) {
+        \begin{tabular}{l}
+        \multicolumn{1}{c}{\textbf{QuadraticFunction}} \\
+        \hline
+        + a, b, c, d, e, f: float \\
+        \hline
+        + evaluate(v: Vector): float \\
+        + gradient(v: Vector): Vector \\
+        + get\_extremum(): Vector \\
+        + minor(number: int): float \\
+        + minimize\_1d(origin: Vector, dir: Vector): float
+        \end{tabular}
+    };
+
+    \node (Optimizer) [class, anchor=north, yshift=-1cm, xshift=3cm] at (Vector.south) {
+        \begin{tabular}{l}
+        \multicolumn{1}{c}{\textbf{Optimizer}} \\
+        \hline
+        \# func: QuadraticFunction \\
+        \# epsilon: float \\
+        \# max\_iter: int \\
+        \hline
+        + optimize(x0: Vector): list
+        \end{tabular}
+    };
+
+    \node (Cyclic) [class, anchor=north east, yshift=-.5cm] at (QuadraticFunction.east |- QuadraticFunction.south) {
+        \begin{tabular}{l}
+        \multicolumn{1}{c}{\textbf{CyclicCoordinateDescent}} \\
+        \hline
+        \hline
+        + optimize(x0: Vector): list
+        \end{tabular}
+    };
+
+    \node (GD) [class, anchor=north east, yshift=-.5cm] at (QuadraticFunction.east |- Cyclic.south) {
+        \begin{tabular}{l}
+        \multicolumn{1}{c}{\textbf{GradientDescent}} \\
+        \hline
+        + eta: float \\
+        \hline
+        + optimize(x0: Vector): list
+        \end{tabular}
+    };
+
+    \node (Steepest) [class, anchor=north east, yshift=-.5cm] at (QuadraticFunction.east |- GD.south) {
+        \begin{tabular}{l}
+        \multicolumn{1}{c}{\textbf{SteepestDescent}} \\
+        \hline
+        \hline
+        + optimize(x0: Vector): list
+        \end{tabular}
+    };
+
+    \draw [-{Triangle[open, scale=1.3]}, thick] (GD.east) -| (Optimizer.-90);
+    \draw [-{Triangle[open, scale=1.3]}, thick] (Cyclic.east) -| (Optimizer.-120);
+    \draw [-{Triangle[open, scale=1.3]}, thick] (Steepest.east) -| (Optimizer.-60);
+
+    \draw [-{Diamond[open, scale=1.3]}, thick] (Optimizer.120) -- +(0,.5) -| (QuadraticFunction.50);
+    \draw [dashed, -{Stealth[scale=1.0]}, thick] (Optimizer.50) |- (Vector.east);
+    \draw [dashed, -{Stealth[scale=1.0]}, thick] (QuadraticFunction.120) |- (Vector.west);
+
+\end{tikzpicture}
+\caption{Диаграмма классов сформулированной объектной модели.}
+\end{figure}
+
+Описание объектных отношений:
+\begin{enumerate}
+    \item \textbf{Наследование:} классы \texttt{CyclicCoordinateDescent}, \texttt{GradientDescent} и \texttt{SteepestDescent} расширяют абстрактный класс \texttt{Optimizer}. Они переопределяют метод \texttt{optimize}, чтобы предоставить стратегию поиска минимума, но делят общее состояние базового класса.
+    \item \textbf{Агрегация:} абстрактный класс \texttt{Optimizer} содержит ссылку на \texttt{Quadratic\allowbreak Function}. Функция передается извне через конструктор, что позволяет оптимизаторам работать с любой конфигурацией квадратичной функции без привязки к её созданию внутри самого метода.
+    \item \textbf{Зависимость:} классы вычислительных алгоритмов и целевой функции зависят от класса \texttt{Vector}. Экземпляры \texttt{Vector} передаются в качестве аргументов методов, преобразуются в процессе вычислений и возвращаются как результат работы программы.
+\end{enumerate}

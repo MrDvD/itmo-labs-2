@@ -49,16 +49,23 @@ class NewtonPlot:
           
       plt.figure(figsize=(8, 6))
       
-      contours = plt.contour(X, Y, Z, levels=20, cmap="viridis", alpha=0.6)
+      current_levels = sorted(list(set([self.f(d['x'], d['y']) for d in history] + [self.f(x, y), self.f(next_x, next_y)])))
+      
+      if len(current_levels) > 1:
+        contour_colors = [str(g) for g in np.linspace(0.3, 0.6, len(current_levels))]
+      else:
+        contour_colors = ["0.4"]
+        
+      contours = plt.contour(X, Y, Z, levels=current_levels, colors=contour_colors, alpha=0.8)
       plt.clabel(contours, inline=True, fontsize=8, fmt="%.2f")
       
       for h_data in history:
         plt.quiver(h_data['x'], h_data['y'], h_data['next_x'] - h_data['x'], h_data['next_y'] - h_data['y'],
-                   angles='xy', scale_units='xy', scale=1, color='gray', width=0.004, headwidth=4, alpha=0.5)
-        plt.scatter([h_data['x']], [h_data['y']], color='gray', s=50, zorder=4, alpha=0.5)
+                   angles='xy', scale_units='xy', scale=1, color='lightgray', width=0.004, headwidth=4, alpha=0.5)
+        plt.scatter([h_data['x']], [h_data['y']], color='lightgray', s=50, zorder=4, alpha=0.5)
       
       plt.quiver(x, y, next_x - x, next_y - y, angles='xy', scale_units='xy', scale=1, 
-                 color='red', width=0.004, headwidth=4, label='$\Delta \mathbf{x}$')
+                 color='red', width=0.004, headwidth=4, label=f'$\Delta \mathbf{{x}}^{{({idx})}}$')
       
       plt.scatter([x], [y], color='black', s=50, zorder=5, label=f'$\mathbf{{x}}^{{({idx-1})}}$')
       plt.scatter([next_x], [next_y], color='green', marker='*', s=150, zorder=6, label=f'$\mathbf{{x}}^{{({idx})}}$')

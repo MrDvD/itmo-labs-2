@@ -23,7 +23,6 @@
 \usepackage{amsmath}
 \usepackage{tabularray}
 \usepackage{float}
-\usepackage{tikz}
 \usepackage{adjustbox}
 \usepackage{multirow}
 
@@ -32,4 +31,10 @@
 
 \DefTblrTemplate{lastfoot}{default}{
   \makebox[\linewidth][c]{\parbox{\textwidth}{\UseTblrTemplate{caption}{default}}}
+}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\tikzset{
+    class/.style={draw, rectangle, fill=gray!4, align=left, inner sep=6pt, font=\small}
 }
