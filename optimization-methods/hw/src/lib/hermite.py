@@ -76,7 +76,7 @@ class HermiteOptimizer:
     if isinstance(val, (int, float)):
       if abs(val - round(val)) < 1e-9:
         return str(int(round(val)))
-      return f"{val:.4f}"
+      return f"{val:.5f}"
     return str(val)
 
   def optimize(self, x0_start: Union[int, float], x1_start: Union[int, float]) -> float:
