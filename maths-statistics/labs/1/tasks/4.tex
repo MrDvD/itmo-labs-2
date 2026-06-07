@@ -1,0 +1,75 @@
+\subsection{Гистограмма выборки}
+
+Введём следующее разбиение для данной выборки:
+\[
+    \tau=\{ 2.55, 2.70, 2.85, 3.00, 3.15, 3.30, 3.45 \}
+\]
+
+Обозначим полуинтервалы следующим образом:
+\[
+    \Delta_i=[\tau_i,\tau_{i+1}),\quad i=\overline{0,5}
+\]
+
+Для данного разбиения \( \tau \) имеем:
+\[
+    l_i=\abs{\Delta_i}=\tau_{i+1}-\tau_i=0.15,\quad i=\overline{0,5}
+\]
+
+Определим число элементов выборки \( \nu_i \), которые попали в \( \Delta_i \) интервал:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c||c|c|c|}
+\hline
+$i$ & $\Delta_i$ & $\nu_i$ & $i$ & $\Delta_i$ & $\nu_i$ \\ \hline \hline
+0 & $[2.55; 2.70)$ & 2 & 3 & $[3.00; 3.15)$ & 7 \\ \hline
+1 & $[2.70; 2.85)$ & 0 & 4 & $[3.15; 3.30)$ & 3 \\ \hline
+2 & $[2.85; 3.00)$ & 3 & 5 & $[3.30; 3.45)$ & 5 \\ \hline
+\end{tabular}
+\caption{Частотное распределение по интервалам $\Delta_i$}
+\end{table}
+
+Найдём высоту столбца \( h_i \) по формуле:
+\[
+h_i = \frac{\nu_i}{n\cdot l_i}
+\]
+
+Для наглядности приведём промежуточные значения в таблице:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c||c|c|c|}
+\hline
+$i$ & $\nu_i$ & $h_i$ & $i$ & $\nu_i$ & $h_i$ \\ \hline \hline
+0 & 2 & 0.66667 & 3 & 7 & 2.33333 \\ \hline
+1 &  0 & 0.00000 & 4 & 3 & 1.00000 \\ \hline
+2 &  3 & 1.00000 & 5 & 5 & 1.66667 \\ \hline
+\end{tabular}
+\caption{Высоты столбцов гистограммы по интервалам \( \Delta_i \)}
+\end{table}
+
+Чтобы построить гистограмму, также воспользуемся библиотекой \textit{TiKZ} с~элементами автоматизации на \textit{Python}:
+
+\begin{lstlisting}[caption=Функция построения гистограммы]
+def generate_histogram():
+  result = tikz_header
+  for i in range(len(tau) - 1):
+    result += f"\\addplot[fill=white, ybar interval, pattern={pattern_type[i % 2]}, draw=black, pattern color=black] coordinates {{"
+    result += f"({tau[i]}, {heights[i]}) ({tau[i+1]}, {heights[i]})"
+    result += "};\n"
+  result += tikz_footer
+  return result
+\end{lstlisting}
+
+Итого имеем:
+
+\begin{figure}[h!]
+\centering
+\input{tikz/task4}
+\caption{Гистограмма выборки}
+\end{figure}
+
+Проверка достоверности полученного результата:
+\[
+    S_{\text{гист.}}=\sum_{i=0}^5 h_i\cdot l_i=\dfrac{3}{20}\cdot\left(\dfrac{2}{3}+0+1+\dfrac{7}{3}+1+\dfrac{5}{3}\right)=\dfrac{3}{20}\cdot\dfrac{20}{3}=1\quad\square
+\]

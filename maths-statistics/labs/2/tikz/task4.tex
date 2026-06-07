@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\textwidth, height=7cm,
+    axis lines=middle,
+    axis line style={-},
+    xlabel={$x$},
+    ylabel={$h$},
+    xlabel style={right},
+    ylabel style={above},
+    ymin=0, ymax=3,
+    xmin=2.5, xmax=3.5,
+    ytick={0,0.5,...,3.5},
+    xtick={2.55,2.70,2.85,3.00,3.15,3.30,3.45},
+    xticklabels={2.55,2.70,2.85,3.00,3.15,3.30,3.45},
+    grid=major,
+    grid style={dashed, gray!50},
+    ybar,
+]
+\addplot[fill=white, ybar interval, pattern=dots, draw=black, pattern color=black] coordinates {(2.55, 0.66667) (2.7, 0.66667)};
+\addplot[fill=white, ybar interval, pattern=north east lines, draw=black, pattern color=black] coordinates {(2.7, 0.0) (2.85, 0.0)};
+\addplot[fill=white, ybar interval, pattern=dots, draw=black, pattern color=black] coordinates {(2.85, 1.0) (3.0, 1.0)};
+\addplot[fill=white, ybar interval, pattern=north east lines, draw=black, pattern color=black] coordinates {(3.0, 2.33333) (3.15, 2.33333)};
+\addplot[fill=white, ybar interval, pattern=dots, draw=black, pattern color=black] coordinates {(3.15, 1.0) (3.3, 1.0)};
+\addplot[fill=white, ybar interval, pattern=north east lines, draw=black, pattern color=black] coordinates {(3.3, 1.66667) (3.45, 1.66667)};
+\end{axis}
+\end{tikzpicture}
