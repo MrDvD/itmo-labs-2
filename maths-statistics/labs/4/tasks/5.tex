@@ -1,0 +1,20 @@
+\subsection{Вычисление оценки СКО}
+
+Вычислим оценку среднеквадратического отклонения \( \hat{\sigma} \) при помощи скрипта на Python с применением библиотеки Numpy:
+
+\begin{lstlisting}[caption=Расчёт оценки СКО]
+def f(x):
+  return omega.T @ phi(x)
+
+n = X.shape[0]
+epsilon = Z - f(X)
+sigma_sq = np.sum(epsilon ** 2) / n
+rmse = np.sqrt(sigma_sq)
+
+print(rmse)
+\end{lstlisting}
+
+Итого имеем:
+\[
+    \hat{\sigma}\approx0.0803965
+\]
