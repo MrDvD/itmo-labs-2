@@ -81,21 +81,32 @@ class EllipticOptimizer(BaseOptimizer):
 
   def predict(self, params: np.ndarray, X: np.ndarray) -> np.ndarray:
     x0, y0, z0, a, b, c = params[:6]
+    tilde_a = a
+    tilde_b = np.sign(a) * (np.abs(b) + 1e-6) if a != 0 else b
+    tilde_c = np.sqrt(np.abs(tilde_a * tilde_b)) * np.tanh(c)
+    
     dx, dy = X[:, 0] - x0, X[:, 1] - y0
-    return a * dx**2 + b * dy**2 + c * dx * dy + z0
+    return tilde_a * dx**2 + tilde_b * dy**2 + tilde_c * dx * dy + z0
 
   def loss_function(self, params: np.ndarray) -> float:
     return float(np.mean((self.predict(params, self.X_data) - self.targets)**2))
 
   def optimize(self, params_start: np.ndarray) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
-    return minimize(
+    res = minimize(
       self.loss_function,
       params_start,
       method='L-BFGS-B',
       bounds=self.bounds,
       callback=self._callback
-    ).x
+    )
+
+    x0, y0, z0, a, b, c = res.x
+    tilde_a = a
+    tilde_b = np.sign(a) * (np.abs(b) + 1e-6) if a != 0 else b
+    tilde_c = np.sqrt(np.abs(tilde_a * tilde_b)) * np.tanh(c)
+    
+    return [x0, y0, z0, tilde_a, tilde_b, tilde_c]
 
 class ConstantOptimizer(BaseOptimizer):
   def __init__(self, targets: np.ndarray, metric: str = 'MSE') -> None:
