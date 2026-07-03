@@ -1,0 +1,73 @@
+\subsection{Эмпирическая функция распределения}
+
+\subsubsection{Вариационный ряд}
+
+Если упорядочить выборку по неубыванию, получим \textit{вариационный ряд}:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c||c|c||c|c||c|c|}
+\hline
+$i$ & $x_{(i)}$ & $i$ & $x_{(i)}$ & $i$ & $x_{(i)}$ & $i$ & $x_{(i)}$ \\ \hline \hline
+1 & 2.55 & 6 & 3.01 & 11 & 3.12 & 16 & 3.30 \\ \hline
+2 & 2.66 & 7 & 3.03 & 12 & 3.14 & 17 & 3.32 \\ \hline
+3 & 2.89 & 8 & 3.05 & 13 & 3.21 & 18 & 3.34 \\ \hline
+4 & 2.89 & 9 & 3.07 & 14 & 3.24 & 19 & 3.38 \\ \hline
+5 & 2.95 & 10 & 3.09 & 15 & 3.25 & 20 & 3.42 \\ \hline
+\end{tabular}
+\caption{Вариационный ряд}
+\end{table}
+
+\subsubsection{График функции}
+
+По определению эмпирической функции распределения:
+\[
+    \hat{F}(x)=\dfrac{1}{n}\sum_{i=1}^n\mathbf{1}_{\{X_i<x\}},
+\]
+
+где \( \mathbf{1}_{\{X_i<x\}} \) --- индикаторная функция события \( \{X_i< x\} \), \( x\in\mathbb{R} \).
+
+Для построения графика функции воспользуемся библиотекой \textit{TiKZ}. Чтобы автоматизировать процесс и избежать риска ошибки, напишем скрипт:
+\begin{lstlisting}[caption=Функция построения графика]
+def generate_plot(variation_series):
+  # draw first line
+  result = tikz_header
+  result += r"\addplot[ultra thick, black, no marks, const plot] coordinates {"
+  result += f"(2.5, 0) "
+  result += f"({variation_series[0]}, 0)"
+  result += "};\n"
+  result += r"\addplot[only marks, mark=*, mark options={fill=black}, mark size=2pt] coordinates {"
+  result += f"({variation_series[0]}, 0)"
+  result += "};\n"
+  # draw last line
+  result += r"\addplot[ultra thick, black, no marks, const plot] coordinates {"
+  result += f"({variation_series[n-1]}, 1) "
+  result += f"(3.5, 1)"
+  result += "};\n"
+  result += r"\addplot[only marks, mark=*, mark options={fill=white, draw=black}, mark size=2pt] coordinates {"
+  result += f"({variation_series[n-1]}, 1)"
+  result += "};\n"
+  for i in range(n - 1):
+    # draw segment
+    result += r"\addplot[ultra thick, black, no marks, const plot] coordinates {"
+    result += f"({variation_series[i]}, {f_hat(variation_series[i+1])}) "
+    result += f"({variation_series[i+1]}, {f_hat(variation_series[i+1])})"
+    result += "};\n"
+    # draw white circle
+    result += r"\addplot[only marks, mark=*, mark options={fill=white, draw=black}, mark size=2pt] coordinates {"
+    result += f"({variation_series[i]}, {f_hat(variation_series[i+1])})"
+    result += "};\n"
+    # draw black circle
+    result += r"\addplot[only marks, mark=*, mark options={fill=black}, mark size=2pt] coordinates {"
+    result += f"({variation_series[i+1]}, {f_hat(variation_series[i+1])})"
+    result += "};\n"
+  return result + tikz_footer
+\end{lstlisting}
+
+Итого имеем:
+
+\begin{figure}[h!]
+\centering
+\input{tikz/task2}
+\caption{Эмпирическая функция распределения $\hat{F}(x)$}
+\end{figure}
