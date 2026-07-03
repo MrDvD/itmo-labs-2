@@ -1,0 +1,131 @@
+\usetikzlibrary{calc, positioning, arrows.meta, shapes.misc, shapes.geometric, fit, backgrounds}
+
+\tikzset{
+  % Base layout style - Adjusted for vertical flow
+  processor arch/.style = {
+    node distance = 10mm and 15mm,
+    every join/.style = {thick, -Stealth}
+  },
+  % 1. Simple Register (Single register, as requested)
+  register/.style = {
+    draw, thick,
+    rectangle,
+    minimum width = 1.5cm,
+    minimum height = 1.5cm,
+    inner sep = 4pt,
+    align = center,
+    fill = gray!8,
+  },
+  % 3. Memory Block
+  memory/.style = {
+    draw, thick,
+    rectangle,
+    fill = gray!8,
+    minimum width = 3cm,
+    minimum height = 2cm,
+    inner sep = 5pt,
+    align = center,
+  },
+  % 4. ALU (Top-to-Bottom: Inputs on top, output on bottom, notch on top edge)
+  alu/.style = {
+    shape = trapezium,
+    trapezium angle = 123.69, 
+    draw = none, 
+    minimum width = 4cm,
+    minimum height = 1.5cm,
+    align = center,
+    inner sep = 5pt,
+    append after command={
+      \pgfextra{
+        \draw[thick, fill=gray!8]
+          (\tikzlastnode.top left corner) -- 
+          ($(\tikzlastnode.top left corner)!0.45!(\tikzlastnode.top right corner)$) -- 
+          ($(\tikzlastnode.top side)!0.2!(\tikzlastnode.bottom side)$) -- % Notch depth
+          ($(\tikzlastnode.top left corner)!0.55!(\tikzlastnode.top right corner)$) -- 
+          (\tikzlastnode.top right corner) -- 
+          (\tikzlastnode.bottom right corner) -- 
+          (\tikzlastnode.bottom left corner) -- 
+          cycle;
+      }
+    }
+  },
+  % 5. Multiplexer (Top-to-Bottom: Wide top, narrow bottom)
+  mux/.style = {
+    draw = none,
+    minimum width = 2.5cm,
+    minimum height = 1.2cm,
+    align = center,
+    inner sep = 3pt,
+    path picture = {
+      \draw[thick]
+        (path picture bounding box.north west) --
+        (path picture bounding box.north east) --
+        ($(path picture bounding box.south east)!0.15!(path picture bounding box.south west)$) --
+        ($(path picture bounding box.south west)!0.15!(path picture bounding box.south east)$) --
+        cycle;
+    }
+  },
+  % 6. Adder
+  adder/.style = {
+    draw, thick,
+    circle,
+    minimum size = 1.2cm,
+    align = center,
+    path picture = {
+      \draw[thick] 
+        ([xshift=-3mm]path picture bounding box.center) -- 
+        ([xshift=3mm]path picture bounding box.center)
+        ([yshift=-3mm]path picture bounding box.center) -- 
+        ([yshift=3mm]path picture bounding box.center);
+    }
+  },
+  % 7. Connection Bus (Thick line)
+  data bus/.style = {
+    thick,
+    -{Stealth[inset=0pt, scale=0.8]}
+  },
+  % 8. Control Bus (Dashed line)
+  control bus/.style = {
+    thick,
+    dashed,
+    -Stealth
+  },
+  % 9. Bus Width Marker
+  bus width/.style = {
+    minimum size = 10pt,
+    inner sep = 0pt,
+    label = {[font=\scriptsize, inner sep=1pt]right:#1},
+    path picture = {
+      \draw[thick] 
+        ([xshift=-3.5pt, yshift=-2.5pt]path picture bounding box.center) -- 
+        ([xshift=3.5pt, yshift=2.5pt]path picture bounding box.center);
+    }
+  },
+  dot/.style = {
+    fill, 
+    circle, 
+    inner sep=0pt, 
+    minimum size=3pt
+  }
+}
+
+\NewDocumentEnvironment{registergroup}{O{} m m +b}{
+  \begin{scope}[local bounding box=group_box]
+    #4 
+  \end{scope}
+
+  \begin{scope}[on background layer]
+    \node[
+      draw, 
+      rectangle, 
+      thick,
+      dashed,
+      fill = gray!3,
+      inner xsep=10pt,
+      inner ysep=10pt,
+      fit={(group_box) ($(group_box.north)+(0,15pt)$)}, 
+      label={[anchor=north, yshift=-2pt]north:#3},
+      #1
+    ] (#2) {};
+  \end{scope}
+}{}
