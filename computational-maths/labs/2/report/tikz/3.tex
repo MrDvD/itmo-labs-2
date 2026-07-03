@@ -1,0 +1,35 @@
+
+\begin{tikzpicture}
+\begin{axis}[
+    width=10cm, height=10cm,
+    axis lines=middle,
+    axis line style={thick, black, dashed},
+    xlabel=$x$,
+    ylabel=$y$,
+    xlabel style={right},
+    ylabel style={above},
+    grid=major,
+    grid style={dashed, gray!30},
+    axis background/.style={fill=white},
+    tick label style={font=\small},
+    label style={font=\small}
+]
+%% Continuous Function Data
+\addplot[no marks, dashed, thick] coordinates {(-2, -1) (0, -1)};
+\addplot[no marks, dashed, thick] coordinates {(0, 1) (2, 1)};
+
+\addplot[only marks, mark=*, mark size=2pt, draw=black, fill=white] coordinates {(0, -1) (0, 1)};
+\addplot[
+    only marks, 
+    mark=*, 
+    mark size=3pt,
+    pattern=north east lines, 
+    pattern color=black
+] coordinates {(0, 0)};
+%% Interpolation Points
+\addplot[only marks, mark=*, mark size=1.5pt] coordinates {
+(-1.88, -1.04722) (-1.76, -1.23696) (-1.64, -1.32626) (-1.56, -1.33775) (-1.36, -1.22987) (-1.28, -1.14267) (-1.24, -1.09152) (-1, -0.706154) (-0.92, -0.557317) (-0.72, -0.167469) (-0.64, -0.0108896) (-0.6, 0.0664293) (-0.48, 0.291585) (-0.44, 0.363631) (-0.4, 0.134873) (-0.36, 0.238651) (-0.32, 0.101789) (-0.2, -1.28052) (-0.16, -1.26955) (0.12, 1.11157) (0.2, 1.16945) (0.44, 1.26416) (0.48, 1.26885) (0.56, 1.26937) (0.6, 1.26541) (0.8, 1.20869) (0.88, 1.1718) (1, 1.10615) (1.16, 1.00941) (1.2, 0.985382) (1.48, 0.854275) (1.52, 0.845117) (1.72, 0.861146) (1.76, 0.879809) (1.88, 0.975218) 
+};
+
+\end{axis}
+\end{tikzpicture}

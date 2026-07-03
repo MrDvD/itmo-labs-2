@@ -1,0 +1,17 @@
+*.log
+*.aux
+*.toc
+*.out
+*.bin
+*.bcf
+*.bbl
+*.blg
+*.csv
+*.run.xml
+*.compiled.*
+*.txt
+__pycache__/
+.vscode/
+temp/
+venv
+output/

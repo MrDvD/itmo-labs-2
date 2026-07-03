@@ -1,0 +1,75 @@
+\usepackage{fontspec}
+\usepackage[english, russian]{babel}
+\usepackage{graphicx}
+\usepackage[a4paper,
+            left=3cm,
+            right=3cm,
+            top=2cm,
+            bottom=3cm]{geometry}
+\usepackage{amsmath, amsfonts}
+\usepackage{tabularray}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+  \usetikzlibrary{positioning, shapes.geometric, calc, arrows.meta, chains, shapes.symbols, shapes.misc, patterns}
+
+\setmainfont{CMU Serif}
+\setsansfont{CMU Sans Serif}
+\setmonofont{CMU Typewriter Text}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,        % цветные ссылки (false - черные рамки)
+    linkcolor=black,        % цвет ссылок на разделы
+    urlcolor=blue,          % цвет URL-ссылок
+    citecolor=blue,        % цвет ссылок на литературу
+    pdfborder={0 0 0}       % убрать рамки вокруг ссылок
+}
+\addto\extrasrussian{%
+  \def\figureautorefname{рис.}%
+  \def\tableautorefname{табл.}%
+  \def\sectionautorefname{разд.}%
+  \def\equationautorefname{ур-ние}%
+}
+
+\usepackage{float}
+\newfloat{scheme}{htbp}{los}
+\floatname{scheme}{Схема}
+
+\usepackage[justification=centering]{caption}
+\DeclareCaptionLabelSeparator{emdash}{\space\textemdash\space}
+\captionsetup{labelsep=emdash}
+
+\usepackage{listings}
+% Настройки для листингов кода
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    tabsize=4,
+    breaklines=true,
+    showstringspaces=false,
+    captionpos=b
+}
+
+\input{sections/Block}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\addto\captionsrussian{\renewcommand{\refname}{}}
+
+\usepackage[
+    backend=biber,
+    style=gost-numeric,
+    sorting=none
+]{biblatex}
+\addbibresource{refs.bib}
+
+\usepackage{adjustbox}

@@ -1,0 +1,130 @@
+\subsection{Блок-схема численного метода}
+
+На вход реализуемого метода подаются следующие данные:
+
+\begin{itemize}
+  \item \( f \) --- номер интерполируемой функции; является целым числом.
+  \item \( a \) --- левая граница интерполируемого интервала; является вещественным числом двойной точности.
+  \item \( b \) --- правая граница интерполируемого интервала; является вещественным числом двойной точности.
+  \item \( x \) --- значение аргумента для интерполяционного многочлена; является вещественным числом двойной точности.
+\end{itemize}
+
+На выходе метода ожидается значение интерполяционного многочлена в точке \( x \), которое является вещественным числом двойной точности.
+
+Далее приводятся блок-схемы, реализующие численный метод.
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [terminator] (start) {Start\\ interpolateLagrange};
+      \node [data, on chain, right=of start] (input) {Input: $f$, $a$, $b$, $x$};
+      \node [predefined process, on chain, join] {$func:=\text{getFunction}(f)$};
+      \node [preparation, on chain, join] (prep) {$n := 4$\\ Create array $roots(n)$};
+      \node [predefined process, on chain, join] {$\text{fillChebyshevRoots}(a, b, n, roots)$};
+      \node [predefined process, on chain, join] {$L_n(t):=\text{generateLagrange}(func, n, roots)$};
+      \node [process, on chain, join] {$F_x:=L_n(x)$};
+      \node [process, on chain, join] (begin_cycle) {$n:=n+1$\\ $F_{\text{old}}:=F_x$\\ Expand array $roots(n)$};
+      \node [connector, on chain, join] {1};
+    \end{scope}
+
+    \begin{scope}[start chain=flow going below]
+      \node [decision, on chain, right= of begin_cycle] (check) {$\abs{L_x-L_{\text{old}}}<0.01$ \\ or $n > 100$?};
+      \node [connector, above= of check] (a2) {2};
+      \node [data, on chain] (output) {Output: $F_x$};
+      \node [terminator, on chain, join] (end) {End\\ interpolateLagrange};
+    \end{scope}
+
+    \draw [thick, -Stealth] (check.180) -- node[above] {No} (begin_cycle.east);
+    \draw [thick, -Stealth] (check) -- node[right] {Yes} (output);
+    \draw [thick, -Stealth] (start) -- (input);
+    \draw [thick, -Stealth] (a2) -- (check);
+  \end{tikzpicture}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [connector, on chain] {1};
+      \node [predefined process, on chain, join] {$\text{fillChebyshevRoots}(a, b, n, roots)$};
+      \node [predefined process, on chain, join] {$L_n(t):=\text{generateLagrange}(func, n, roots)$};
+      \node [process, on chain, join] {$F_x:=L_n(x)$};
+      \node [connector, on chain, join] {2};
+    \end{scope}
+  \end{tikzpicture}
+  \captionof{scheme}{Вычисление значения интерполирующей функции \( F(x) \) заданной точности.}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [terminator] (start) {Start\\ generateLagrange};
+      \node [data, on chain, right=of start] (input) {Input: $func$, $n$, $grid$};
+      \node [process, on chain, join] {Start $L_n\colon\mathbb{R}\to\mathbb{R}$ };
+      \node [data, on chain, join] {Input: $x$};
+      \node [preparation, on chain, join] {$result := 0$\\ $i:=0$};
+      \node [decision, on chain, join] (for-start-1) {$i<n?$};
+      \node [connector, right= of for-start-1] (a1) {$1$};
+      \node [preparation, on chain] (init-current) {$f_i:=func(grid_i)$\\ $j:= 0$};
+      \node [decision, on chain, join] (for-start-2) {$j<n?$};
+      \node [connector, right= of for-start-2] (a3) {$2$};
+      \node [decision, on chain] (if-neq) {$i\neq j?$};
+      \node [process, right= of if-neq] (multiply) {$f_i:=f_i\cdot\dfrac{x-grid_j}{grid_i-grid_j}$};
+      \node [process, on chain] (inc-j) {$j:=j+1$};
+      \node [process, left= of for-start-1] (inc-i) {$result:=result+f_i$\\ $i:=i+1$};
+      \node [connector, above= of inc-i] (a4) {$2$};
+    \end{scope}
+
+    \draw [thick, -Stealth] (for-start-1) -- node[right] {Yes} (init-current);
+    \draw [thick, -Stealth] (for-start-2) -- node[right] {Yes} (if-neq);
+    \draw [thick, -Stealth] (if-neq) -- node[above] {Yes} (multiply);
+    \draw [thick, -Stealth] (if-neq) -- node[right] {No} (inc-j);
+    \draw [thick, -Stealth] (for-start-1) -- node[above] {No} (a1);
+    \draw [thick, -Stealth] (for-start-2) -- node[above] {No} (a3);
+
+    \draw [thick, -Stealth] (multiply.south) |- (inc-j.east);
+    \draw [thick, -Stealth] (inc-j.west) -- ++(-1,0) |- (for-start-2.west);
+    \draw [thick, -Stealth] (inc-i.east) -- (for-start-1.west);
+
+    \node [annotation, right = of input] (input-note) {$n$ matches the~size of $grid$};
+    \draw [dashed, thick] (input) -- (input-note.west);
+    \draw [thick, -Stealth] (start) -- (input);
+    \draw [thick, -Stealth] (a4) -- (inc-i);
+  \end{tikzpicture}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going right]
+      \node [data, on chain] (output-lambda) {Output: $result$};
+      \node [connector, left= of output-lambda] (a2) {$1$};
+      \node [process, on chain, join] {End $L_n\colon\mathbb{R}\to\mathbb{R}$ };
+      \node [data, on chain, join] (output) {Output: $L_n(t)$};
+      \node [terminator, on chain, below=of output] (end) {End\\ generateLagrange};
+    \end{scope}
+
+    \draw [thick, -Stealth] (output) -- (end);
+    \draw [thick, -Stealth] (a2) -- (output-lambda);
+  \end{tikzpicture}
+  \captionof{scheme}{Построение интерполяционного многочлена в форме Лагранжа \( L_n(t) \).}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart, start chain=flow going below]
+    \node [terminator] (start) {Start\\ fillChebyshevRoots};
+    \node [data, on chain, right=of start] (input) {Input: $a$, $b$, $n$, $roots$};
+    \node [preparation, on chain, join] (prep) {$k := 1$};
+    \node [decision, on chain, join] (for-start) {$k\leq n?$};
+    \node [process, on chain] (set-root) {$roots_{k-1}:=\dfrac{a+b}{2}+\dfrac{b-a}{2}\cos\left(\dfrac{2k-1}{2n}\pi\right)$};
+    \node [process, on chain, join] (inc-k) {$k:=k+1$};
+    \node [terminator, right= of for-start] (end) {End\\ fillChebyshevRoots};
+
+    \draw [thick, -Stealth] (inc-k.west) -- ++(-3,0) |- (for-start.west);
+    \draw [thick, -Stealth] (for-start) -- node[right] {Yes} (set-root);
+    \draw [thick, -Stealth] (for-start) -- node[above] {No} (end);
+
+    \node [annotation, right = of input] (input-note) {$n$ matches the~size of $roots$};
+    \draw [dashed, thick] (input) -- (input-note.west);
+    \draw [thick, -Stealth] (start) -- (input);
+  \end{tikzpicture}
+  \captionof{scheme}{Поиск корней многочлена Чебышёва первого рода \( T_n(t) \).}
+\end{center}
