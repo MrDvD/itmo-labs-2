@@ -1,0 +1,96 @@
+\subsection{Stone Pile за $\mathcal{O}(N^2\cdot W)$}
+
+\subsubsection{Описание решения}
+
+Воспользуемся динамическим программированием для решения задачи, а именно приравняем её к задаче о рюкзаке. Введём следующие обозначения:
+\begin{itemize}
+  \item \( f(w,i) \) --- минимальное число камней среди первых \( i \) камней в массиве, у которых масса в сумме хотя бы \( w \).
+  \item \( W \) --- максимально возможная масса камня.
+  \item \( W_{\text{all}} \) --- сумма масс камней данного массива, \( W_{\text{all}}\leq N\cdot W \).
+\end{itemize}
+
+Для базы рекуррентной формулы положим:
+\[
+  f(w,0)=
+  \begin{cases} 
+    0, & \text{если } w = 0 \\
+    N + 1, & \text{если } w > 0
+  \end{cases}
+\]
+
+Тогда шаг рекурренты выглядит следующим образом:
+\[
+  f(w, i) = 
+\begin{cases}
+\min\bigl(f(w, i-1),\; f(w-w_i, i-1) + 1\bigr), & \text{если } w \geq w_i \\[4pt]
+f(w, i-1), & \text{если } w < w_i
+\end{cases}
+\]
+
+После вычисления значений функции, ответ будет во множестве:
+\[
+  X=\left\{f(w,N)\mid \forall w=\overline{0,W_{\text{all}}},\ f(w,N)\neq N+1\right\}
+\]
+
+Ответ рассчитывается по формуле:
+\[
+  x=\min\left\{\abs{2w-W_{\text{all}}}\mid f(w,N)\in X\right\}
+\]
+
+Напоследок можно заметить, что рекуррентное выражение использует для подсчёта лишь предыдущий слой относительно индекса \( i \). С этим наблюдением можно оптимизировать использование памяти и хранить вместо двумерного массива только два слоя: текущий и предыдущий.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- \( \mathcal{O}(N^2\cdot W) \). Для расчёта ответа высчитывается \( N\cdot W_{\text{all}}\leq N^2\cdot W \) значений рекуррентного выражения. Ответ определяется на последнем шаге за линейное время.
+
+\textit{Пространственная сложность решения} --- \( \mathcal{O}(N+W) \). Для вычисления значений рекуррентного выражения используется два массива длины \( W_{\text{all}}\leq W \), исходные данные хранятся в массиве длины \( N \).
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <iostream>
+#include <vector>
+
+int main() {
+  int N;
+  std::cin >> N;
+  std::vector<int> arr;
+  long total_sum = 0;
+  for (int i = 0; i < N; i++) {
+    int item;
+    std::cin >> item;
+    arr.push_back(item);
+    total_sum += item;
+  }
+  std::vector<int> min_coins[2];
+  int INF = N + 1;
+  for (int j = 0; j < 2; j++) {
+    std::vector<int> step;
+    for (int i = 0; i <= total_sum; i++) {
+      step.push_back(INF);
+    }
+    step[0] = 0;  // dp base
+    min_coins[j] = step;
+  }
+  short curr_step_idx = 0, prev_step_idx = 1;
+  for (int i = 1; i <= N; i++) {
+    curr_step_idx ^= 1;
+    prev_step_idx ^= 1;
+    for (long cost = 0; cost <= total_sum; cost++) {
+      int prev = min_coins[prev_step_idx][cost];
+      long prev_cost = cost - arr[i - 1];
+      int curr = prev_cost >= 0 ? min_coins[prev_step_idx][cost - arr[i - 1]] + 1 : INF;
+      min_coins[curr_step_idx][cost] = prev <= curr ? prev : curr;
+    }
+  }
+  long diff = total_sum;
+  for (long cost = 0; cost < total_sum; cost++) {
+    long curr_diff = abs(2 * cost - total_sum);
+    if (min_coins[curr_step_idx][cost] != INF && curr_diff < diff) {
+      diff = curr_diff;
+    }
+  }
+  std::cout << diff;
+  return 0;
+}
+\end{lstlisting}

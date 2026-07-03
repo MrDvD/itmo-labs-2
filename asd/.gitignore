@@ -1,0 +1,6 @@
+*.bin
+*.log
+*.aux
+*.out
+*.toc
+.vscode/

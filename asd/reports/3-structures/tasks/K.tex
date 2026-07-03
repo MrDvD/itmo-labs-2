@@ -1,0 +1,137 @@
+\subsection{Менеджер памяти-1}
+
+\subsubsection{Описание решения}
+
+В задаче необходимо реализовать прототип аллокатора. Воспользуемся красно-чёрными деревьями для хранения свободных блоков памяти в отсортированном виде. Каждый блок памяти представим в виде пары значений: начального адреса в памяти и его размера.
+
+Пусть блоки памяти будут упорядочены во множестве по размеру, а в ассоциативном массиве --- по начальному адресу. В момент запуска программы вся выделенная память доступна для аллокаций.
+
+Если поступил запрос на аллокацию блока размера \( K \), ищем во множестве минимальный по размеру свободный блок, который вмещает в себя \( K \) ячеек. Если такой не найден, то выводим ошибку аллокации. Иначе обновляем размер и начальный адрес выбранного свободного блока и вставляем обратно \textit{(если осталось свободное место)}. Аллоцированный блок данных сохраняем в хеш-таблицу по связке с номером запроса.
+
+Если поступил запрос на деаллокацию блока, аллоцированного в \( i \)-м запросе, достаём его из хеш-таблицы и удаляем запись. Возвращаем его в ассоциативный массив и смотрим на соседние блоки. Если они примыкают вплотную, то производим \textit{дефрагментацию}, то есть сливаем их в единый блок. Попутно синхронизируем записи во множестве свободных блоков.
+
+Симуляция аллокатора завершена.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- линейно-логарифмическая \( \mathcal{O}(M\cdot\log M) \). В случае аллокации поиск наименьшего свободного блока памяти во множестве занимает логарифмическое время. Удаление и вставка вершин в красно-чёрные деревья тоже имеют логарифмическую сложность.
+
+В случае деаллокации поиск выделенного блока по номеру запроса в среднем выполняется за константное время. Другие используемые операции над красно-чёрными деревьями выполняются последовательно и за логарифмическое время.
+
+\textit{Пространственная сложность решения} --- линейная \( \mathcal{O}(M) \). В памяти хранятся данные о выделенных блоках в нескольких структурах для оптимизации времени доступа. Этих записей не может быть больше запросов на аллокацию блоков в каждой из структур. Промежуточные данные хранятся в константном количестве памяти.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <set>
+#include <unordered_map>
+
+namespace {
+struct Block {
+  std::size_t start;
+  std::size_t size;
+
+  bool operator<(const Block& other) const {
+    if (size != other.size) {
+      return size < other.size;
+    }
+    return start < other.start;
+  }
+};
+
+void Allocate(
+    std::set<Block>& free_heap,
+    std::map<std::size_t, std::size_t>& free_blocks,
+    std::unordered_map<std::size_t, Block>& query_map,
+    const std::size_t alloc_size,
+    const std::size_t query_id
+) {
+  auto iter = free_heap.lower_bound({0, alloc_size});
+  if (iter != free_heap.end()) {
+    const Block block = *iter;
+    free_heap.erase(iter);
+    free_blocks.erase(block.start);
+
+    const std::size_t remaining_size = block.size - alloc_size;
+    if (remaining_size > 0) {
+      const std::size_t new_start = block.start + alloc_size;
+      free_heap.insert({new_start, remaining_size});
+      free_blocks[new_start] = remaining_size;
+    }
+    query_map[query_id] = {block.start, alloc_size};
+    std::cout << block.start + 1 << "\n";
+  } else {
+    std::cout << 1 << "\n";
+  }
+}
+
+void Deallocate(
+    std::set<Block>& free_heap,
+    std::map<std::size_t, std::size_t>& free_blocks,
+    std::unordered_map<std::size_t, Block>& query_map,
+    const std::size_t query_id
+) {
+  auto dict_it = query_map.find(query_id);
+  if (dict_it != query_map.end()) {
+    const Block allocated_block = dict_it->second;
+    query_map.erase(dict_it);
+
+    auto insert_res = free_blocks.insert({allocated_block.start, allocated_block.size});
+    auto curr_it = insert_res.first;
+
+    auto next_it = std::next(curr_it);
+    if (next_it != free_blocks.end() &&
+        allocated_block.start + allocated_block.size == next_it->first) {
+      free_heap.erase({next_it->first, next_it->second});
+
+      curr_it->second += next_it->second;
+      free_blocks.erase(next_it);
+    }
+
+    if (curr_it != free_blocks.begin()) {
+      auto prev_it = std::prev(curr_it);
+      if (prev_it->first + prev_it->second == curr_it->first) {
+        free_heap.erase({prev_it->first, prev_it->second});
+
+        prev_it->second += curr_it->second;
+        free_blocks.erase(curr_it);
+
+        curr_it = prev_it;
+      }
+    }
+    free_heap.insert({curr_it->first, curr_it->second});
+  }
+}
+}  // namespace
+
+int main() {
+  std::size_t n_count = 0;
+  std::size_t m_count = 0;
+  std::cin >> n_count >> m_count;
+
+  std::set<Block> free_heap;
+  std::map<std::size_t, std::size_t> free_blocks;
+  std::unordered_map<std::size_t, Block> query_map;
+  free_heap.insert({0, n_count});
+  free_blocks[0] = n_count;
+
+  for (std::size_t i = 0; i < m_count; i++) {
+    int32_t item = 0;
+    std::cin >> item;
+    if (item > 0) {
+      const auto alloc_size = static_cast<std::size_t>(item);
+      Allocate(free_heap, free_blocks, query_map, alloc_size, i + 1);
+      continue;
+    }
+    const std::size_t query_id = std::abs(item);
+    Deallocate(free_heap, free_blocks, query_map, query_id);
+  }
+  return 0;
+}
+\end{lstlisting}

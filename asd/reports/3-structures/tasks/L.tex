@@ -1,0 +1,69 @@
+\subsection{Минимум на отрезке}
+
+\subsubsection{Описание решения}
+
+В задаче необходимо реализовать поиск минимума в скользящем окне. Для~этого введём список рекордов \textit{(минимумов)} следующим образом:
+\begin{enumerate}
+  \item Убираем все элементы с конца списка, которые больше текущего.
+  \item Добавляем текущий элемент в конец списка.
+  \item Убираем начальный элемент, если он вышел за границы текущего окна. 
+\end{enumerate}
+
+В конце каждой итерации выводим начальный элемент списка рекордов \textit{(для текущего положения окна)}.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- линейная \( \mathcal{O}(N) \). Над каждым элементом массива произведено константное количество операций, которые, в свою очередь, тоже выполняются за константное время у двусвязного списка.
+
+\textit{Пространственная сложность решения} --- линейная \( \mathcal{O}(N) \). Исходный массив материализуется, промежуточные значения занимают константное количество памяти.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+#include <list>
+
+struct EnumeratedItem {
+  std::size_t idx;
+  int32_t value;
+};
+
+namespace {
+void DoStep(
+    std::list<EnumeratedItem>& window, const std::size_t curr_idx, const std::size_t window_size
+) {
+  int32_t item = 0;
+  std::cin >> item;
+  while (!window.empty() && window.back().value >= item) {
+    window.pop_back();
+  }
+  window.push_back({curr_idx, item});
+  if (curr_idx - window.front().idx + 1 > window_size) {
+    window.pop_front();
+  }
+}
+}  // namespace
+
+int main() {
+  std::size_t n_count = 0;
+  std::size_t k_count = 0;
+  std::cin >> n_count >> k_count;
+  if (k_count > n_count) {
+    std::cerr << "n_count must be greater than or equal to k_count";
+    return 1;
+  }
+
+  std::list<EnumeratedItem> window = {};
+  for (std::size_t i = 0; i < k_count; i++) {
+    DoStep(window, i, k_count);
+  }
+  std::cout << window.front().value << " ";
+  for (std::size_t i = k_count; i < n_count; i++) {
+    DoStep(window, i, k_count);
+    std::cout << window.front().value << " ";
+  }
+  return 0;
+}
+\end{lstlisting}

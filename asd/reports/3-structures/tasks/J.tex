@@ -1,0 +1,91 @@
+\subsection{Гоблины и очереди}
+
+\subsubsection{Описание решения}
+
+Воспользуемся двусвязным списком для симуляции задачи. Разделим очередь гоблинов на две части и будем поддерживать каждую так, чтобы длина первой части отличалась от второй не больше чем на один.
+
+Если приходит гоблин \textit{обычный}, то добавляем его в конец второй части очереди. При необходимости перемещаем первого гоблина второй части в конец первой.
+
+Если приходит гоблин \textit{привилегированный}, то добавляем его либо в конец первой части очереди, либо в начало второй части \textit{(чтобы соблюдалось оговорённое соотношение)}.
+
+Если подходит очередь следующего гоблина, то достаём его из начала первой части очереди. При необходимости перемещаем первого гоблина из второй части очереди в конец первой части.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- линейная \( \mathcal{O}(N) \). В алгоритме используются операции двусвязного списка, которые выполняются за константное время для каждого гоблина.
+
+\textit{Пространственная сложность решения} --- линейная \( \mathcal{O}(N) \). В алгоритме очередь гоблинов материализована, поэтому используется линейное количество памяти.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <cstddef>
+#include <iostream>
+#include <list>
+
+namespace {
+void AddGoblin(
+    std::list<std::size_t>& first_part,
+    std::list<std::size_t>& second_part,
+    const std::size_t idx,
+    const bool is_privileged
+) {
+  if (first_part.empty() && second_part.empty()) {
+    first_part.push_back(idx);
+    return;
+  }
+  if (second_part.empty()) {
+    second_part.push_back(idx);
+    return;
+  }
+  if (is_privileged) {
+    if (first_part.size() == second_part.size()) {
+      first_part.push_back(idx);
+      return;
+    }
+    second_part.push_front(idx);
+    return;
+  }
+  second_part.push_back(idx);
+  if (first_part.size() < second_part.size()) {
+    const std::size_t middle_idx = second_part.front();
+    second_part.pop_front();
+    first_part.push_back(middle_idx);
+    return;
+  }
+}
+
+void PopGoblin(std::list<std::size_t>& first_part, std::list<std::size_t>& second_part) {
+  const std::size_t to_pop = first_part.front();
+  first_part.pop_front();
+  std::cout << to_pop << "\n";
+
+  if (first_part.size() < second_part.size()) {
+    const std::size_t middle_idx = second_part.front();
+    second_part.pop_front();
+    first_part.push_back(middle_idx);
+  }
+}
+}  // namespace
+
+int main() {
+  std::size_t n_count = 0;
+  std::cin >> n_count;
+
+  std::list<std::size_t> first_part = {};
+  std::list<std::size_t> second_part = {};
+
+  for (std::size_t i = 0; i < n_count; i++) {
+    char action_type = '-';
+    std::cin >> action_type;
+    if (action_type == '-') {
+      PopGoblin(first_part, second_part);
+      continue;
+    }
+    std::size_t idx = 0;
+    std::cin >> idx;
+    AddGoblin(first_part, second_part, idx, action_type == '*');
+  }
+  return 0;
+}
+\end{lstlisting}
