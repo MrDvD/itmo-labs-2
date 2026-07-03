@@ -15,7 +15,7 @@ clean:
 	done
 	# clean project artifacts
 	rm -rf $$(grep "output_dir:" ${config_name} | cut -d '"' -f 2)
-pdf:
+pdf: generate
 	cd "${report_dir}"; \
 	xelatex "${report_name}"; \
 	xelatex "${report_name}"

@@ -8,3 +8,4 @@ pics/
 *.log
 *.out
 *.toc
+*.compiled.*

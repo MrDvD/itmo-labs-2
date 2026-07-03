@@ -1,4 +1,5 @@
 import numpy as np
+from lib.primitives import KmeansIteration
 from scipy.optimize import minimize, OptimizeResult
 from typing import List, Tuple, Optional, Protocol, runtime_checkable, Callable
 from abc import ABC, abstractmethod
@@ -80,21 +81,32 @@ class EllipticOptimizer(BaseOptimizer):
 
   def predict(self, params: np.ndarray, X: np.ndarray) -> np.ndarray:
     x0, y0, z0, a, b, c = params[:6]
+    tilde_a = a
+    tilde_b = np.sign(a) * (np.abs(b) + 1e-6) if a != 0 else b
+    tilde_c = np.sqrt(np.abs(tilde_a * tilde_b)) * np.tanh(c)
+    
     dx, dy = X[:, 0] - x0, X[:, 1] - y0
-    return a * dx**2 + b * dy**2 + c * dx * dy + z0
+    return tilde_a * dx**2 + tilde_b * dy**2 + tilde_c * dx * dy + z0
 
   def loss_function(self, params: np.ndarray) -> float:
     return float(np.mean((self.predict(params, self.X_data) - self.targets)**2))
 
   def optimize(self, params_start: np.ndarray) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
-    return minimize(
+    res = minimize(
       self.loss_function,
       params_start,
       method='L-BFGS-B',
       bounds=self.bounds,
       callback=self._callback
-    ).x
+    )
+
+    x0, y0, z0, a, b, c = res.x
+    tilde_a = a
+    tilde_b = np.sign(a) * (np.abs(b) + 1e-6) if a != 0 else b
+    tilde_c = np.sqrt(np.abs(tilde_a * tilde_b)) * np.tanh(c)
+    
+    return [x0, y0, z0, tilde_a, tilde_b, tilde_c]
 
 class ConstantOptimizer(BaseOptimizer):
   def __init__(self, targets: np.ndarray, metric: str = 'MSE') -> None:
@@ -154,6 +166,8 @@ class RBFOptimizer(BaseOptimizer):
     self.targets = targets.flatten()
     self.n_centers = n_centers
     self.n_features = X_data.shape[1]
+
+    self.params_history: List[float] = list()
     
     self.w_len = n_centers + 1
     self.c_len = n_centers * self.n_features
@@ -161,6 +175,8 @@ class RBFOptimizer(BaseOptimizer):
 
     self.learning_rate = learning_rate
     self.n_iterations = n_iterations
+
+    self.initial_centers = np.array([])
 
   def _unpack_params(self, params: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     weights = params[:self.w_len]
@@ -212,12 +228,18 @@ class RBFOptimizer(BaseOptimizer):
 
     return np.concatenate([grad_w, grad_c.flatten(), grad_s])
   
-  def get_initial_params(self, random_state: int = 42) -> np.ndarray:
+  def get_initial_centers(self) -> np.ndarray:
+    return self.initial_centers
+  
+  def get_initial_params(self, random_state: int = 52, eps: float = 1e-4) -> Tuple[np.ndarray, List[KmeansIteration]]:
     np.random.seed(random_state)
     n_samples, _ = self.X_data.shape
 
+    log_iterations: List[KmeansIteration] = list()
+
     indices = np.random.choice(n_samples, self.n_centers, replace=False)
     centers = self.X_data[indices].copy()
+    self.initial_centers = centers.copy()
     
     distances = np.zeros((n_samples, self.n_centers))
     for j in range(self.n_centers):
@@ -234,29 +256,41 @@ class RBFOptimizer(BaseOptimizer):
         distances[:, j] = np.sum((self.X_data - centers[j])**2, axis=1)
       labels = np.argmin(distances, axis=1)
 
-      if np.sum((centers - prev_centers)**2) < 1e-6:
+      d1 = float(np.linalg.norm(centers[0] - prev_centers[0]))
+      d2 = float(np.linalg.norm(centers[1] - prev_centers[1]))
+
+      log_iterations.append(
+        KmeansIteration(
+          center1_prev=tuple(prev_centers[0]),
+          center2_prev=tuple(prev_centers[1]),
+          cluster1=[tuple(x) for x in self.X_data[labels == 0]],
+          cluster2=[tuple(x) for x in self.X_data[labels == 1]],
+          center1=tuple(centers[0]),
+          center2=tuple(centers[1]),
+          delta1=d1,
+          delta2=d2
+        )
+      )
+
+      max_diff = np.max(np.sqrt(np.sum((centers - prev_centers)**2, axis=1)))
+      if max_diff < eps:
         break
 
-    widths = np.zeros(self.n_centers)
-    for j in range(self.n_centers):
-      dist_to_center = np.sqrt(np.sum((self.X_data - centers[j])**2, axis=1))
-      if np.sum(labels == j) > 0:
-        widths[j] = np.mean(dist_to_center[labels == j]) * 0.8
-      else:
-        widths[j] = np.mean(dist_to_center) * 0.5
+    sigma = np.sqrt(np.sum((centers[0] - centers[1])**2)) / 2
+    widths = [sigma, sigma]
 
     weights = np.random.randn(self.n_centers + 1) * 0.1
-    return np.concatenate([weights, centers.flatten(), widths])
+    return (np.concatenate([weights, centers.flatten(), widths]), log_iterations)
 
   def optimize(self, params_start: np.ndarray) -> List[float]:
     self.loss_history = [self.loss_function(params_start)]
+    self.params_history.append(list(params_start))
     params = params_start.copy()
     
     for _ in range(self.n_iterations):
       grads = self._compute_gradients(params)
       params -= self.learning_rate * grads
-      
-      w_c_offset = self.w_len + self.c_len
-      params[w_c_offset:] = np.maximum(params[w_c_offset:], 1e-3)
+
+      self.params_history.append(list(params))
       self._callback(params)
     return params
