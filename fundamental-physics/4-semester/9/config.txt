@@ -1,0 +1,4 @@
+Л
+./fonts/times.ttf
+25.0
+15.0
