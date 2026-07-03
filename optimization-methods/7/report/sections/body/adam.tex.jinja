@@ -1,0 +1,131 @@
+\subsection{Сравнение алгоритмов машинного обучения}
+
+\subsubsection{Градиентный спуск}
+
+Воспользуемся такими параметрами для \textit{стандартного градиентного спуска}:
+\begin{itemize}
+  \item начальное приближение --- \( {{ gd_init }} \);
+  \item скорость обучения --- \( {{ gd_learning_rate }} \);
+  \item ограничение по итерациям --- \( {{ max_iter }} \);
+  \item малая константа \( \varepsilon \) --- \( {{ gd_eps }} \).
+\end{itemize}
+
+Программно в качестве критерия останова выбрана малость нормы градиента и малость нормы разности приближений:
+\[
+  \lVert \nabla f(x^{(k)}, y^{(k)}) \rVert < \varepsilon \quad \text{или} \quad \lVert \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)} \rVert < \varepsilon
+\]
+
+Получаем следующий график градиентного спуска за {{ gd_iterations_num }} итераций:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/gd_iterations.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных приближений градиентного спуска.}
+\end{figure}
+
+\subsubsection{Алгоритм Adam}
+
+\textbf{Алгоритм Adam} \textit{(Adaptive Momentum)} --- метод стохастической оптимизации, который сочетает в себе идеи из алгоритмов Adagrad \textit{(Adaptive Gradient)} и RMSProp \textit{(Root Mean Square Propagation)}.
+
+В нём фигурируют понятия моментов первого и второго порядков из математической статистики:
+\begin{itemize}
+  \item момент первого порядка \( m^{(t)} \) приближает \textit{математическое ожидание} градиента;
+  \item момент второго порядка \( v^{(t)} \) приближает \textit{дисперсию} градиента.
+\end{itemize}
+
+Правда, вместо стандартной формулы, которая была представлена на курсе математической статистики, используется \textit{простое экспоненциальное сглаживание}:
+\[
+  \begin{aligned}
+    m^{(t)}&=\beta_1m^{(t-1)}+(1-\beta_2)g^{(t)}\\
+    v^{(t)}&=\beta_2v^{(t-1)}+(1-\beta_2)(g^{(t)})^2
+  \end{aligned}
+\]
+где $g^{(t)} = \nabla_{\mathbf{x}} f(\mathbf{x}^{(t)})$ --- градиент целевой функции на шаге $t$, а гиперпараметры $\beta_1, \beta_2 \in [0, 1)$ управляют экспоненциальным сглаживанием. На практике чаще всего используют значения $\beta_1 = 0.9$ и $\beta_2 = 0.99$.
+
+Можно убедиться, что коэффициенты в сумме равны единице при \( t\to\infty \):
+\[
+  (1-\beta_1)\sum_{k=0}^\infty\beta_1^k=(1-\beta_1)\cdot\dfrac{1}{1-\beta_1}=1
+\]
+
+Однако в конечном случае \( (t<\infty) \) коэффициенты оказываются смещены в сторону нуля \textit{(недобор)}:
+\[
+  (1-\beta_1)\sum_{k=0}^{t-1}\beta_1^k=(1-\beta_1)\cdot\dfrac{1-\beta_1^t}{1-\beta_1}=1-\beta_1^t
+\]
+
+Чтобы компенсировать это, на каждом шаге вычисляем несмещённые оценки моментов (\textit{bias-corrected estimates}), то есть нормализуем величины:
+\[
+  \hat{m}^{(t)} = \frac{m^{(t)}}{1 - \beta_1^t}, \quad \hat{v}^{(t)} = \frac{v^{(t)}}{1 - \beta_2^t}
+\]
+
+Правило обновления параметров модели $\mathbf{x}$ выглядит так:
+\[
+  \mathbf{x}^{(t+1)}_i = \mathbf{x}^{(t)}_i - \frac{\eta}{\sqrt{\hat{v}_i^{(t)}}} \hat{m}^{(t)}_i
+\]
+где $\eta$ --- базовая скорость обучения.
+
+Идеологически это можно интерпретировать так:
+\begin{itemize}
+  \item \( \hat{m}^{(t)} \) отвечает за направление движения;
+  \item \( \sqrt{\hat{v}} \) отвечает за масштаб шага.
+\end{itemize}
+
+\subsubsection{Подбор коэффициентов Adam}
+
+Воспользуемся такими параметрами, чтобы воспроизвести ситуацию с \textit{пилообразным движением} в стороны:
+\begin{itemize}
+  \item начальное приближение --- \( {{ adam_init_zig }} \);
+  \item базовая скорость обучения --- \( {{ adam_learning_rate_zig }} \);
+  \item скорость обучения момента первого порядка --- \( {{ adam_beta_1_zig }} \);
+  \item скорость обучения момента второго порядка --- \( {{ adam_beta_2_zig }} \);
+  \item ограничение по итерациям --- \( {{ adam_iterations_zig }} \);
+  \item малая константа \( \varepsilon \) --- \( {{ adam_eps_zig }} \).
+\end{itemize}
+
+Как и в случае с градиентным спуском в качестве критерия останова выбрана малость нормы градиента и малость нормы разности приближений:
+\[
+  \lVert \nabla f(x^{(k)}, y^{(k)}) \rVert < \varepsilon \quad \text{или} \quad \lVert \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)} \rVert < \varepsilon
+\]
+
+Получаем следующий график алгоритма Adam за {{ zig_iterations_num }} итераций:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/adam_iterations_zig.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных пилообразных приближений Adam.}
+\end{figure}
+
+Воспользуемся такими параметрами, чтобы воспроизвести ситуацию с \textit{плавным движением}:
+\begin{itemize}
+  \item начальное приближение --- \( {{ adam_init }} \);
+  \item базовая скорость обучения --- \( {{ adam_learning_rate }} \);
+  \item скорость обучения первого момента --- \( {{ adam_beta_1 }} \);
+  \item скорость обучения второго момента --- \( {{ adam_beta_2 }} \);
+  \item ограничение по итерациям --- \( {{ adam_iterations }} \);
+  \item малая константа \( \varepsilon \) --- \( {{ adam_eps }} \).
+\end{itemize}
+
+Получаем следующий график алгоритма Adam за {{ adam_iterations_num }} итераций:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/adam_iterations.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных плавных приближений Adam.}
+\end{figure}
+
+\subsubsection{Эталонная реализация Adam}
+
+Воспользуемся реализацией алгоритма Adam из библиотеки \textit{PyTorch} и воспроизведём ситуацию с \textit{плавным движением}:
+
+\begin{figure}[H]
+  \centering
+  \begin{adjustbox}{max width=.9\textwidth,keepaspectratio}
+    \includegraphics{pics/adam_iterations_torch.pdf}
+  \end{adjustbox}
+  \caption{Диаграмма последовательных приближений Adam (PyTorch).}
+\end{figure}

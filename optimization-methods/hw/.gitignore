@@ -1,0 +1,16 @@
+task/
+venv/
+__pycache__/
+
+*.aux
+*.log
+*.out
+*.toc
+*.compiled.*
+
+*.bcf
+*.bbl
+*.blg
+*.run.xml
+
+dataset.csv
