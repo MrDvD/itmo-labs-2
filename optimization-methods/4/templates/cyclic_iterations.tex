@@ -1,0 +1,65 @@
+\subsubsection{Итерация [[K]]}
+
+\begin{enumerate}
+  \item Найдём $\alpha^{([[K]])}_1$ для направления $e_1=(1,0)^T$ как вершину параболы:
+  \[
+  \begin{gathered}
+    \alpha^{([[K]])}_1=\textrm{arg}\,\min_{\alpha}f(x^{([[K_PREV]])}+\alpha e_1)=-\dfrac{2ax^{([[K_PREV]])}_1+cx^{([[K_PREV]])}_2+d}{2a}=\\
+    =-\dfrac{2\cdot [[A]]\cdot [[X0]]+[[C]]\cdot [[Y0]]+[[D]]}{2\cdot [[A]]}=[[ALPHA_1]]
+  \end{gathered}
+  \]
+
+  Имеем:
+  \[
+    \tilde{x}_1^{(1)}=x^{(0)}+\alpha_1^{(1)}e_1=([[X1]],[[Y1]])^T
+  \]
+
+  \item Аналогично найдём $\alpha^{([[K]])}_2$ для направления $e_2=(0,1)^T$:
+  \[
+  \begin{gathered}
+    \alpha^{([[K]])}_2=\textrm{arg}\,\min_{\alpha}f(\tilde{x}^{(1)}_1+\alpha e_2)=-\dfrac{2b\tilde{x}^{([[K]])}_2+c\tilde{x}^{([[K]])}_1+e}{2b}=\\
+    =-\dfrac{2\cdot [[B]]\cdot [[Y1]]+[[C]]\cdot [[X1]]+[[E]]}{2\cdot [[B]]}=[[ALPHA_2]]
+  \end{gathered}
+  \]
+
+  Итого имеем:
+  \[
+    x^{(1)}=\tilde{x}_2^{(1)}=\tilde{x}^{(1)}_1+\alpha_2^{(1)}e_2=([[X2]],[[Y2]])^T
+  \]
+
+  \item Графическая интерпретация:
+  \begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=10cm, height=10cm,
+      axis lines=middle,
+      xlabel={$x$},
+      ylabel={$y$},
+      xlabel style={right},
+      ylabel style={above},
+      colormap={blackwhite}{gray(0cm)=(0.4); gray(1cm)=(0.9)},
+      view={0}{90}
+    ]
+      \addplot3[
+        contour lua={
+          levels={[[Z_LEVELS]]},
+          labels=false,
+        },
+        samples=100,
+        domain=[[X_MIN]]:[[X_MAX]],
+        domain y=[[Y_MIN]]:[[Y_MAX]],
+      ] {[[A]]*x^2 + [[B]]*y^2 + [[C]]*x*y + [[D]]*x + [[E]]*y + [[F]]};
+
+      [[CYCLIC_PATH_ITER]]
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Итерация №[[K]] метода циклического покоординатного спуска.}
+  \end{figure}
+
+  \item Проверка критерия останова:
+  \[
+    [[BREAKPOINT_CHECK]]
+  \]
+\end{enumerate}
