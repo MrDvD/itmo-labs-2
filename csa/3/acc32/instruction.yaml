@@ -1,0 +1,16 @@
+name: hello
+limit: 400
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [0x]
+  0x84: []
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction}	{Acc:hex}
+      {memory:19:36}
+  - name: Result
+    slice: last
+    view: |
+      {Acc:hex}

@@ -1,0 +1,17 @@
+name: "assert hello(*()) == ('Hello\n\0World',)"
+limit: 1000
+memory_size: 0x1000
+memory_mapped_io:
+  0x84: []
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction}	{pc:label}
+      {T:hex} {A:hex} - {stack:hex}
+  - name: Result
+    slice: last
+    filter:
+      - state
+    view: |
+      {T:hex} {A:hex}
