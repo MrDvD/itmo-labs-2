@@ -1,0 +1,12 @@
+*.out
+*.csv
+*.mod
+*.ps
+venv/
+temp/
+.vscode/
+fpde/
+*.out
+*.log
+*.aux
+*.toc
