@@ -1,0 +1,218 @@
+\subsection{Mobile Telegraphs}
+
+\subsubsection{Описание решения}
+
+Задача легко решается алгоритмом Дейкстры, если преобразовать входные данные в ориентированный взвешенный граф \( G=(V,E) \), где \( v\in V \) --- бойцы на поле с телеграфами, а \( (u,v)\in E \) --- связь между телеграфами \( u \) и \( v \). 
+
+По условию задачи, две вершины в графе связаны, если их строковые номера различаются:
+\begin{itemize}
+  \item одной цифрой;
+  \item двумя цифрами, которые можно поменять местами.
+\end{itemize}
+
+При этом вес ребра зависит от длины общего префикса и определяется массивом из входных данных.
+
+Восстановление сертификата пути происходит за линейное время путём перехода по указателю на предыдущую вершину, которая участвовала в релаксации пути.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- \( \mathcal{O}(N\cdot\log N+M\cdot\log N) \). Граф инициализируется с применением оптимизации на базе знания структуры входных строк: если проверять все пары строк и проверять условие, то решение быстро упрётся во временные рамки. Поэтому сортируем входной массив в лексикографическом порядке и ищем похожие строки при помощи бинарного поиска.
+
+Также используется алгоритм Дейкстры с применением очереди с приоритетами, который проходится по всем достижимым рёбрам графа из стартовой вершины и определяет минимальных соседей за логарифмическое время.
+
+\textit{Пространственная сложность решения} --- линейная \( \mathcal{O}(N) \). Все вершины материализованы в графе, а число рёбер для каждой вершины не более чем константно из-за специфики построения графа по строкам.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <algorithm>
+#include <cstddef>
+#include <iostream>
+#include <limits>
+#include <queue>
+#include <stdexcept>
+#include <vector>
+
+namespace {
+const std::size_t STRING_SIZE = 10;
+const std::size_t INF = std::numeric_limits<std::size_t>::max();
+}  // namespace
+
+struct AdjacentMeta {
+  bool are_adjacent = false;
+  std::size_t common_prefix = 0;
+};
+
+struct Edge {
+  std::size_t to_idx;
+  std::size_t weight;
+};
+
+struct Vertex {
+  std::size_t id;
+  Vertex* prev = nullptr;
+  std::vector<Edge> neighbours;
+};
+
+struct DijkstraResult {
+  std::size_t dist;
+  Vertex* end;
+};
+
+struct SearchNode {
+  std::string str;
+  std::size_t id;
+  bool operator<(const SearchNode& other) const {
+    return str < other.str;
+  }
+};
+
+class Graph {
+public:
+  Graph(const std::vector<std::string>& strings, const std::vector<std::size_t>& costs)
+      : vertices_(std::vector<Vertex>(strings.size() + 1)) {
+    for (std::size_t i = 0; i < strings.size(); ++i) {
+      vertices_[i].id = i;
+    }
+
+    std::vector<SearchNode> search_array(strings.size());
+    for (std::size_t i = 0; i < strings.size(); ++i) {
+      search_array[i] = {strings[i], i};
+    }
+    std::sort(search_array.begin(), search_array.end());
+
+    auto find_id = [search_array](const std::string& target_str) -> std::size_t {
+      SearchNode target{target_str, 0};
+      auto it = std::lower_bound(search_array.begin(), search_array.end(), target);
+      if (it != search_array.end() && it->str == target_str) {
+        return it->id;
+      }
+      return INF;
+    };
+
+    for (std::size_t u = 0; u < strings.size(); ++u) {
+      std::string s = strings[u];
+      for (std::size_t i = 0; i < STRING_SIZE; ++i) {
+        const char original_char = s[i];
+        for (char d = '0'; d <= '9'; ++d) {
+          if (d == original_char) {
+            continue;
+          }
+          s[i] = d;
+          std::size_t v = find_id(s);
+          if (v != INF) {
+            vertices_[u].neighbours.push_back({v, costs[i]});
+          }
+        }
+        s[i] = original_char;
+      }
+
+      for (std::size_t i = 0; i < STRING_SIZE; ++i) {
+        for (std::size_t j = i + 1; j < STRING_SIZE; ++j) {
+          if (s[i] == s[j]) {
+            continue;
+          }
+
+          std::swap(s[i], s[j]);
+          std::size_t v = find_id(s);
+          if (v != INF) {
+            vertices_[u].neighbours.push_back({v, costs[i]});
+          }
+          std::swap(s[i], s[j]);
+        }
+      }
+    }
+  }
+
+  static const AdjacentMeta AreAdjacent(std::string_view left, std::string_view right) {
+    if (left.size() != right.size()) {
+      throw std::invalid_argument("strings should have equal length");
+    }
+    std::size_t left_idx = 0;
+    AdjacentMeta meta;
+    while (left_idx < STRING_SIZE && left[left_idx] == right[left_idx]) {
+      left_idx++;
+      meta.common_prefix++;
+    }
+    std::size_t right_idx = left_idx + 1;
+    while (right_idx < STRING_SIZE && left[right_idx] == right[right_idx]) {
+      right_idx++;
+    }
+    std::size_t third_idx = right_idx + 1;
+    while (third_idx < STRING_SIZE && left[third_idx] == right[third_idx]) {
+      third_idx++;
+    }
+    meta.are_adjacent = (left_idx == STRING_SIZE) || (right_idx == STRING_SIZE) ||
+                        (third_idx == STRING_SIZE && left[left_idx] == right[right_idx] &&
+                         left[right_idx] == right[left_idx]);
+    return meta;
+  }
+
+  DijkstraResult Dijkstra(std::size_t start_idx, std::size_t end_idx) {
+    std::vector<std::size_t> dist(vertices_.size(), INF);
+    std::priority_queue<
+        std::pair<std::size_t, std::size_t>,
+        std::vector<std::pair<std::size_t, std::size_t>>,
+        std::greater<std::pair<std::size_t, std::size_t>>>
+        pq;
+    dist[start_idx] = 0;
+    pq.emplace(0, start_idx);
+    while (!pq.empty()) {
+      auto [current_dist, u_idx] = pq.top();
+      pq.pop();
+      if (u_idx == end_idx) {
+        return {dist[end_idx], &vertices_[end_idx]};
+      }
+      if (current_dist > dist[u_idx]) {
+        continue;
+      }
+      for (const auto& edge : vertices_[u_idx].neighbours) {
+        const std::size_t v_idx = edge.to_idx;
+        if (dist[u_idx] + edge.weight < dist[v_idx]) {
+          dist[v_idx] = dist[u_idx] + edge.weight;
+          vertices_[v_idx].prev = &vertices_[u_idx];
+          pq.emplace(dist[v_idx], v_idx);
+        }
+      }
+    }
+    return {dist[end_idx], &vertices_[end_idx]};
+  }
+
+private:
+  std::vector<Vertex> vertices_;
+};
+
+int main() {
+  std::size_t n_count = 0;
+  std::cin >> n_count;
+  std::vector<std::size_t> costs(STRING_SIZE);
+  for (std::size_t i = 0; i < STRING_SIZE; i++) {
+    std::cin >> costs[i];
+  }
+  std::vector<std::string> strings(n_count);
+  for (std::size_t i = 0; i < n_count; i++) {
+    std::cin >> strings[i];
+  }
+  Graph graph(strings, costs);
+  const DijkstraResult result = graph.Dijkstra(0, n_count - 1);
+  if (result.dist == INF) {
+    std::cout << -1;
+    return 0;
+  }
+  std::vector<std::size_t> path;
+  const Vertex* curr = result.end;
+  std::size_t count = 0;
+  while (curr != nullptr) {
+    path.push_back(curr->id);
+    curr = curr->prev;
+    count++;
+  }
+  std::reverse(path.begin(), path.end());
+  std::cout << result.dist << '\n';
+  std::cout << count << '\n';
+  for (const std::size_t vertex_id : path) {
+    std::cout << vertex_id + 1 << " ";
+  }
+  return 0;
+}
+\end{lstlisting}

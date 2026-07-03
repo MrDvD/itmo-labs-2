@@ -1,0 +1,83 @@
+\subsection{Число}
+
+\subsubsection{Описание решения}
+
+Для решения задачи достаточно воспользоваться попарной лексикографической сортировкой строк в порядке убывания, а затем их конкатенировать. Такой подход гарантирует, что в старших разрядах окажутся цифры, имеющие больший лексикографический вес --- а значит, и численный.
+
+Стоит оговорить, что число всегда будет корректным с точки зрения записи. Это гарантирует условие: хотя бы в одной строке есть число с первой цифрой, отличной от нуля. Именно оно и будет первым за счёт большего лексикографического веса.
+
+Для реализации попарной лексикографической сортировки строк воспользуемся стандартной сортировкой из библиотеки \textit{STL} с изменённым компаратором, проверяющий лексикографический порядок конкретной пары строк.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- линейно-логарифмическая \( \mathcal{O}(N\cdot\log N) \). В алгоритме используется реализация сортировки из \textit{STL}, которая имеет линейно-логарифмическую сложность согласно официальной документации.
+
+\textit{Пространственная сложность решения} --- линейная \( \mathcal{O}(N) \). Для сортировки массива требуется сначала его сохранить в памяти.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <algorithm>
+#include <cstddef>
+#include <iostream>
+#include <iterator>
+#include <string>
+#include <string_view>
+#include <vector>
+
+int main() {
+  std::vector<std::string> arr;
+  std::string line;
+  while (std::cin >> line) {
+    arr.push_back(line);
+  }
+  std::sort(arr.begin(), arr.end(), [](const std::string_view& lsr, const std::string_view& rsr) {
+    const std::size_t a_len = lsr.length();
+    const std::size_t b_len = rsr.length();
+    const std::size_t left = std::min(a_len, b_len);
+    const std::size_t right = std::max(a_len, b_len);
+    const auto* iter1 = lsr.begin();
+    const auto* iter2 = rsr.begin();
+    for (std::size_t _ = 0; _ < left; _++) {
+      if (*iter1 != *iter2) {
+        return *iter1 > *iter2;
+      }
+      iter1 = std::next(iter1);
+      iter2 = std::next(iter2);
+    }
+    if (a_len == b_len) {
+      return false;
+    }
+    if (a_len < b_len) {
+      iter1 = rsr.begin();
+    } else {
+      iter2 = lsr.begin();
+    }
+    for (std::size_t _ = left; _ < right; _++) {
+      if (*iter1 != *iter2) {
+        return *iter1 > *iter2;
+      }
+      iter1 = std::next(iter1);
+      iter2 = std::next(iter2);
+    }
+    if (a_len < b_len) {
+      iter2 = lsr.begin();
+    } else {
+      iter1 = rsr.begin();
+    }
+    for (std::size_t _ = right; _ < left + right; _++) {
+      if (*iter1 != *iter2) {
+        return *iter1 > *iter2;
+      }
+      iter1 = std::next(iter1);
+      iter2 = std::next(iter2);
+    }
+    return false;
+  });
+  for (const auto& str : arr) {
+    std::cout << str;
+  }
+  std::cout << "\n";
+  return 0;
+}
+\end{lstlisting}

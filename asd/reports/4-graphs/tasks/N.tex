@@ -1,0 +1,97 @@
+\subsection{Свинки-копилки}
+
+\subsubsection{Описание решения}
+
+Чтобы определить минимальное число копилок, которое достаточно разбить, чтобы открыть остальные, введём структуру ориентированного графа \( G=(V,E) \) следующим образом. Вершины графа \( v\in V \) соответствуют копилкам, а рёбра вида \( (u,v)\in E \) эквивалентны связи «$u$ открывается ключом из $v$».
+
+Возьмём произвольную вершину и покрасим её в некоторый цвет --- так мы отметим, что копилка была нами разбита. Далее найдём всех достижимых соседей вершины поиском в глубину, окрашивая обрабатываемые вершины в тот же выбранный цвет. Если мы изначально выбрали вершину \( M \) без входящих рёбер, то нам повезло, и мы закончили обработку данного подграфа с началом в этой вершине.
+
+Но нам могло и не повезти, и на деле входящие рёбра у \( M \) всё же были. В таком случае при обработке очередного подграфа окажется, что мы пытаемся перекрасить \( M \) в другой цвет --- мы эту попытку пресекаем и не учитываем текущий подграф в аккумулируемой переменной, поскольку он является началом уже учтённого подграфа.
+
+Если же в ориентированном графе есть неориентированные циклы, то мы смотрим на цвет окрашиваемой вершины. Если он совпадает с цветом текущего подграфа, то пропускаем эту вершину: эта ветка уже была обработана. 
+
+Приведённый выше алгоритм нужно запустить для всех неокрашенных вершин в графе, чтобы в аккумулируемой переменной получить число наибольших ориентированных подграфов. Оно и будет соответствовать минимальному числу копилок.
+
+\subsubsection{Асимптотическая сложность}
+
+\textit{Временная сложность решения} --- линейная \( \mathcal{O}(N) \). Структура графа строится за линейное время относительно числа рёбер. Подсчёт ориентированных подграфов происходит при помощи итеративной реализации поиска в глубину, которая отрабатывает за линейное время относительно числа вершин и рёбер. Чтение и запись происходят за константное время.
+
+\textit{Пространственная сложность решения} --- линейная \( \mathcal{O}(N) \). В памяти материализуется структура графа, которая хранит для каждой вершины константное количество данных. Суммарно число рёбер равно числу вершин, поэтому массивы соседних вершин не разрастаются.
+
+\subsubsection{Листинг кода}
+
+\begin{lstlisting}
+#include <cstddef>
+#include <iostream>
+#include <list>
+#include <unordered_map>
+#include <vector>
+
+struct Vertex {
+  bool visited = false;
+  std::size_t color = 0;
+  std::vector<std::size_t> neighbours;
+};
+
+class Graph {
+public:
+  void AddEdge(std::size_t from_id, std::size_t to_id) {
+    if (this->vertices_.count(from_id) == 0U) {
+      this->vertices_[from_id] = {false, 0, {}};
+    }
+    if (from_id == to_id) {
+      return;
+    }
+    this->vertices_[from_id].neighbours.push_back(to_id);
+  }
+
+  std::size_t CountSources() {
+    std::size_t sources_count = 0;
+    std::size_t current_color = 0;
+    for (std::size_t i = 1; i <= this->vertices_.size(); i++) {
+      if (this->vertices_[i].visited) {
+        continue;
+      }
+      std::list<std::size_t> to_visit = {i};
+      std::size_t broken_count = 1;
+      while (!to_visit.empty()) {
+        Vertex& top_vertex = this->vertices_[to_visit.front()];
+        to_visit.pop_front();
+        top_vertex.visited = true;
+        top_vertex.color = current_color;
+        for (const auto& neightbour : top_vertex.neighbours) {
+          const Vertex& neightbour_vertex = this->vertices_[neightbour];
+          if (neightbour_vertex.visited && neightbour_vertex.color != current_color) {
+            broken_count = 0;
+            continue;
+          }
+          if (neightbour_vertex.visited) {
+            continue;
+          }
+          to_visit.push_front(neightbour);
+        }
+      }
+      sources_count += broken_count;
+      current_color++;
+    }
+    return sources_count;
+  }
+
+private:
+  std::unordered_map<std::size_t, Vertex> vertices_;
+};
+
+int main() {
+  std::size_t n_count = 0;
+  std::cin >> n_count;
+  Graph graph;
+  for (std::size_t i = 1; i <= n_count; i++) {
+    std::size_t open_idx = 0;
+    std::cin >> open_idx;
+    // inverting the direction
+    graph.AddEdge(i, open_idx);
+  }
+  std::cout << graph.CountSources();
+  return 0;
+}
+\end{lstlisting}

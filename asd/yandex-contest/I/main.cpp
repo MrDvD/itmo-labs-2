@@ -1,0 +1,87 @@
+#include <algorithm>
+#include <cstddef>
+#include <iostream>
+#include <map>
+#include <set>
+#include <vector>
+
+namespace {
+std::size_t INFTY = 5 * 1e5;
+
+std::vector<std::size_t> CalculatePriorities(const std::vector<std::size_t>& array) {
+  std::vector<std::size_t> priorities(array.size(), INFTY);
+  std::map<std::size_t, std::size_t> toy_history = {};
+  for (std::size_t i = 0; i < array.size(); i++) {
+    const std::size_t toy_type = array[i];
+    if (toy_history.count(toy_type) != 0U) {
+      priorities[toy_history[toy_type]] = i;
+    }
+    toy_history[toy_type] = i;
+  }
+  return priorities;
+}
+
+struct Toy {
+  std::size_t idx;
+  std::size_t type;
+  bool used;
+
+  bool operator==(const Toy& other) const {
+    return type == other.type;
+  }
+};
+
+struct CompareByPriority {
+  const std::vector<std::size_t>& priorities;
+
+  explicit CompareByPriority(const std::vector<std::size_t>& arr) : priorities(arr) {
+  }
+
+  bool operator()(const Toy& l_toy, const Toy& r_toy) const {
+    if (priorities[l_toy.idx] != priorities[r_toy.idx]) {
+      return priorities[l_toy.idx] > priorities[r_toy.idx];
+    }
+    return l_toy.type < r_toy.type;
+  }
+};
+}  // namespace
+
+int main() {
+  std::size_t n_count = 0;
+  std::size_t k_count = 0;
+  std::size_t p_count = 0;
+
+  std::cin >> n_count >> k_count >> p_count;
+
+  std::vector<std::size_t> toys(p_count);
+  for (std::size_t i = 0; i < p_count; i++) {
+    std::cin >> toys[i];
+  }
+
+  std::size_t action_counter = 0;
+  const std::vector<std::size_t> priorities = CalculatePriorities(toys);
+
+  auto cmp = CompareByPriority(priorities);
+  std::set<Toy, decltype(cmp)> floor(cmp);
+  std::vector<Toy> active_toys(n_count + 1);
+
+  for (std::size_t i = 0; i < p_count; i++) {
+    const Toy current_toy = {i, toys[i], true};
+    if (active_toys[toys[i]].used) {
+      floor.erase(active_toys[toys[i]]);
+      floor.insert(current_toy);
+      active_toys[toys[i]] = current_toy;
+      continue;
+    }
+    if (floor.size() == k_count) {
+      const Toy top = *floor.begin();
+      floor.erase(top);
+      active_toys[top.type].used = false;
+    }
+    floor.insert(current_toy);
+    active_toys[toys[i]] = current_toy;
+    action_counter++;
+  }
+  std::cout << action_counter;
+  return 0;
+}
