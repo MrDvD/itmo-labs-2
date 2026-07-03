@@ -1,0 +1,66 @@
+\subsubsection{Итерация [[K]]}
+
+\begin{enumerate}
+  \item Найдём значение градиента $\omega^{([[K]])}=\textrm{grad}\,f(x^{([[K_PREV]])})$:
+  \[
+  \begin{gathered}
+    \omega^{([[K]])}=(2ax_1^{([[K_PREV]])}+cx_2^{([[K_PREV]])}+d,2bx_2^{([[K_PREV]])}+cx_1^{([[K_PREV]])}+e)^T=\\
+    =(2\cdot [[A]]\cdot [[X_PREV]]+[[C]]\cdot [[Y_PREV]]+[[D]], 2\cdot [[B]]\cdot [[Y_PREV]]+[[C]]\cdot [[X_PREV]]+[[E]])^T=[[OMEGA]]
+  \end{gathered}
+  \]
+
+  \item Нормируем антиградиент \( \omega^{([[K]])} \), чтобы получить орт:
+  \[
+    u^{([[K]])}=-\dfrac{\omega^{([[K]])}}{|\omega^{([[K]])}|}=-\dfrac{[[OMEGA]]}{[[OMEGA_NORM]]}=([[U_X]],[[U_Y]])
+  \]
+
+  \item Найдём \( \beta^{([[K]])} \) как вершину параболы:
+  \[
+  \begin{gathered}
+    \beta^{([[K]])}_1=\textrm{arg}\,\min_{\beta}f(x^{([[K_PREV]])}+\beta u^{([[K]])})=\\
+    =-\dfrac{2ax^{([[K_PREV]])}_1u_1^{([[K]])}+2bx_2^{([[K_PREV]])}u_2^{([[K]])}+c(x_1^{([[K]])}u_2^{([[K]])}+x^{([[K_PREV]])}_2u_1^{([[K]])})+du_1^{([[K]])}+eu_2^{([[K]])}}{2(a(u_1^{([[K]])})^2)+b(u_2^{([[K]])})^2+cu_1^{([[K]])}u_2^{([[K]])}}=\\
+    =-\dfrac{2\cdot [[A]]\cdot [[X_PREV]]\cdot [[U_X]]+\dots+[[D]]\cdot [[U_X]]+[[E]]\cdot [[U_Y]]}{2\cdot ([[A]]\cdot([[U_X]])^2+[[B]]\cdot ([[U_Y]])^2+[[C]]\cdot [[U_X]]\cdot [[U_Y]])}=[[BETA]]
+  \end{gathered}
+  \]
+
+  \item Вычислим \( x^{([[K]])} \):
+  \[
+    x^{([[K]])}=x^{([[K_PREV]])}+\beta^{([[K]])}\cdot u^{([[K]])}=([[X_NEW]],[[Y_NEW]])^T
+  \]
+
+  \item Графическая интерпретация:
+  \begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=10cm, height=10cm,
+      axis lines=middle,
+      xlabel={$x$},
+      ylabel={$y$},
+      xlabel style={right},
+      ylabel style={above},
+      colormap={blackwhite}{gray(0cm)=(0.4); gray(1cm)=(0.9)},
+      view={0}{90}
+    ]
+      \addplot3[
+        contour lua={
+          levels={[[Z_LEVELS]]},
+          labels=false,
+        },
+        samples=100,
+        domain=[[X_MIN]]:[[X_MAX]],
+        domain y=[[Y_MIN]]:[[Y_MAX]],
+      ] {[[A]]*x^2 + [[B]]*y^2 + [[C]]*x*y + [[D]]*x + [[E]]*y + [[F]]};
+
+      [[STEEPEST_PATH_ITER]]
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Итерация №[[K]] метода наискорейшего спуска.}
+  \end{figure}
+
+  \item Проверка критерия останова:
+  \[
+    [[BREAKPOINT_CHECK]]
+  \]
+\end{enumerate}
