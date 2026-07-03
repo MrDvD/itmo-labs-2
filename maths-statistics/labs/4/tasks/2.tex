@@ -1,0 +1,69 @@
+\subsection{Метод наименьших квадратов}
+
+\textit{Метод наименьших квадратов (МНК)} предполагает следующее:
+\[
+    \vec{\varepsilon}=(\varepsilon_1,\dots,\varepsilon_n)^T\sim \textrm{N}_{0,\sigma^2}
+\]
+
+Тогда функция правдоподобия для нашей выборки имеет вид:
+\[
+    \begin{gathered}
+    f_{\vec{\omega}}(\vec{X})=\prod_{i=1}^n\dfrac{1}{\sigma\sqrt{2\pi}}\exp\left\{-\dfrac{(Z_i-f(x_i))^2}{2\sigma^2}\right\}=\\
+    =\dfrac{1}{\sigma^n(2\pi)^{n\slash 2}}\exp\left\{-\dfrac{1}{2\sigma^2}\sum_{i=1}^n(Z_i-f(x_i))^2\right\}
+    \end{gathered}
+\]
+
+\textit{Оценкой метода наименьших квадратов (ОМНК)} для неизвестных параметров \( \vec{\omega} \) уравнения регрессии называется вектор параметров $\hat{\vec{\omega}}$, который доставляет минимум сумме квадратов отклонений.
+
+Заметим, что при любом фиксированном \( \sigma^2 \) максимум функции правдоподобия достигается при наименьшем значении суммы квадратов отклонений:
+\[
+    \textrm{MSE}\equiv \sum_{i=1}^n(Z_i-f(x_i))^2=\sum_{i=1}^n\varepsilon^2_i
+\]
+
+Это равносильно минимизации квадрата евклидовой нормы вектора \( \vec{\varepsilon} \):
+\[
+    \norm{\vec{\varepsilon}}_2^2=\sum_{i=1}^n\varepsilon^2_i=\textrm{MSE}
+\]
+
+Из вида модели \eqref{eq:model} и по формуле скалярного произведения векторов:
+\[
+    \norm{\vec{\varepsilon}}^2_2=\norm{\vec{Z}-\Phi^T\vec{\omega}}^2_2=(\vec{Z}-\Phi^T\vec{\omega})^T(\vec{Z}-\Phi^T\vec{\omega})
+\]
+
+Транспонируем произведение матриц и раскроем матричное произведение:
+\[
+    \begin{gathered}
+    (\vec{Z}-\Phi^T\vec{\omega})^T(\vec{Z}-\Phi^T\vec{\omega})=(\vec{Z}^T-\vec{\omega}^T\Phi)(\vec{Z}-\Phi^T\vec{\omega})=\\
+    =\vec{Z}^T\vec{Z}-\vec{Z}^T\Phi^T\vec{\omega}-\vec{\omega}^T\Phi\vec{Z}+\vec{\omega}^T\Phi\Phi^T\vec{\omega}
+    \end{gathered}
+\]
+
+Заметим, что каждое слагаемое является скаляром. Из этого соображения транспонируем второе слагаемое, упростив выражение до вида:
+\[
+    \textrm{MSE}=\vec{Z}^T\vec{Z}-2\vec{\omega}^T\Phi\vec{Z}+\vec{\omega}^T\Phi\Phi^T\vec{\omega}
+\]
+
+Решим задачу минимизации выражения по вектору параметров \( \vec{\omega} \). Найдём стационарные точки:
+\begin{equation}
+    \begin{gathered}
+    \dfrac{\partial\textrm{MSE}}{\partial\vec{\omega}}=0-2\Phi\vec{Z}+2\Phi\Phi^T\vec{\omega}\\
+    \dfrac{\partial\textrm{MSE}}{\partial\vec{\omega}}=0\implies \Phi\Phi^T\hat{\vec{\omega}}=\Phi\vec{Z}\implies\hat{\vec{\omega}}=(\Phi\Phi^T)^{-1}\Phi\vec{Z}\label{eq:approximation}
+    \end{gathered}
+\end{equation}
+
+Проверим достаточное условие существования экстремума в найденной стационарной точке. Для этого найдём матрицу Гессе:
+\[
+    H=\dfrac{\partial^2\textrm{MSE}}{\partial\vec{\omega}\partial\vec{\omega}^T}=\dfrac{\partial}{\partial\vec{\omega}^T}(-2\Phi\vec{Z}+2\Phi\Phi^T\vec{\omega})=2\Phi\Phi^T
+\]
+
+Заметим, что Гессиан не зависит от вектора \( \vec{\omega} \). Для существования минимума в точке \( \hat{\vec{\omega}} \) нужно доказать его положительную определённость. По~определению это значит следующее:
+\[
+    \vec{v}^TH\vec{v}>0\qquad\forall\vec{v}\neq\vec{0}
+\]
+
+Подставим наш Гессиан и выполним преобразования:
+\[
+    \vec{v}^T2\Phi\Phi^T\vec{v}=2(\vec{v}^T\Phi)(\Phi^T\vec{v})=2(\Phi^T\vec{v})^T(\Phi^T\vec{v})=2\norm{\Phi^T\vec{v}}_2^2\geq 0
+\]
+
+Если рассматривать лишь матрицы плана полного ранга \textit{(в нашем случае} \( \textrm{rank}\,\Phi=3 \)\textit{)}, то неравество становится строгим. Значит, \( H \) положительно определён, и \( \hat{\vec{\omega}} \) является \textbf{точкой минимума}. \( \square \)

@@ -1,0 +1,97 @@
+\subsection{Построение доверительного интервала}
+
+Пусть $0<\varepsilon<1$. Интервал вида $(\theta^-, \theta^+)=(\theta^-(\vec{X}, \varepsilon),\theta^+(\vec{X},\varepsilon))$ называется \textbf{доверительным} для параметра $\theta$ \textbf{уровня доверия} $1-\varepsilon\equiv\alpha$, если
+\[
+\forall\theta\in\Theta\ P(\theta^−<\theta<\theta^+)\geq \alpha.
+\]
+
+Согласно \textit{центральной предельной теореме}, верно следующее:
+\[
+\dfrac{S-E[X_1]\cdot n}{\sigma\sqrt{n}}\xrightarrow[n\to\infty]{}N(0,1)
+\]
+
+Вычислим среднеквадратичное отклонение для распределения Бернулли:
+\begin{align*}
+    E[X_1^2] &= \theta \cdot 1^2 + 0 \cdot (1-\theta)^2 = \theta \\
+    \sigma^2 &= E[X_1^2] - (E[X_1])^2 = \theta - \theta^2 = \theta(1-\theta) \\
+    \sigma &= \sqrt{\theta(1-\theta)}
+\end{align*}
+
+В пределе получаем абсолютно непрерывную случайную величину вида:
+\[
+G_\theta(\vec{X})\equiv\dfrac{\overline{X} - \theta}{\sqrt{\frac{\theta(1-\theta)}{n}}}\xrightarrow[n\to\infty]{}N(0,1)
+\]
+
+Заметим, что в пределе график случайной величины не зависит от параметра \( \theta \). Также \( G_\theta(\vec{X}) \) обратима по \( \theta \) при любом фиксированном \( \vec{X} \).
+
+По условию необходимо найти такой интервал $(T_1, T_2)$, чтобы
+\[
+P(T_1 < \theta < T_2) = 0.95.
+\]
+
+График закона распределения случайной величины \( G_\theta \) симметричен относительно нуля. Чтобы сократить длину доверительного интервала, возьмём симметричный интервал относительно нуля.
+
+Тогда условие для случайной величины $G_\theta$ примет вид:
+\[
+    P(-c<G_\theta<c)=0.95
+\]
+
+Выразим это соотношение через функцию Лапласа:
+\[
+    \begin{aligned}
+        \Phi(c) - \Phi(-c) &= 0.95 \\
+        \Phi(c) - (1 - \Phi(c)) &= 0.95 \\
+        2\Phi(c) &= 1.95 \\
+        \Phi(c) &= 0.975
+    \end{aligned}
+\]
+
+По таблице значений функции Лапласа находим \( c \):
+\[
+\Phi(c) = 0.975 \implies c \approx 1.96
+\]
+
+Решим неравенство \( -c<G_\theta<c \) относительно \( \theta \):
+\[
+    \left|\dfrac{\overline{X} - \theta}{\sqrt{\frac{\theta(1-\theta)}{n}}}\right|<c
+\]
+
+Возведём в квадрат обе части \textit{(допустимо, поскольку они неотрицательны)} и приведём к квадратному неравенству:
+\[
+\begin{gathered}
+    \dfrac{(\overline{X} - \theta)^2}{\frac{\theta(1-\theta)}{n}}<c^2\\
+    n(\overline{X}-\theta)^2<c^2\theta(1-\theta)\\
+    n(\overline{X}^2-2\theta\overline{X}+\theta^2)-c^2\theta+c^2\theta^2<0\\
+    (n + c^2)\theta^2 - (2n\overline{X} + c^2)\theta + n\overline{X}^2 < 0
+\end{gathered}
+\]
+
+Корни соответствующего уравнения:
+\[
+    \theta_{1,2} = \frac{2n\overline{X} + c^2 \mp c\sqrt{4n\overline{X}(1-\overline{X}) + c^2}}{2(n + c^2)}
+\]
+
+Поскольку \( n+c^2>0 \), неравенство выполняется при \( \theta\in(\theta_1,\theta_2) \).
+
+Вычислим значения корней при помощи скрипта:
+
+\begin{lstlisting}[caption=Расчёт границ доверительного интервала]
+import math
+
+X_avg = theta_hat
+c = 1.96
+
+theta1 = (2 * n * X_avg + c ** 2 - c * math.sqrt(4 * n * X_avg * (1 - X_avg) + c ** 2)) / (2 * (n + c ** 2))
+theta2 = (2 * n * X_avg + c ** 2 + c * math.sqrt(4 * n * X_avg * (1 - X_avg) + c ** 2)) / (2 * (n + c ** 2))
+print(f"theta1 = {theta1} ; theta2 = {theta2}")
+\end{lstlisting}
+
+Итого имеем:
+\[
+    \theta_1\approx 0.4231\qquad\theta_2\approx0.6884
+\]
+
+То есть доверительный интервал уровня доверия \( 95\% \):
+\[
+    \theta\in(0.4231,0.6884)
+\]

@@ -1,0 +1,37 @@
+\subsection{Среднеквадратическое отклонение}
+
+\textit{Среднеквадратическое отклонение (СКО, или RMSE --- Root Mean Square Error)} \( \sigma \) случайной величины \( \xi \) определяется как квадратный корень от её дисперсии:
+\[
+    \sigma \equiv \sqrt{D[\xi]}
+\]
+
+Нас интересует отклонение полученной линии регрессии от наблюдаемых случайных величин \( \vec{Z} \) для данной выборки \( \vec{X} \), поэтому рассмотрим СКО следующего вида:
+\[
+    \sigma^2=D[\vec{Z}-f(\vec{X})]=D[\vec{\varepsilon}]
+\]
+
+Получим оценку максимального правдоподобия \( \hat{\sigma}^2 \) из логарифмической функции правдоподобия для нашей выборки:
+\[
+    L_{\sigma^2}(\vec{X})=\ln f_{\sigma^2}(\vec{X})=-\dfrac{n}{2}\ln\sigma^2-\dfrac{n}{2}\ln 2\pi-\dfrac{1}{2\sigma^2}\sum_{i=1}^n\hat{\varepsilon}^2_i
+\]
+
+Решим задачу максимизации выражения по параметру \( \sigma^2 \) . Найдём стационарные точки:
+\[
+    \begin{gathered}
+    \dfrac{\partial L_{\sigma^2}(\vec{X})}{\partial(\sigma^2)}=-\dfrac{n}{2\sigma^2}+\dfrac{1}{2\sigma^4}\sum_{i=1}^n\hat{\varepsilon}_i^2\\
+    \dfrac{\partial L_{\sigma^2}(\vec{X})}{\partial(\sigma^2)}=0\implies n\hat{\sigma}^2=\sum_{i=1}^n\hat{\varepsilon}^2_i\implies\hat{\sigma}^2=\dfrac{1}{n}\sum_{i=1}^n\hat{\varepsilon}^2_i
+    \end{gathered}
+\]
+
+Проверим достаточное условие существования экстремума в найденной
+стационарной точке. Для этого найдём вторую производную:
+\[
+    \dfrac{\partial^2 L_{\sigma^2}(\vec{X})}{\partial(\sigma^2)^2}=\dfrac{\partial}{\partial(\sigma^2)}\left(-\dfrac{n}{2\sigma^2}+\dfrac{1}{2\sigma^4}\sum_{i=1}^n\hat{\varepsilon}_i^2\right)=\dfrac{n}{2\sigma^4}-\dfrac{1}{\sigma^6}\sum_{i=1}^n\hat{\varepsilon}_i^2
+\]
+
+Проверим знак производной в точке \( \hat{\sigma}^2 \):
+\[
+    \left.\dfrac{\partial^2 L_{\sigma^2}(\vec{X})}{\partial(\sigma^2)^2}\right|_{\sigma^2=\hat{\sigma}^2}=\dfrac{n}{2\hat{\sigma}^4}-\dfrac{n\hat{\sigma}^2}{\hat{\sigma}^6}=-\dfrac{n}{2\hat{\sigma}^4}<0\ \square
+\]
+
+Значит, \( \hat{\sigma}^2 \) является \textbf{точкой максимума}. \( \square \)
