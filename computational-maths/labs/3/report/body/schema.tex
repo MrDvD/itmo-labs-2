@@ -1,0 +1,48 @@
+\subsection{Блок-схема численного метода}
+
+На вход реализуемого метода подаются следующие данные:
+
+\begin{itemize}
+  \item \(\Phi(x)\) --- функция, реализующая эквивалентную систему уравнений вида \(x = \Phi(x)\).
+  \item \(x_{init}\) --- вектор начального приближения размерности \(n\); состоит из вещественных чисел двойной точности.
+  \item \(\varepsilon\) --- требуемая точность вычислений; вещественное число двойной точности.
+  \item \(M\) --- максимально допустимое количество итераций; целое число.
+\end{itemize}
+
+На выходе метода ожидается вектор над вещественными числами двойной точности --- найденное решение системы, а также целое число --- количество затраченных итераций. 
+
+Остановка итерационного процесса происходит либо при достижении заданной точности \(\varepsilon\), либо при превышении лимита итераций \(M\).
+
+Далее приводится блок-схема, реализующая данный численный метод.
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [terminator, on chain, join] (start) {Start};
+      \node [data, on chain, join] (input) {Input: $x_{init}, \varepsilon, M, \Phi$};
+      
+      \node [preparation, on chain, join] (init) {$x_{prev} := x_{init}$ \\ $iter := 0$};
+
+      \node [decision, on chain, join] (is_max_iter) {$iter < M?$};
+      \node [process, on chain] (calc_new_x) {$x_{new} := \Phi(x_{prev})$};
+      
+      \node [process, on chain, join] (calc_res) {$r := \sqrt{\sum\limits_{j=0}^{n-1} (x_{new,j} - x_{prev,j})^2}$};
+      
+      \node [preparation, on chain, join] (update) {$x_{prev} := x_{new}$ \\ $iter := iter + 1$};
+      
+      \node [decision, on chain, join] (check_eps) {$r < \varepsilon?$};
+
+      \node [data, on chain] (output) {Output: $x_{prev}, iter$};
+      \node [terminator, on chain, join] (end) {End};
+    \end{scope}
+
+    % Связи для условий
+    \draw [thick, -Stealth] (is_max_iter) -- node[right] {Yes} (calc_new_x);
+    \draw [thick, -Stealth] (is_max_iter.east) -- ++(3,0) |- node[near start, right] {No} (output.east);
+    
+    \draw [thick, -Stealth] (check_eps) -- node[right] {Yes} (output);
+    \draw [thick, -Stealth] (check_eps.west) -- ++(-2,0) |- node[near start, left] {No} (is_max_iter.west);
+
+  \end{tikzpicture}
+  \captionof{scheme}{Блок-схема метода простых итераций \textit{(с метаданными)}.}
+\end{center}

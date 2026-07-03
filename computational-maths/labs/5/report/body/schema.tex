@@ -1,0 +1,102 @@
+\subsection{Блок-схема численного метода}
+
+На вход реализуемого метода подаются следующие данные:
+
+\begin{itemize}
+  \item \(f\) --- номер дифференциального уравнения; целое число.
+  \item \(\varepsilon\) --- требуемая точность вычислений, то есть максимально допустимая разность между двумя итерациями; вещественное число двойной точности.
+  \item \(a, b\) --- границы интервала вычислений; вещественные числа двойной точности.
+  \item \(y_a\) --- начальное условие в точке \(a\); вещественное число двойной точности.
+  \item \(M\) --- максимально допустимое количество разбиений сетки; целое число.
+\end{itemize}
+
+На выходе метода ожидается вещественное число двойной точности --- приближённое значение \(y(b)\). 
+
+Остановка итерационного процесса происходит при достижении заданной точности \(\varepsilon\) или при достижении лимита разбиений \(M\). Шаг сетки на каждой итерации уменьшается вдвое за счёт удвоения количества узлов \(n\).
+
+Далее приводятся блок-схемы, которые реализуют вспомогательный алгоритм расчёта по сетке и основной численный метод.
+
+\vspace*{\fill}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below, node distance=8mm]
+      \node [data, on chain, join] (input) {Input: $f, y_a, a, b, n$};
+      \node [terminator, left= of input] (start) {Start};
+      
+      \node [process, on chain, join] (calc_h) {$h \leftarrow (b - a) / n$};
+      \node [preparation, on chain, join] (init) {
+        $\text{func} \leftarrow \text{getFunc}(f)$ \\
+        $y \leftarrow y_a$ \\ 
+        $x \leftarrow a$ \\ 
+        $i \leftarrow 1$
+      };
+      
+      \node [decision, on chain, join] (check_i) {$i \le n$?};
+      
+      \node [process, on chain] (loop_body) {
+        $y \leftarrow y + h \cdot \text{func}(x, y)$ \\ 
+        $x \leftarrow x + h$
+      };
+      \node [preparation, on chain, join] (inc_i) {$i \leftarrow i + 1$};
+      
+      \node [data, right=2cm of check_i, node distance=4.5cm] (ret) {Return $y_b$};
+      \node [terminator, below=of ret] (end) {End};
+    \end{scope}
+
+    \draw [thick, -Stealth] (check_i) -- node[right] {Yes} (loop_body);
+    \draw [thick, -Stealth] (check_i.east) -- node[near start, above] {No} (ret.west);
+    
+    \draw [thick, -Stealth] (inc_i.west) -- ++(-1.5,0) |- (check_i.west);
+    
+    \draw [thick, -Stealth] (ret.south) -- (end.north);
+    \draw [thick, -Stealth] (start.east) -- (input.west);
+  \end{tikzpicture}
+  \captionof{scheme}{Блок-схема функции вычисления по равномерной сетке.}
+\end{center}
+
+\vspace*{\fill}
+
+\clearpage
+
+\vspace*{\fill}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below, node distance=8mm]
+      \node [data, on chain, join] (input) {Input: $f, \varepsilon, a, y_a, b, M$};
+      \node [terminator, left= of input] (start) {Start};
+      
+      \node [preparation, on chain, join] (init_n) {$n \leftarrow 1$};
+      \node [predefined process, on chain, join] (calc_first) {$y_{prev} \leftarrow \text{calcForGrid}(f, y_a, a, b, n)$};
+      
+      \node [decision, on chain, join] (check_max) {$n < M$?};
+      
+      \node [preparation, on chain] (mult_n) {$n \leftarrow 2n$};
+      \node [predefined process, on chain, join] (calc_curr) {$y_{curr} \leftarrow \text{calcForGrid}(f, y_a, a, b, n)$};
+      
+      \node [decision, on chain, join] (check_eps) {$|y_{prev} - y_{curr}| \le \varepsilon$?};
+      
+      \node [preparation, on chain] (update_prev) {$y_{prev} \leftarrow y_{curr}$};
+      
+      \node [data, right=of check_max, node distance=4.5cm] (ret_prev) {Return $y_{prev}$};
+      \node [data, right=2cm of check_eps] (ret_curr) {Return $y_{curr}$};
+      \node [terminator, above=of ret_curr, yshift=1.5cm] (end) {End};
+    \end{scope}
+
+    \draw [thick, -Stealth] (check_max) -- node[right] {Yes} (mult_n);
+    \draw [thick, -Stealth] (check_max.east) -- node[near start, above] {No} (ret_prev.west);
+    
+    \draw [thick, -Stealth] (check_eps) -- node[right] {No} (update_prev);
+    \draw [thick, -Stealth] (check_eps.east) -- node[near start, above] {Yes} (ret_curr.west);
+    
+    \draw [thick, -Stealth] (update_prev.west) -- ++(-2.5,0) |- (check_max.west);
+    
+    \draw [thick, -Stealth] (ret_prev.south) -- +(0,-1) -| (end.north);
+    \draw [thick, -Stealth] (ret_curr.north) -- (end.south);
+    \draw [thick, -Stealth] (start.east) -- (input.west);
+  \end{tikzpicture}
+  \captionof{scheme}{Блок-схема основного алгоритма решения методом Эйлера с~автоматическим выбором шага.}
+\end{center}
+
+\vspace*{\fill}

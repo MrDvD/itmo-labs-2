@@ -1,0 +1,125 @@
+\subsection{Блок-схема численного метода}
+
+На вход реализуемого метода подаются следующие данные:
+
+\begin{itemize}
+  \item \(f_n\) --- номер подынтегральной функции; целое число.
+  \item \(a, b\) --- границы интервала интегрирования; вещественные числа двойной точности.
+  \item \(\varepsilon\) --- точность вычислений, то есть максимально допустимая разность между двумя последовательными итерациями; вещественное число двойной точности.
+  \item \(M\) --- максимально допустимый размер разбиения; целое число.
+  \item \(\mathcal{D}\) --- метаданные о расположении и типах разрывов функции \textit{(точки первого/второго рода, интервалы неопределённости)}.
+\end{itemize}
+
+На выходе метода ожидается вещественное число двойной точности --- вычисленное значение интеграла. 
+
+Остановка итерационного процесса происходит при достижении заданной точности \(\varepsilon\) (\(|I_k - I_{k-1}| < \varepsilon\)) или при превышении лимита разбиений \(M\).
+
+Далее приводятся блок-схемы, реализующие численный метод.
+
+\clearpage
+\vspace*{\fill}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below, node distance=8mm]
+      \node [terminator, on chain] (start) {Start};
+      \node [data, on chain, join] (input) {Input: $f, a, b, \varepsilon, M$};
+      \node [preparation, on chain, join] (init) {$n \leftarrow 1,\ I_{prev} \leftarrow 0$};
+      \node [decision, on chain, join] (check_max) {$n \le M$?};
+      
+      \node [process, on chain] (calc_h) {$h \leftarrow (b_x - a_x) / n$};
+      \node [process, on chain, join] (safe_bounds) {
+        $f_L \leftarrow \text{ChooseF}(a_x, h)$\\
+        $f_R \leftarrow \text{ChooseF}(b_x, h)$
+      };
+      \node [preparation, on chain, join] (init_sum) {$S \leftarrow (f_L + f_R)\slash 2$ \\ $i \leftarrow 1$};
+      \node [decision, on chain, join] (check_i) {$i < n$?};
+      
+      \node [process, left=of check_i, node distance=3.5cm, yshift=1cm] (add_f) {$S \leftarrow S + f(a.x + i \cdot h)$};
+      \node [preparation, below=of add_f, yshift=-1cm] (inc_i) {$i \leftarrow i + 1$};
+      
+      \node [process, on chain, join] (calc_I) {$I_{curr} \leftarrow S \cdot h$};
+      \node [decision, on chain, join] (check_conv) {$n>1 \land |I_{curr}-I_{prev}| < \varepsilon$?};
+      
+      \node [data, right=of check_conv, node distance=4cm] (ret_curr) {Return $I_{curr}$};
+      \node [preparation, left=of check_conv, node distance=4cm] (update) {$I_{prev} \leftarrow I_{curr}$ \\ $n \leftarrow 2n$};
+      \node [data, right=of check_max, node distance=2cm] (ret_prev) {Return $I_{prev}$};
+      \node [terminator, above=of ret_curr] (end) {End};
+    \end{scope}
+
+    % Явные маршруты соединений
+    \draw [thick, -Stealth] (check_max) -- node[right] {Yes} (calc_h);
+    \draw [thick, -Stealth] (check_max.east) -- node[near start, above] {No} (ret_prev.west);
+    
+    \draw [thick, -Stealth] (check_i.150) |- node[above] {Yes} (add_f.east);
+    \draw [thick, -Stealth] (check_i.south) -- node[right] {No} (calc_I);
+    \draw [thick, -Stealth] (add_f.south) -- (inc_i.north);
+    \draw [thick, -Stealth] (inc_i.east) -- +(1,0) |- (check_i.west);
+    
+    \draw [thick, -Stealth] (check_conv) -- node[above] {Yes} (ret_curr);
+    \draw [thick, -Stealth] (check_conv) -- node[above] {No} (update);
+    \draw [thick, -Stealth] (update.west) -- ++(-0.5,0) |- (check_max.west);
+    
+    \draw [thick, -Stealth] (ret_curr.north) |- (end.south);
+    \draw [thick, -Stealth] (ret_prev.south) -- +(0,-1) -| (end.north);
+    \draw [thick, -Stealth] (start.south) -- (input.north);
+  \end{tikzpicture}
+  \captionof{scheme}{Блок-схема безопасного вычисления формулы трапеций.}
+\end{center}
+
+\vspace*{\fill}
+\clearpage
+
+\vspace*{\fill}
+
+\begin{center}
+  \begin{tikzpicture}[gost flowchart]
+    \begin{scope}[start chain=flow going below]
+      \node [data, on chain, join] (input) {Input: $f_n, a, b, \varepsilon, \mathcal{D}$};
+      \node [terminator, left= of input] (start) {Start};
+      
+      \node [decision, on chain, join] (check_ab) {$a > b$?};
+      \node [preparation, on chain] (swap) {Swap $a, b$ \\ $\text{sign} \leftarrow -1$};
+      \node [process, on chain] (set_sign) {$\text{sign} \leftarrow 1$};
+      
+      \node [process, on chain, join] (preproc) {Analyze $\mathcal{D}$ \\ Form sub-intervals $\mathcal{L}$};
+      \node [preparation, on chain, join] (init_sum) {$I_{\Sigma} \leftarrow 0,\ k \leftarrow 0$};
+      
+      \node [decision, on chain, join] (loop_subs) {$k < |\mathcal{L}|$?};
+      \node [preparation, on chain] (init_inner) {$[A,B] \leftarrow \mathcal{L}_k$ \\ $n \leftarrow 1, I_{prev} \leftarrow 0$};
+      
+      \node [decision, on chain, join] (check_max_n) {$n \le M$?};
+      \node [process, on chain] (calc_trap) {$I_{curr} \leftarrow \text{TrapezoidValue}(f_n,A,B,\mathcal{D})$};
+      
+      \node [decision, on chain, join] (check_eps) {$n>1 \land |I_{curr}-I_{prev}| < \varepsilon$?};
+      \node [preparation, left= of check_max_n] (update_inner) {$I_{prev} \leftarrow I_{curr}$ \\ $n \leftarrow 2n$};
+      
+      \node [process, on chain, join] (accumulate) {$I_{\Sigma} \leftarrow I_{\Sigma} + I_{curr}$ \\ $k \leftarrow k+1$};
+      
+      \node [data, right= of loop_subs] (output) {Output: $I_{\Sigma} \cdot \text{sign}$};
+      \node [terminator, below= of output] (end) {End};
+    \end{scope}
+
+    \draw [thick, -Stealth] (check_ab) -- node[right] {Yes} (swap);
+    \draw [thick, -Stealth] (check_ab.east) -- ++(1,0) |- node[near start, right] {No} (set_sign.east);
+    
+    \draw [thick, -Stealth] (swap.west) -- +(-1.5,0) |- (preproc.west);
+    
+    \draw [thick, -Stealth] (loop_subs) -- node[right] {Yes} (init_inner);
+    \draw [thick, -Stealth] (loop_subs.east) -- node[near start, above] {No} (output.west);
+    
+    \draw [thick, -Stealth] (check_max_n) -- node[right] {Yes} (calc_trap);
+    \draw [thick, -Stealth] (check_max_n.east) -- ++(2.5,0) |- node[near start, right] {No} (accumulate.east);
+    
+    \draw [thick, -Stealth] (check_eps) -- node[right] {Yes} (accumulate);
+    \draw [thick, -Stealth] (check_eps.west) -| node[near start, above] {No} (update_inner.south);
+    \draw [thick, -Stealth] (update_inner.east) -- (check_max_n.west);
+    
+    \draw [thick, -Stealth] (accumulate.west) -- ++(-4.5,0) |- (loop_subs.west);
+    \draw [thick, -Stealth] (output.south) -- (end.north);
+    \draw [thick, -Stealth] (start.east) -- (input.west);
+  \end{tikzpicture}
+  \captionof{scheme}{Блок-схема адаптивного метода трапеций.}
+\end{center}
+
+\vspace*{\fill}
