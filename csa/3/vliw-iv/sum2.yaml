@@ -1,0 +1,24 @@
+name: "assert hello(*()) == ('Hello\n\0World',)"
+limit: 1000
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [0]
+  0x84: []
+reports:
+  - name: Debug
+    slice: ['head', 100]
+    view: |
+      PC: {pc:hex} {instruction}
+      T0: {T0:dec}
+      T1: {T1:dec}
+      T2: {T2:dec}
+      T3: {T3:dec}
+      T4: {T4:dec}
+      T5: {T5:dec}
+      T6: {T6:dec}
+      ---
+  - name: Check results
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
