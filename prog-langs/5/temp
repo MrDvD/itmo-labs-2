@@ -1,0 +1,79 @@
+//
+ 
+using System.Diagnostics;
+ 
+// var st = new Stopwatch();
+st.Start();
+ 
+var hc = new HttpClient();
+ 
+// Асинхронное программирование — работу с потоками
+// Пул потоков
+ 
+Console.WriteLine(Environment.CurrentManagedThreadId);
+ 
+// var task1 = Task.Run(() =>
+// {
+//     Console.WriteLine(Environment.CurrentManagedThreadId);
+//     var body = hc.GetStringAsync("https://postman-echo.com/delay/1").Result;
+//     Console.WriteLine(body);
+// });
+ 
+// var task2 = Task.Run(() =>
+// {
+//     Console.WriteLine(Environment.CurrentManagedThreadId);
+//     var body2 = hc.GetStringAsync("https://postman-echo.com/delay/2").Result;
+//     Console.WriteLine(body2);
+// });
+ 
+// var task3 = Task.Run(() =>
+// {
+//     Console.WriteLine(Environment.CurrentManagedThreadId);
+//     var body3 = hc.GetStringAsync("https://postman-echo.com/delay/3").Result;
+//     Console.WriteLine(body3);
+// });
+ 
+//while(!task1.IsCompleted || !task2.IsCompleted || !task3.IsCompleted){}
+ 
+// var results = await Task.WhenAll(NewMethod(hc), NewMethod(hc), NewMethod(hc));
+// foreach (var item in results)
+// {
+//     Console.WriteLine(item);
+// }
+ 
+//await Task.WhenAny(NewMethod(hc), NewMethod(hc), NewMethod(hc));
+ 
+await foreach (var task in Task.WhenEach(NewMethod(hc), NewMethod(hc), NewMethod(hc)))
+{
+  
+    Console.WriteLine(task.Result);
+}
+
+ 
+Console.WriteLine(Environment.CurrentManagedThreadId);
+ 
+Console.WriteLine(st.Elapsed);
+ 
+static async Task<bool> NewMethod(HttpClient hc)
+{
+    Console.WriteLine(Environment.CurrentManagedThreadId);
+    var body = await hc.GetStringAsync("https://postman-echo.com/delay/1");
+    Console.WriteLine(body);
+ 
+    Console.WriteLine(Environment.CurrentManagedThreadId);
+    var body2 = await hc.GetStringAsync("https://postman-echo.com/delay/2");
+    Console.WriteLine(body2);
+ 
+    Console.WriteLine(Environment.CurrentManagedThreadId);
+    var body3 = await hc.GetStringAsync("https://postman-echo.com/delay/3");
+    Console.WriteLine(body3);
+ 
+    return true;
+}
+ 
+await TestMethod(hc);
+ 
+static Task<string> TestMethod(HttpClient hc)
+{
+    return hc.GetStringAsync("https://postman-echo.com/delay/3");
+}
