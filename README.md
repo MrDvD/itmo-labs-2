@@ -33,6 +33,6 @@
 
 ### 🛠️ Основы программной инженерии (ОПИ)
 * **Лабораторная №1 (Requirements):** [Вопросы с защиты](https://github.com/itmo-fse-ld-2026/1-requirements/wiki)
-* **Лабораторная №2 (VCS):** [Вопросы с защиты](https://github.com/itmo-fse-ld-2026/2-vcs/wiki) / [**Решатор всех вариантов**](https://github.com/itmo-fse-ld-2026/2-vcs)
+* **Лабораторная №2 (VCS):** [Вопросы с защиты](https://github.com/itmo-fse-ld-2026/2-vcs/wiki) / [Решатор всех вариантов](https://github.com/itmo-fse-ld-2026/2-vcs)
 * **Лабораторная №3 (Ant):** [Вопросы с защиты](https://github.com/itmo-fse-ld-2026/3-ant/wiki)
 * **Лабораторная №4 (Performance):** [Вопросы с защиты](https://github.com/itmo-fse-ld-2026/4-performance/wiki)

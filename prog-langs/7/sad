@@ -1,0 +1,87 @@
+using System.Runtime.InteropServices;
+ 
+[DllImport("my_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+static extern long fib_c(int n);
+ 
+[DllImport("point_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+static extern void process_point(ref Point p);
+ 
+[DllImport("point_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+static extern void process([In, Out] Point[] p, [In] int len);
+ 
+// [DllImport("point_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+// static extern void process([In, Out] Point[] p, [Out] int[] result, [In] int len);
+ 
+[DllImport("point_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+static extern int foo(int a, MyFunc f);
+ 
+// TODO:
+// 1. Возьмём файл с 1000+ точек (x, y) (можно взять с прошлого занятия)
+// 2. Прочитать в С# файл с точками
+// 3. Написать функцию filter на C,
+// которая принимает массив точек, 
+// количество точек,
+// функцию фильтрации(Point -> bool),
+// выходный аргумент отфильтрованный массив точек
+// 4. Вызываем функцию filter из C# для точек с функциями фильтрациями, 
+// чтобы разделить их на коориднатные четверти
+// 5. Вывести для каждой четверти список точек
+ 
+ 
+var result = fib_c(35);
+Console.WriteLine($"result = {result}");
+ 
+var p = new Point
+{
+    x = 42,
+    y = 42
+};
+Console.WriteLine($" p.x {p.x} p.y {p.y}");
+process_point(ref p);
+Console.WriteLine($" p.x {p.x} p.y {p.y}");
+ 
+var arr_points = new Point[]
+{
+    p,
+    new Point
+    {
+        x = 1,
+        y = 2
+    }
+};
+process(arr_points, arr_points.Length);
+foreach (var item in arr_points)
+{
+    Console.WriteLine($" p.x {item.x} p.y {item.y}");
+}
+ 
+MyFunc f;
+f = x => x * 2;
+f = bar;
+ 
+var res = foo(20, x => x * 2);
+Console.WriteLine($"res = {res}");
+ 
+int bar(int a)
+{
+    return a;
+}
+[StructLayout(LayoutKind.Sequential)]
+struct Point
+{
+    public int x;
+    public int y;
+}
+ 
+ 
+ 
+delegate int MyFunc(int a);
+ 
+/*
+typedef int (*MyFunc)(int);
+ 
+int foo(int a, MyFunc f) {
+    //qsort()
+    return f(a);
+}
+*/

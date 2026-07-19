@@ -1,0 +1,23 @@
+# .NET (C#)
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.cache
+
+# C
+*.out
+*.so
+*.exe
+*.o
+*.obj
+*.a
+*.lib
+
+# Python
+venv/
+
+# etc
+*.zip
